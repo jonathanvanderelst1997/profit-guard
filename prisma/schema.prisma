@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id                  String    @id
+  shop                String
+  state               String
+  isOnline            Boolean   @default(false)
+  scope               String?
+  expires             DateTime?
+  accessToken         String
+  userId              BigInt?
+  firstName           String?
+  lastName            String?
+  email               String?
+  accountOwner        Boolean   @default(false)
+  locale              String?
+  collaborator        Boolean?  @default(false)
+  emailVerified       Boolean?  @default(false)
+  refreshToken        String?
+  refreshTokenExpires DateTime?
+}
+
+model ShopSettings {
+  shop                String   @id
+  minimumMarginBps    Int      @default(3000)
+  alertEmail          String?
+  weeklyAlertsEnabled Boolean  @default(false)
+  planKey             String   @default("free")
+  subscriptionId      String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model AuditRun {
+  id               String         @id @default(cuid())
+  shop             String
+  minimumMarginBps Int
+  totalVariants    Int
+  lossCount        Int
+  lowMarginCount   Int
+  missingCostCount Int
+  okCount          Int
+  totalPriceAmount Float          @default(0)
+  lossAmount       Float          @default(0)
+  marginGapAmount  Float          @default(0)
+  demoMode         Boolean        @default(false)
+  scanLimitReached Boolean        @default(false)
+  createdAt        DateTime       @default(now())
+  findings         AuditFinding[]
+  @@index([shop, createdAt])
+}
+
+model AuditFinding {
+  id            String   @id @default(cuid())
+  auditRunId    String
+  auditRun      AuditRun @relation(fields: [auditRunId], references: [id], onDelete: Cascade)
+  shop          String
+  variantId     String
+  productTitle  String
+  variantTitle  String?
+  sku           String?
+  priceAmount   Float
+  costAmount    Float?
+  currencyCode  String?
+  profitAmount  Float?
+  marginBps     Int?
+  targetProfitAmount Float?
+  gapToTargetAmount  Float?
+  severity      String
+  reason        String
+  createdAt     DateTime @default(now())
+  @@index([shop, severity])
+  @@index([auditRunId])
+}
+
+
+model ImportedCost {
+  id         String   @id @default(cuid())
+  shop       String
+  sku        String
+  costAmount Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([shop, sku])
+  @@index([shop])
+}
+
+
+model AlertLog {
+  id        String   @id @default(cuid())
+  shop      String
+  email     String?
+  status    String
+  message   String?
+  createdAt DateTime @default(now())
+
+  @@index([shop, createdAt])
+}

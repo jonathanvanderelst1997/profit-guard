@@ -1,0 +1,37 @@
+name = "Profit Guard"
+client_id = "YOUR_SHOPIFY_CLIENT_ID"
+application_url = "https://your-production-app.example.com"
+embedded = true
+
+[access_scopes]
+scopes = "read_products,read_inventory"
+
+[auth]
+redirect_urls = [
+  "https://your-production-app.example.com/auth/callback",
+  "https://your-production-app.example.com/auth/shopify/callback",
+  "https://your-production-app.example.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2026-04"
+
+[[webhooks.subscriptions]]
+topics = ["app/uninstalled"]
+uri = "/webhooks/app/uninstalled"
+
+[[webhooks.subscriptions]]
+topics = ["shop/redact"]
+uri = "/webhooks/shop/redact"
+
+[[webhooks.subscriptions]]
+topics = ["customers/data_request"]
+uri = "/webhooks/customers/data_request"
+
+[[webhooks.subscriptions]]
+topics = ["customers/redact"]
+uri = "/webhooks/customers/redact"
+
+[[webhooks.subscriptions]]
+topics = ["app_subscriptions/update"]
+uri = "/webhooks/app_subscriptions/update"
