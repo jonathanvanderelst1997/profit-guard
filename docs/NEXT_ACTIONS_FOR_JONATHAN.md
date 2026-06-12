@@ -1,15 +1,34 @@
-# Exact next actions
+# Exact next actions for Jonathan
 
-Copy the v4 files over the current app folder, then run:
+These are the account-dependent steps Codex cannot safely complete without the final accounts, production URL, and support contact.
 
-```bash
-npm install
-npm run setup
-npm test
-npm run dev
-```
+## 1. Choose production basics
 
-In Shopify Admin:
+- Choose the final production domain.
+- Choose the support email and set `SUPPORT_EMAIL`.
+- Choose hosting and managed PostgreSQL.
+- Set `SHOPIFY_APP_URL` to the hosted app URL.
+
+## 2. Configure Shopify
+
+1. Replace `YOUR_SHOPIFY_CLIENT_ID` in `shopify.app.toml`.
+2. Replace the placeholder production URL in `shopify.app.toml`.
+3. Run `shopify app config link`.
+4. Configure Shopify App Pricing for Free, Starter, and Growth.
+5. Run `shopify app deploy`.
+
+## 3. Verify public URLs
+
+After deploy, open:
+
+- `/privacy`
+- `/terms`
+- `/refund`
+- `/support`
+
+Use those hosted links in the Shopify App Store submission.
+
+## 4. Review flow in Shopify Admin
 
 1. Open Profit Guard.
 2. Click **Run profit scan**.
@@ -17,8 +36,16 @@ In Shopify Admin:
 4. Tick **Save imported costs for future scans**.
 5. Go back to dashboard and run scan again.
 6. Open **Download findings CSV**.
-7. Open **Set weekly alerts**.
+7. Open **Alerts**.
 8. Open **Pricing**.
-9. Open **Merchant setup**.
+9. Open **Setup**.
 
-If the old screen still appears, the old dev preview is still running. Stop the terminal and start `npm run dev` again from the v4 folder.
+## 5. Submit when ready
+
+Submit only after:
+
+- production install works;
+- privacy/support URLs work;
+- billing works;
+- screenshots and screencast are ready;
+- reviewer instructions are included.

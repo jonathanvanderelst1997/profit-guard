@@ -20,17 +20,28 @@ export default function App() {
 
   return (
     <div className={styles.index}>
+      <header className={styles.header}>
+        <a className={styles.brand} href="/">
+          <span className={styles.mark}>P</span>
+          <span>Profit Guard</span>
+        </a>
+        <nav className={styles.nav}>
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+          <a href="/refund">Refunds</a>
+          <a href="/support">Support</a>
+        </nav>
+      </header>
       <div className={styles.content}>
-        <h1 className={styles.heading}>A short heading about [your app]</h1>
-        <p className={styles.text}>
-          A tagline about [your app] that describes your value proposition.
-        </p>
+        <p className={styles.eyebrow}>Shopify catalog margin scanner</p>
+        <h1 className={styles.heading}>Find products quietly leaking profit.</h1>
+        <p className={styles.text}>Profit Guard scans Shopify variants for missing costs, negative gross margin, and prices below your target margin. It gives merchants a prioritized fix list without changing prices automatically.</p>
         {showForm && (
           <Form className={styles.form} method="post" action="/auth/login">
             <label className={styles.label}>
               <span>Shop domain</span>
-              <input className={styles.input} type="text" name="shop" />
-              <span>e.g: my-shop-domain.myshopify.com</span>
+              <input className={styles.input} type="text" name="shop" placeholder="my-store.myshopify.com" />
+              <span>Use your Shopify admin store domain.</span>
             </label>
             <button className={styles.button} type="submit">
               Log in
@@ -39,16 +50,13 @@ export default function App() {
         )}
         <ul className={styles.list}>
           <li>
-            <strong>Product feature</strong>. Some detail about your feature and
-            its benefit to your customer.
+            <strong>Margin leak scan.</strong> Catch loss-making, low-margin, and missing-cost variants from Shopify product data.
           </li>
           <li>
-            <strong>Product feature</strong>. Some detail about your feature and
-            its benefit to your customer.
+            <strong>Supplier cost import.</strong> Upload CSV costs by SKU and preview the impact before saving.
           </li>
           <li>
-            <strong>Product feature</strong>. Some detail about your feature and
-            its benefit to your customer.
+            <strong>Actionable export.</strong> Download findings with margin gap, next action, and suggested minimum price.
           </li>
         </ul>
       </div>

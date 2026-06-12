@@ -21,6 +21,7 @@ Shopify embedded app for finding products that quietly destroy gross margin.
 - Has onboarding/setup page for merchants.
 - Has demo mode for empty dev stores.
 - Uses Prisma migrations for release-style database setup.
+- Includes public privacy, terms, refund, and support pages for Shopify review.
 
 ## Quick start
 
@@ -44,6 +45,26 @@ Use `mock/supplier-costs.csv` when testing the import flow.
 - `/app/pricing` Shopify billing fallback
 - `/app/settings` margin settings
 - `/app/onboarding` merchant setup guide
+- `/privacy` public privacy policy draft
+- `/terms` public terms draft
+- `/refund` public refund policy draft
+- `/support` public support page
+
+## Environment variables
+
+Required for production:
+
+- `SHOPIFY_API_KEY`
+- `SHOPIFY_API_SECRET`
+- `SHOPIFY_APP_URL`
+- `SCOPES=read_products,read_inventory`
+- `DATABASE_URL`
+- `SUPPORT_EMAIL`
+
+Optional:
+
+- `RESEND_API_KEY`
+- `ALERTS_FROM_EMAIL`
 
 ## CSV import format
 

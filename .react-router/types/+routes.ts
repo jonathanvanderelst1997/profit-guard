@@ -35,10 +35,22 @@ type Pages = {
   "/auth/login": {
     params: {};
   };
+  "/privacy": {
+    params: {};
+  };
+  "/support": {
+    params: {};
+  };
   "/auth/*": {
     params: {
       "*": string;
     };
+  };
+  "/refund": {
+    params: {};
+  };
+  "/terms": {
+    params: {};
   };
   "/app": {
     params: {};
@@ -69,7 +81,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/auth/login" | "/auth/*" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
+    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/auth/login" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
   };
   "routes/webhooks.app_subscriptions.update.tsx": {
     id: "routes/webhooks.app_subscriptions.update";
@@ -99,6 +111,14 @@ type RouteFiles = {
     id: "routes/auth.login";
     page: "/auth/login";
   };
+  "routes/privacy.tsx": {
+    id: "routes/privacy";
+    page: "/privacy";
+  };
+  "routes/support.tsx": {
+    id: "routes/support";
+    page: "/support";
+  };
   "routes/_index/route.tsx": {
     id: "routes/_index";
     page: "/";
@@ -106,6 +126,14 @@ type RouteFiles = {
   "routes/auth.$.tsx": {
     id: "routes/auth.$";
     page: "/auth/*";
+  };
+  "routes/refund.tsx": {
+    id: "routes/refund";
+    page: "/refund";
+  };
+  "routes/terms.tsx": {
+    id: "routes/terms";
+    page: "/terms";
   };
   "routes/app.tsx": {
     id: "routes/app";
@@ -154,8 +182,12 @@ type RouteModules = {
   "routes/webhooks.app.uninstalled": typeof import("./app/routes/webhooks.app.uninstalled.tsx");
   "routes/webhooks.shop.redact": typeof import("./app/routes/webhooks.shop.redact.tsx");
   "routes/auth.login": typeof import("./app/routes/auth.login/route.tsx");
+  "routes/privacy": typeof import("./app/routes/privacy.tsx");
+  "routes/support": typeof import("./app/routes/support.tsx");
   "routes/_index": typeof import("./app/routes/_index/route.tsx");
   "routes/auth.$": typeof import("./app/routes/auth.$.tsx");
+  "routes/refund": typeof import("./app/routes/refund.tsx");
+  "routes/terms": typeof import("./app/routes/terms.tsx");
   "routes/app": typeof import("./app/routes/app.tsx");
   "routes/app.onboarding": typeof import("./app/routes/app.onboarding.tsx");
   "routes/app.settings": typeof import("./app/routes/app.settings.tsx");
