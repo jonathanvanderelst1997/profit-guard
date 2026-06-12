@@ -1,8 +1,8 @@
-# Profit Guard v4
+# Profit Guard
 
-Shopify embedded app MVP for finding products that quietly destroy gross margin.
+Shopify embedded app for finding products that quietly destroy gross margin.
 
-## What v4 does
+## What it does
 
 - Runs an automatic profit scan from Shopify product variants.
 - Reads Shopify selling price and `InventoryItem.unitCost`.
@@ -20,6 +20,7 @@ Shopify embedded app MVP for finding products that quietly destroy gross margin.
 - Has Shopify billing fallback page.
 - Has onboarding/setup page for merchants.
 - Has demo mode for empty dev stores.
+- Uses Prisma migrations for release-style database setup.
 
 ## Quick start
 
@@ -30,6 +31,8 @@ npm run dev
 ```
 
 Then open the Shopify dev preview.
+
+Use `mock/supplier-costs.csv` when testing the import flow.
 
 ## Main routes
 
@@ -62,6 +65,16 @@ Current local tests included:
 - CSV parsing
 - demo cost generation
 - export CSV format
+- spreadsheet formula neutralization and HTML escaping
+
+## Release checks
+
+```bash
+npm run setup
+npm test
+npm run typecheck
+npm run build
+```
 
 ## Important
 

@@ -43,9 +43,6 @@ type Pages = {
   "/app": {
     params: {};
   };
-  "/app/additional": {
-    params: {};
-  };
   "/app/onboarding": {
     params: {};
   };
@@ -72,7 +69,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/auth/login" | "/auth/*" | "/app" | "/app/additional" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
+    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/auth/login" | "/auth/*" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
   };
   "routes/webhooks.app_subscriptions.update.tsx": {
     id: "routes/webhooks.app_subscriptions.update";
@@ -112,11 +109,7 @@ type RouteFiles = {
   };
   "routes/app.tsx": {
     id: "routes/app";
-    page: "/app" | "/app/additional" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
-  };
-  "routes/app.additional.tsx": {
-    id: "routes/app.additional";
-    page: "/app/additional";
+    page: "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
   };
   "routes/app.onboarding.tsx": {
     id: "routes/app.onboarding";
@@ -164,7 +157,6 @@ type RouteModules = {
   "routes/_index": typeof import("./app/routes/_index/route.tsx");
   "routes/auth.$": typeof import("./app/routes/auth.$.tsx");
   "routes/app": typeof import("./app/routes/app.tsx");
-  "routes/app.additional": typeof import("./app/routes/app.additional.tsx");
   "routes/app.onboarding": typeof import("./app/routes/app.onboarding.tsx");
   "routes/app.settings": typeof import("./app/routes/app.settings.tsx");
   "routes/app.pricing": typeof import("./app/routes/app.pricing.tsx");

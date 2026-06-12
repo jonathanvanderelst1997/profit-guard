@@ -43,11 +43,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return { ok: true, type: "scan", auditRun };
 };
 
-function StatCard({ label, value, tone }: { label: string; value: number | string; tone?: string }) {
+type StatTone = "critical" | "warning" | "neutral";
+
+function StatCard({ label, value, tone }: { label: string; value: number | string; tone?: StatTone }) {
   return (
     <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
       <s-stack direction="block" gap="small">
-        <s-text tone="neutral">{label}</s-text>
+        <s-text tone={tone ?? "neutral"}>{label}</s-text>
         <s-heading>{value}</s-heading>
       </s-stack>
     </s-box>
@@ -55,7 +57,7 @@ function StatCard({ label, value, tone }: { label: string; value: number | strin
 }
 
 export default function Dashboard() {
-  const { settings, latestAudit, planKey, plan } = useLoaderData<typeof loader>();
+  const { settings, latestAudit, plan } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const shopify = useAppBridge();
   const currentAudit = fetcher.data?.type === "scan" ? fetcher.data.auditRun : latestAudit;
@@ -71,7 +73,7 @@ export default function Dashboard() {
     <s-page heading="Profit Guard">
       <fetcher.Form method="post">
         <input type="hidden" name="intent" value="scan" />
-        <button type="submit" disabled={isScanning}>{isScanning ? "Scanning..." : "Run profit scan"}</button>
+        <s-button type="submit" variant="primary" disabled={isScanning} loading={isScanning}>Run profit scan</s-button>
       </fetcher.Form>
 
       <s-section heading="Automatic profit scan">
@@ -83,8 +85,8 @@ export default function Dashboard() {
         <fetcher.Form method="post">
           <input type="hidden" name="intent" value="settings" />
           <s-stack direction="inline" gap="base" alignItems="end">
-            <input name="minimumMarginPercent" defaultValue={String(settings.minimumMarginBps / 100)} />
-            <button type="submit" disabled={isSavingSettings}>{isSavingSettings ? "Saving..." : "Save"}</button>
+            <s-number-field label="Minimum margin" name="minimumMarginPercent" defaultValue={String(settings.minimumMarginBps / 100)} min={1} max={95} step={0.5} suffix="%" />
+            <s-button type="submit" disabled={isSavingSettings} loading={isSavingSettings}>Save</s-button>
           </s-stack>
         </fetcher.Form>
       </s-section>
@@ -118,7 +120,7 @@ export default function Dashboard() {
             <s-paragraph>Target margin: {basisPointsToPercent(currentAudit.minimumMarginBps)}. Showing the first 100 findings in-app. CSV export includes all saved findings.</s-paragraph>
             <s-stack direction="inline" gap="base">
               <s-link href="/app/import">Import supplier costs</s-link>
-              <s-link href="/app/export" target="_blank">Download findings CSV</s-link>
+              <s-link href="/app/export">Download findings CSV</s-link>
               <s-link href="/app/alerts">Set weekly alerts</s-link>
               <s-link href="/app/pricing">Pricing</s-link>
               <s-link href="/app/onboarding">Merchant setup</s-link>

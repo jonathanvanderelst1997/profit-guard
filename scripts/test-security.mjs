@@ -5,7 +5,7 @@ function neutralizeSpreadsheetFormula(value) {
   return /^[=+\-@\t\r]/.test(text) ? `'${text}` : text;
 }
 function escapeHtml(value) {
-  return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#39;");
+  return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
 assert.equal(neutralizeSpreadsheetFormula("=1+1"), "'=1+1");

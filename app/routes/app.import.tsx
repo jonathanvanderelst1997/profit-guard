@@ -7,6 +7,7 @@ import { parseSupplierCostCsv, supplierRowsToMap } from "../lib/csv";
 import { fetchVariantsForAudit } from "../lib/shopify-products.server";
 import { getShopSettings } from "../lib/settings.server";
 import { upsertImportedCosts } from "../lib/imported-costs.server";
+import { getShopPlan, getVariantLimitForPlan } from "../lib/plan.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await authenticate.admin(request);
@@ -25,8 +26,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (parsed.errors.length > 0 && parsed.rows.length === 0) return { ok: false, errors: parsed.errors, preview: null };
 
   const settings = await getShopSettings(session.shop);
+  const planKey = await getShopPlan(session.shop);
+  const variantLimit = getVariantLimitForPlan(planKey);
   const supplierMap = supplierRowsToMap(parsed.rows);
-  const variants = await fetchVariantsForAudit(admin, { maxVariants: 5000 });
+  const variants = await fetchVariantsForAudit(admin, { maxVariants: variantLimit });
   const updatedVariants = applySupplierCostsBySku(variants.variants, supplierMap);
   const matchedSkus = new Set(updatedVariants.filter((variant) => variant.sku && supplierMap.has(variant.sku)).map((variant) => variant.sku));
   const summary = auditVariants(updatedVariants, settings.minimumMarginBps);
@@ -38,7 +41,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     imported,
     matchedSkuCount: matchedSkus.size,
     csvRows: parsed.rows.length,
-    preview: { ...summary, findings: summary.findings.slice(0, 100), minimumMarginBps: settings.minimumMarginBps },
+    preview: { ...summary, findings: summary.findings.slice(0, 100), minimumMarginBps: settings.minimumMarginBps, scanLimitReached: variants.limitReached, variantLimit },
   };
 };
 
@@ -55,7 +58,7 @@ export default function SupplierImport() {
           <s-stack direction="block" gap="base">
             <input type="file" name="supplierCsv" accept=".csv,text/csv" />
             <label><input type="checkbox" name="saveCosts" value="true" /> Save imported costs for future scans</label>
-            <s-button {...(isUploading ? { loading: true } : {})}>Preview / import costs</s-button>
+            <s-button type="submit" disabled={isUploading} loading={isUploading}>Preview / import costs</s-button>
           </s-stack>
         </fetcher.Form>
       </s-section>
@@ -70,6 +73,11 @@ export default function SupplierImport() {
         <s-section heading="Import result">
           <s-stack direction="block" gap="base">
             <s-paragraph>CSV rows: {data.csvRows}. Matched SKUs: {data.matchedSkuCount}. Saved costs: {data.imported}. Target margin: {basisPointsToPercent(data.preview.minimumMarginBps)}.</s-paragraph>
+            {data.preview.scanLimitReached ? (
+              <s-banner tone="warning" heading="Plan scan limit reached">
+                This import preview checked the first {data.preview.variantLimit.toLocaleString()} variants on the current plan.
+              </s-banner>
+            ) : null}
             <s-grid gridTemplateColumns="repeat(4, minmax(0, 1fr))" gap="base">
               <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{data.preview.totalVariants}</s-heading><s-text>Variants checked</s-text></s-box>
               <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{data.preview.lossCount}</s-heading><s-text>Losing money</s-text></s-box>

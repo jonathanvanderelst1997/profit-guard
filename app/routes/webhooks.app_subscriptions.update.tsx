@@ -3,9 +3,23 @@ import { authenticate } from "../shopify.server";
 import { planFromSubscriptionName } from "../lib/billing.server";
 import { setShopPlan } from "../lib/plan.server";
 
+type AppSubscriptionPayload = {
+  app_subscription?: {
+    status?: string;
+    name?: string;
+    admin_graphql_api_id?: string;
+    id?: string | number;
+  };
+  status?: string;
+  name?: string;
+  admin_graphql_api_id?: string;
+  id?: string | number;
+};
+
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { shop, payload } = await authenticate.webhook(request);
-  const subscription = (payload as any)?.app_subscription ?? payload;
+  const subscriptionPayload = payload as AppSubscriptionPayload;
+  const subscription = subscriptionPayload.app_subscription ?? subscriptionPayload;
   const status = String(subscription?.status ?? "").toUpperCase();
   const name = String(subscription?.name ?? "");
   const subscriptionId = String(subscription?.admin_graphql_api_id ?? subscription?.id ?? "") || null;

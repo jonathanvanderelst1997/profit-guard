@@ -36,7 +36,7 @@ export async function setShopPlan(shop: string, planKey: PlanKey, subscriptionId
   return prisma.shopSettings.upsert({
     where: { shop },
     create: { shop, planKey, subscriptionId: subscriptionId ?? null },
-    update: { planKey, subscriptionId: subscriptionId ?? undefined },
+    update: { planKey, subscriptionId: subscriptionId ?? null },
   });
 }
 

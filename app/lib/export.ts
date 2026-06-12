@@ -1,7 +1,7 @@
 import type { MarginFinding } from "./margin";
 import { neutralizeSpreadsheetFormula } from "./security";
 
-type PersistedFinding = MarginFinding & { id?: string; createdAt?: Date | string };
+export type CsvFinding = Omit<MarginFinding, "severity"> & { severity: string; id?: string; createdAt?: Date | string };
 
 function csvEscape(value: unknown): string {
   if (value === null || value === undefined) return "";
@@ -10,7 +10,7 @@ function csvEscape(value: unknown): string {
   return safe;
 }
 
-export function findingsToCsv(findings: PersistedFinding[]): string {
+export function findingsToCsv(findings: CsvFinding[]): string {
   const headers = [
     "issue",
     "product_title",

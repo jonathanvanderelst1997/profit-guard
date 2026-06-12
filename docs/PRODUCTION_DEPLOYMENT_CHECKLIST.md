@@ -10,7 +10,9 @@
 - Use PostgreSQL for production.
 - Update `prisma/schema.prisma` provider from `sqlite` to `postgresql` before public deploy.
 - Set `DATABASE_URL` in hosting environment.
-- Run `npx prisma generate` and `npx prisma db push` or migrations.
+- Generate provider-specific Prisma migrations before switching public traffic.
+- Run `npx prisma generate` and `npx prisma migrate deploy` during deploy.
+- Keep `prisma db push` for local throwaway databases only.
 
 ## 3. Secrets
 Set these environment variables:
@@ -40,6 +42,7 @@ Run:
 ```bash
 npm install
 npm run setup
+npx prisma migrate status
 npm test
 npm run typecheck
 npm run build

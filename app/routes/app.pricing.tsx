@@ -38,6 +38,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     amount: plan.monthlyPrice,
     returnUrl: `${url.origin}/app/pricing?selected_plan=${planKey}`,
     trialDays: 14,
+  }).catch((error) => {
+    console.error("Failed to create Shopify billing confirmation URL", error);
+    return null;
   });
   if (!confirmationUrl) return { ok: false, error: "Could not create Shopify billing confirmation URL." };
   return redirect(confirmationUrl);
@@ -52,6 +55,7 @@ export default function Pricing() {
       <s-section heading="Launch pricing">
         <s-paragraph>Current plan: {plans[currentPlan].label}. For a public App Store launch, configure Shopify App Pricing. This page is a Billing API fallback for development and closed beta.</s-paragraph>
         {fetcher.data?.ok ? <s-banner tone="success">Plan updated.</s-banner> : null}
+        {fetcher.data?.ok === false ? <s-banner tone="critical">{fetcher.data.error}</s-banner> : null}
         <s-grid gridTemplateColumns="repeat(3, minmax(0, 1fr))" gap="base">
           {Object.entries(plans).map(([key, plan]) => (
             <s-box key={key} padding="base" borderWidth="base" borderRadius="base">
@@ -62,7 +66,7 @@ export default function Pricing() {
                 <s-unordered-list>{plan.features.map((feature) => <s-list-item key={feature}>{feature}</s-list-item>)}</s-unordered-list>
                 <fetcher.Form method="post">
                   <input type="hidden" name="plan" value={key} />
-                  <s-button disabled={currentPlan === key} {...(isSubmitting ? { loading: true } : {})}>{currentPlan === key ? "Current plan" : key === "free" ? "Use Free" : "Start 14-day trial"}</s-button>
+                  <s-button type="submit" disabled={currentPlan === key || isSubmitting} loading={isSubmitting}>{currentPlan === key ? "Current plan" : key === "free" ? "Use Free" : "Start 14-day trial"}</s-button>
                 </fetcher.Form>
               </s-stack>
             </s-box>
