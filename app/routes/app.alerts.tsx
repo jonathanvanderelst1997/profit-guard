@@ -10,6 +10,12 @@ import { sendWeeklyAlertEmail, type AuditRunWithFindings } from "../lib/email.se
 
 export const loader = async ({ request }: LoaderFunctionArgs) => { const { session } = await authenticate.admin(request); const settings = await getShopSettings(session.shop); const latestAudit = await getLatestAuditRun(session.shop); return { settings, hasAudit: Boolean(latestAudit) }; };
 
+function skippedAlertReason(result: unknown): string | null {
+  if (!result || typeof result !== "object" || !("skipped" in result)) return null;
+  const reason = "reason" in result ? result.reason : null;
+  return typeof reason === "string" ? reason : "Test alert skipped.";
+}
+
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { session } = await authenticate.admin(request);
   const formData = await request.formData();
@@ -19,7 +25,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const latestAudit = await getLatestAuditRun(session.shop);
     if (!latestAudit) return { ok: false, message: "Run a scan before sending a test alert." };
     const result = await sendWeeklyAlertEmail(settings, latestAudit as AuditRunWithFindings);
-    return { ok: true, message: "Test alert processed.", result };
+    const skippedReason = skippedAlertReason(result);
+    if (skippedReason) return { ok: false, message: skippedReason, result };
+    return { ok: true, message: "Test alert sent.", result };
   }
   const updated = await updateAlertSettings(session.shop, { alertEmail: String(formData.get("alertEmail") ?? ""), weeklyAlertsEnabled: formData.get("weeklyAlertsEnabled") === "on" });
   return { ok: true, message: "Alert settings saved.", settings: updated };
@@ -54,7 +62,7 @@ export default function Alerts() {
           <input type="hidden" name="intent" value="send-test" />
           <s-button type="submit" disabled={!hasAudit || isSubmitting} loading={isSubmitting}>Send test alert</s-button>
         </fetcher.Form>
-        {fetcher.data?.message ? <s-paragraph>{fetcher.data.message}</s-paragraph> : null}
+        {fetcher.data?.message ? <s-banner tone={fetcher.data.ok ? "success" : "warning"}>{fetcher.data.message}</s-banner> : null}
       </s-section>
     </s-page>
   );

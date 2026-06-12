@@ -10,10 +10,11 @@
     "typecheck": "react-router typegen && tsc --noEmit",
     "test:margin": "node scripts/test-margin.mjs",
     "test:csv": "node scripts/test-csv.mjs",
+    "test:csv-parser": "tsx scripts/test-csv-parser.ts",
     "test:shopify-products": "tsx scripts/test-shopify-products.ts",
     "shopify": "shopify",
     "prisma": "prisma",
-    "test": "npm run test:margin && npm run test:csv && npm run test:shopify-products && node scripts/test-demo-costs.mjs && node scripts/test-export.mjs && node scripts/test-security.mjs",
+    "test": "npm run test:margin && npm run test:csv && npm run test:csv-parser && npm run test:shopify-products && node scripts/test-demo-costs.mjs && node scripts/test-export.mjs && node scripts/test-security.mjs",
     "db:push": "prisma db push",
     "predev": "npx prisma generate"
   },

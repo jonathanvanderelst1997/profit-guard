@@ -8,6 +8,7 @@ import { fetchVariantsForAudit } from "../lib/shopify-products.server";
 import { getShopSettings } from "../lib/settings.server";
 import { upsertImportedCosts } from "../lib/imported-costs.server";
 import { getShopPlan, getVariantLimitForPlan } from "../lib/plan.server";
+import { formatMoney } from "../lib/security";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await authenticate.admin(request);
@@ -32,6 +33,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const variants = await fetchVariantsForAudit(admin, { maxVariants: variantLimit });
   const updatedVariants = applySupplierCostsBySku(variants.variants, supplierMap);
   const matchedSkus = new Set(updatedVariants.filter((variant) => variant.sku && supplierMap.has(variant.sku)).map((variant) => variant.sku));
+  const currencyCode = updatedVariants.find((variant) => variant.currencyCode)?.currencyCode ?? null;
   const summary = auditVariants(updatedVariants, settings.minimumMarginBps);
   const imported = shouldSave ? await upsertImportedCosts(session.shop, supplierMap) : 0;
 
@@ -41,7 +43,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     imported,
     matchedSkuCount: matchedSkus.size,
     csvRows: parsed.rows.length,
-    preview: { ...summary, findings: summary.findings.slice(0, 100), minimumMarginBps: settings.minimumMarginBps, scanLimitReached: variants.limitReached, variantLimit },
+    preview: { ...summary, findings: summary.findings.slice(0, 100), minimumMarginBps: settings.minimumMarginBps, scanLimitReached: variants.limitReached, variantLimit, currencyCode },
   };
 };
 
@@ -85,8 +87,8 @@ export default function SupplierImport() {
               <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{data.preview.missingCostCount}</s-heading><s-text>Missing cost</s-text></s-box>
             </s-grid>
             <s-grid gridTemplateColumns="repeat(2, minmax(0, 1fr))" gap="base">
-              <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>${Number(data.preview.lossAmount ?? 0).toFixed(2)}</s-heading><s-text>Direct loss found</s-text></s-box>
-              <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>${Number(data.preview.marginGapAmount ?? 0).toFixed(2)}</s-heading><s-text>Gap to target margin</s-text></s-box>
+              <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{formatMoney(Number(data.preview.lossAmount ?? 0), data.preview.currencyCode)}</s-heading><s-text>Direct loss found</s-text></s-box>
+              <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{formatMoney(Number(data.preview.marginGapAmount ?? 0), data.preview.currencyCode)}</s-heading><s-text>Gap to target margin</s-text></s-box>
             </s-grid>
             <s-link href="/app">Go back and run profit scan</s-link>
           </s-stack>
