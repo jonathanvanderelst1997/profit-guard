@@ -52,8 +52,8 @@ export default function Pricing() {
   const isSubmitting = fetcher.state !== "idle";
   return (
     <s-page heading="Pricing">
-      <s-section heading="Launch pricing">
-        <s-paragraph>Current plan: {plans[currentPlan].label}. For a public App Store launch, configure Shopify App Pricing. This page is a Billing API fallback for development and closed beta.</s-paragraph>
+      <s-section heading="Simple catalog-based pricing">
+        <s-paragraph>Current plan: {plans[currentPlan].label}. Profit Guard is priced for catalog margin protection, not full accounting. Public App Store billing should use Shopify App Pricing; this page remains a Billing API fallback for development and closed beta.</s-paragraph>
         {fetcher.data?.ok ? <s-banner tone="success">Plan updated.</s-banner> : null}
         {fetcher.data?.ok === false ? <s-banner tone="critical">{fetcher.data.error}</s-banner> : null}
         <s-grid gridTemplateColumns="repeat(3, minmax(0, 1fr))" gap="base">

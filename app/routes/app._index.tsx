@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs } from "react-router";
 import { useFetcher, useLoaderData } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate } from "../shopify.server";
-import { auditVariants, basisPointsToPercent } from "../lib/margin";
+import { auditVariants, basisPointsToPercent, calculateMinimumPriceForTargetMargin, getFindingAction, getSeverityLabel, SEVERITY_ORDER, type MarginFinding, type Severity } from "../lib/margin";
 import { fetchVariantsForAudit } from "../lib/shopify-products.server";
 import { getLatestAuditRun, saveAuditRun } from "../lib/audit-store.server";
 import { getShopSettings, updateMinimumMargin } from "../lib/settings.server";
@@ -44,6 +44,25 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 type StatTone = "critical" | "warning" | "neutral";
+type FindingFilter = "ALL" | Severity;
+type FindingSort = "priority" | "gap" | "margin" | "product";
+type AuditFinding = Omit<MarginFinding, "severity"> & { id?: string | null; severity: string };
+type DashboardAudit = {
+  totalVariants: number;
+  lossCount: number;
+  lowMarginCount: number;
+  missingCostCount: number;
+  okCount: number;
+  lossAmount: unknown;
+  marginGapAmount: unknown;
+  minimumMarginBps: number;
+  findings: AuditFinding[];
+};
+
+function normalizeSeverity(value: string): Severity {
+  if (value === "LOSS" || value === "LOW_MARGIN" || value === "MISSING_COST") return value;
+  return "LOW_MARGIN";
+}
 
 function StatCard({ label, value, tone }: { label: string; value: number | string; tone?: StatTone }) {
   return (
@@ -56,13 +75,108 @@ function StatCard({ label, value, tone }: { label: string; value: number | strin
   );
 }
 
+function findingMatchesQuery(finding: AuditFinding, query: string): boolean {
+  if (!query.trim()) return true;
+  const haystack = [finding.productTitle, finding.variantTitle, finding.sku, finding.reason, finding.severity].filter(Boolean).join(" ").toLowerCase();
+  return haystack.includes(query.trim().toLowerCase());
+}
+
+function sortFindings(findings: AuditFinding[], sort: FindingSort): AuditFinding[] {
+  return [...findings].sort((a, b) => {
+    if (sort === "gap") return (b.gapToTargetAmount ?? 0) - (a.gapToTargetAmount ?? 0);
+    if (sort === "margin") return (a.marginBps ?? Number.POSITIVE_INFINITY) - (b.marginBps ?? Number.POSITIVE_INFINITY);
+    if (sort === "product") return `${a.productTitle} ${a.variantTitle ?? ""}`.localeCompare(`${b.productTitle} ${b.variantTitle ?? ""}`);
+    const severityDelta = SEVERITY_ORDER[normalizeSeverity(a.severity)] - SEVERITY_ORDER[normalizeSeverity(b.severity)];
+    if (severityDelta !== 0) return severityDelta;
+    return (b.gapToTargetAmount ?? 0) - (a.gapToTargetAmount ?? 0);
+  });
+}
+
+function severityStyle(severity: Severity): CSSProperties {
+  const palette: Record<Severity, CSSProperties> = {
+    LOSS: { color: "#8e1f0b", background: "#fff1ed", borderColor: "#ffd2c2" },
+    LOW_MARGIN: { color: "#6f4e00", background: "#fff8db", borderColor: "#f1d992" },
+    MISSING_COST: { color: "#1f4e79", background: "#edf5ff", borderColor: "#c6dcff" },
+  };
+  return {
+    ...palette[severity],
+    display: "inline-block",
+    border: "1px solid",
+    borderRadius: 6,
+    padding: "2px 8px",
+    fontSize: 12,
+    fontWeight: 600,
+    whiteSpace: "nowrap",
+  };
+}
+
+function humanNumber(value: number): string {
+  return new Intl.NumberFormat("en").format(value);
+}
+
+function ActionCenter({ audit, minimumMarginBps }: { audit: DashboardAudit; minimumMarginBps: number }) {
+  const firstLoss = audit.findings.find((finding) => normalizeSeverity(finding.severity) === "LOSS");
+  const firstLowMargin = audit.findings.find((finding) => normalizeSeverity(finding.severity) === "LOW_MARGIN");
+  const firstMissingCost = audit.findings.find((finding) => normalizeSeverity(finding.severity) === "MISSING_COST");
+  const firstPriority = firstLoss ?? firstLowMargin ?? firstMissingCost;
+  const coverage = audit.totalVariants > 0 ? Math.round((audit.okCount / audit.totalVariants) * 100) : 0;
+  const issueCount = audit.lossCount + audit.lowMarginCount + audit.missingCostCount;
+  const suggestedPrice = firstPriority ? calculateMinimumPriceForTargetMargin(firstPriority.costAmount, minimumMarginBps) : null;
+
+  return (
+    <s-section heading="Action center">
+      {issueCount === 0 ? (
+        <s-banner tone="success" heading="No margin leaks found">
+          Every scanned variant is at or above your current target margin. Keep weekly alerts on so new pricing or supplier cost changes are caught early.
+        </s-banner>
+      ) : (
+        <s-stack direction="block" gap="base">
+          <s-grid gridTemplateColumns="repeat(3, minmax(0, 1fr))" gap="base">
+            <StatCard label="Catalog healthy" value={`${coverage}%`} />
+            <StatCard label="Issues to review" value={issueCount} tone={issueCount > 0 ? "warning" : "neutral"} />
+            <StatCard label="Potential recovery" value={formatMoney(Number(audit.marginGapAmount ?? 0), firstPriority?.currencyCode)} tone="warning" />
+          </s-grid>
+          {firstPriority ? (
+            <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
+              <s-stack direction="block" gap="small">
+                <s-text tone={firstPriority.severity === "LOSS" ? "critical" : "warning"}>Fix first</s-text>
+                <s-heading>{firstPriority.productTitle}{firstPriority.variantTitle && firstPriority.variantTitle !== "Default Title" ? ` / ${firstPriority.variantTitle}` : ""}</s-heading>
+                <s-paragraph>
+                  {getFindingAction(normalizeSeverity(firstPriority.severity))}
+                  {suggestedPrice ? ` Suggested minimum price for ${basisPointsToPercent(minimumMarginBps)} margin: ${formatMoney(suggestedPrice, firstPriority.currencyCode)}.` : ""}
+                </s-paragraph>
+                <s-stack direction="inline" gap="base">
+                  <s-link href="/app/export">Export full fix list</s-link>
+                  <s-link href="/app/import">Import supplier costs</s-link>
+                  <s-link href="/app/alerts">Enable weekly alerts</s-link>
+                </s-stack>
+              </s-stack>
+            </s-box>
+          ) : null}
+        </s-stack>
+      )}
+    </s-section>
+  );
+}
+
 export default function Dashboard() {
   const { settings, latestAudit, plan } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const shopify = useAppBridge();
+  const [issueFilter, setIssueFilter] = useState<FindingFilter>("ALL");
+  const [sort, setSort] = useState<FindingSort>("priority");
+  const [query, setQuery] = useState("");
   const currentAudit = fetcher.data?.type === "scan" ? fetcher.data.auditRun : latestAudit;
   const isScanning = fetcher.state !== "idle" && fetcher.formData?.get("intent") === "scan";
   const isSavingSettings = fetcher.state !== "idle" && fetcher.formData?.get("intent") === "settings";
+  const visibleFindings = useMemo(() => {
+    if (!currentAudit) return [];
+    const filtered = currentAudit.findings.filter((finding) => {
+      const matchesIssue = issueFilter === "ALL" || normalizeSeverity(finding.severity) === issueFilter;
+      return matchesIssue && findingMatchesQuery(finding, query);
+    });
+    return sortFindings(filtered as AuditFinding[], sort);
+  }, [currentAudit, issueFilter, query, sort]);
 
   useEffect(() => {
     if (fetcher.data?.ok && fetcher.data.type === "scan") shopify.toast.show("Profit scan completed");
@@ -93,7 +207,16 @@ export default function Dashboard() {
 
       <s-section heading="Latest scan">
         {!currentAudit ? (
-          <s-paragraph>No scan yet. Click “Run profit scan”.</s-paragraph>
+          <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
+            <s-stack direction="block" gap="base">
+              <s-heading>Start with one scan</s-heading>
+              <s-paragraph>Profit Guard will show missing costs, negative gross margin, low-margin variants, and the exact products to fix first. No product prices are changed.</s-paragraph>
+              <s-stack direction="inline" gap="base">
+                <s-link href="/app/import">Import supplier costs first</s-link>
+                <s-link href="/app/onboarding">Open setup checklist</s-link>
+              </s-stack>
+            </s-stack>
+          </s-box>
         ) : (
           <s-stack direction="block" gap="base">
             {currentAudit.demoMode ? (
@@ -106,6 +229,7 @@ export default function Dashboard() {
                 This scan stopped at your current plan limit. Upgrade to scan more variants.
               </s-banner>
             ) : null}
+            <ActionCenter audit={currentAudit} minimumMarginBps={currentAudit.minimumMarginBps} />
             <s-grid gridTemplateColumns="repeat(4, minmax(0, 1fr))" gap="base">
               <StatCard label="Variants checked" value={currentAudit.totalVariants} />
               <StatCard label="Losing money" value={currentAudit.lossCount} tone="critical" />
@@ -125,23 +249,58 @@ export default function Dashboard() {
               <s-link href="/app/pricing">Pricing</s-link>
               <s-link href="/app/onboarding">Merchant setup</s-link>
             </s-stack>
+            <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
+              <s-stack direction="block" gap="base">
+                <s-heading>Review findings</s-heading>
+                <s-stack direction="inline" gap="base" alignItems="end">
+                  <label style={{ display: "grid", gap: 4 }}>
+                    <span>Search</span>
+                    <input value={query} onChange={(event) => setQuery(event.currentTarget.value)} placeholder="Product, SKU, reason" style={{ minWidth: 220, padding: "8px 10px", border: "1px solid #c9cccf", borderRadius: 6 }} />
+                  </label>
+                  <label style={{ display: "grid", gap: 4 }}>
+                    <span>Issue</span>
+                    <select value={issueFilter} onChange={(event) => setIssueFilter(event.currentTarget.value as FindingFilter)} style={{ minWidth: 160, padding: "8px 10px", border: "1px solid #c9cccf", borderRadius: 6 }}>
+                      <option value="ALL">All issues</option>
+                      <option value="LOSS">Losing money</option>
+                      <option value="LOW_MARGIN">Low margin</option>
+                      <option value="MISSING_COST">Missing cost</option>
+                    </select>
+                  </label>
+                  <label style={{ display: "grid", gap: 4 }}>
+                    <span>Sort</span>
+                    <select value={sort} onChange={(event) => setSort(event.currentTarget.value as FindingSort)} style={{ minWidth: 180, padding: "8px 10px", border: "1px solid #c9cccf", borderRadius: 6 }}>
+                      <option value="priority">Highest priority</option>
+                      <option value="gap">Largest margin gap</option>
+                      <option value="margin">Lowest margin</option>
+                      <option value="product">Product name</option>
+                    </select>
+                  </label>
+                </s-stack>
+                <s-paragraph>Showing {humanNumber(visibleFindings.length)} of {humanNumber(currentAudit.findings.length)} saved findings.</s-paragraph>
+              </s-stack>
+            </s-box>
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead><tr><th align="left">Issue</th><th align="left">Product</th><th align="left">SKU</th><th align="right">Price</th><th align="right">Cost</th><th align="right">Profit</th><th align="right">Margin</th><th align="right">Gap</th><th align="left">Reason</th></tr></thead>
+                <thead><tr><th align="left">Issue</th><th align="left">Product</th><th align="left">SKU</th><th align="right">Price</th><th align="right">Cost</th><th align="right">Profit</th><th align="right">Margin</th><th align="right">Gap</th><th align="right">Suggested min price</th><th align="left">Next action</th></tr></thead>
                 <tbody>
-                  {currentAudit.findings.map((f) => (
+                  {visibleFindings.map((f) => {
+                    const suggestedPrice = calculateMinimumPriceForTargetMargin(f.costAmount, currentAudit.minimumMarginBps);
+                    const severity = normalizeSeverity(f.severity);
+                    return (
                     <tr key={f.id ?? f.variantId}>
-                      <td>{f.severity}</td>
+                      <td><span style={severityStyle(severity)}>{getSeverityLabel(severity)}</span></td>
                       <td>{f.productTitle}{f.variantTitle && f.variantTitle !== "Default Title" ? ` / ${f.variantTitle}` : ""}</td>
                       <td>{f.sku ?? "—"}</td>
-                      <td align="right">{f.priceAmount.toFixed(2)}</td>
-                      <td align="right">{f.costAmount == null ? "—" : f.costAmount.toFixed(2)}</td>
-                      <td align="right">{f.profitAmount == null ? "—" : f.profitAmount.toFixed(2)}</td>
+                      <td align="right">{formatMoney(Number(f.priceAmount), f.currencyCode)}</td>
+                      <td align="right">{f.costAmount == null ? "—" : formatMoney(Number(f.costAmount), f.currencyCode)}</td>
+                      <td align="right">{f.profitAmount == null ? "—" : formatMoney(Number(f.profitAmount), f.currencyCode)}</td>
                       <td align="right">{basisPointsToPercent(f.marginBps)}</td>
-                      <td align="right">{f.gapToTargetAmount == null ? "—" : f.gapToTargetAmount.toFixed(2)}</td>
-                      <td>{f.reason}</td>
+                      <td align="right">{f.gapToTargetAmount == null ? "—" : formatMoney(Number(f.gapToTargetAmount), f.currencyCode)}</td>
+                      <td align="right">{suggestedPrice == null ? "—" : formatMoney(suggestedPrice, f.currencyCode)}</td>
+                      <td>{getFindingAction(severity)}</td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
