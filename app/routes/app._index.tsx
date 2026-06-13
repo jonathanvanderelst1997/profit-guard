@@ -4,7 +4,7 @@ import { useFetcher, useLoaderData } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate } from "../shopify.server";
-import { auditVariants, basisPointsToPercent, calculateMinimumPriceForTargetMargin, getFindingAction, getSeverityLabel, SEVERITY_ORDER, type MarginFinding, type Severity } from "../lib/margin";
+import { auditVariants, basisPointsToPercent, calculateMinimumPriceForTargetMargin, getCostSourceLabel, getFindingAction, getSeverityLabel, SEVERITY_ORDER, type MarginFinding, type Severity } from "../lib/margin";
 import { fetchVariantsForAudit } from "../lib/shopify-products.server";
 import { getLatestAuditRun, saveAuditRun } from "../lib/audit-store.server";
 import { getShopSettings, updateMinimumMargin } from "../lib/settings.server";
@@ -46,7 +46,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 type StatTone = "critical" | "warning" | "neutral";
 type FindingFilter = "ALL" | Severity;
 type FindingSort = "priority" | "gap" | "margin" | "product";
-type AuditFinding = Omit<MarginFinding, "severity"> & { id?: string | null; severity: string };
+type AuditFinding = Omit<MarginFinding, "severity" | "costSource"> & { id?: string | null; severity: string; costSource?: string | null };
 type DashboardAudit = {
   totalVariants: number;
   lossCount: number;
@@ -77,7 +77,7 @@ function StatCard({ label, value, tone }: { label: string; value: number | strin
 
 function findingMatchesQuery(finding: AuditFinding, query: string): boolean {
   if (!query.trim()) return true;
-  const haystack = [finding.productTitle, finding.variantTitle, finding.sku, finding.reason, finding.severity].filter(Boolean).join(" ").toLowerCase();
+  const haystack = [finding.productTitle, finding.variantTitle, finding.sku, finding.reason, finding.severity, getCostSourceLabel(finding.costSource)].filter(Boolean).join(" ").toLowerCase();
   return haystack.includes(query.trim().toLowerCase());
 }
 
@@ -145,6 +145,7 @@ function ActionCenter({ audit, minimumMarginBps }: { audit: DashboardAudit; mini
                   {getFindingAction(normalizeSeverity(firstPriority.severity))}
                   {suggestedPrice ? ` Suggested minimum price for ${basisPointsToPercent(minimumMarginBps)} margin: ${formatMoney(suggestedPrice, firstPriority.currencyCode)}.` : ""}
                 </s-paragraph>
+                <s-paragraph>Cost source: {getCostSourceLabel(firstPriority.costSource)}.</s-paragraph>
                 <s-stack direction="inline" gap="base">
                   <s-link href="/app/export">Export full fix list</s-link>
                   <s-link href="/app/import">Import supplier costs</s-link>
@@ -281,7 +282,7 @@ export default function Dashboard() {
             </s-box>
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead><tr><th align="left">Issue</th><th align="left">Product</th><th align="left">SKU</th><th align="right">Price</th><th align="right">Cost</th><th align="right">Profit</th><th align="right">Margin</th><th align="right">Gap</th><th align="right">Suggested min price</th><th align="left">Next action</th></tr></thead>
+                <thead><tr><th align="left">Issue</th><th align="left">Product</th><th align="left">SKU</th><th align="right">Price</th><th align="right">Cost</th><th align="left">Cost source</th><th align="right">Profit</th><th align="right">Margin</th><th align="right">Gap</th><th align="right">Suggested min price</th><th align="left">Next action</th></tr></thead>
                 <tbody>
                   {visibleFindings.map((f) => {
                     const suggestedPrice = calculateMinimumPriceForTargetMargin(f.costAmount, currentAudit.minimumMarginBps);
@@ -293,6 +294,7 @@ export default function Dashboard() {
                       <td>{f.sku ?? "—"}</td>
                       <td align="right">{formatMoney(Number(f.priceAmount), f.currencyCode)}</td>
                       <td align="right">{f.costAmount == null ? "—" : formatMoney(Number(f.costAmount), f.currencyCode)}</td>
+                      <td>{getCostSourceLabel(f.costSource)}</td>
                       <td align="right">{f.profitAmount == null ? "—" : formatMoney(Number(f.profitAmount), f.currencyCode)}</td>
                       <td align="right">{basisPointsToPercent(f.marginBps)}</td>
                       <td align="right">{f.gapToTargetAmount == null ? "—" : formatMoney(Number(f.gapToTargetAmount), f.currencyCode)}</td>

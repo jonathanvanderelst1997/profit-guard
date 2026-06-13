@@ -25,6 +25,7 @@ export async function saveAuditRun(shop: string, minimumMarginBps: number, summa
           sku: f.sku ?? null,
           priceAmount: f.priceAmount,
           costAmount: f.costAmount ?? null,
+          costSource: f.costSource ?? null,
           currencyCode: f.currencyCode ?? null,
           profitAmount: f.profitAmount,
           marginBps: f.marginBps,

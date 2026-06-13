@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import { useFetcher } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate } from "../shopify.server";
-import { applySupplierCostsBySku, auditVariants, basisPointsToPercent, calculateMinimumPriceForTargetMargin, getFindingAction, getSeverityLabel, type MarginFinding } from "../lib/margin";
+import { applySupplierCostsBySku, auditVariants, basisPointsToPercent, calculateMinimumPriceForTargetMargin, getCostSourceLabel, getFindingAction, getSeverityLabel, type MarginFinding } from "../lib/margin";
 import { parseSupplierCostCsv, supplierRowsToMap } from "../lib/csv";
 import { fetchVariantsForAudit } from "../lib/shopify-products.server";
 import { getShopSettings } from "../lib/settings.server";
@@ -131,7 +131,7 @@ export default function SupplierImport() {
             {data.preview.findings.length > 0 ? (
               <div style={{ overflowX: "auto" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead><tr><th align="left">Issue</th><th align="left">Product</th><th align="left">SKU</th><th align="right">Price</th><th align="right">Imported cost</th><th align="right">Margin</th><th align="right">Suggested min price</th><th align="left">Next action</th></tr></thead>
+                  <thead><tr><th align="left">Issue</th><th align="left">Product</th><th align="left">SKU</th><th align="right">Price</th><th align="right">Imported cost</th><th align="left">Cost source</th><th align="right">Margin</th><th align="right">Suggested min price</th><th align="left">Next action</th></tr></thead>
                   <tbody>
                     {(data.preview.findings as PreviewFinding[]).slice(0, 25).map((finding) => {
                       const suggestedPrice = calculateMinimumPriceForTargetMargin(finding.costAmount, data.preview.minimumMarginBps);
@@ -142,6 +142,7 @@ export default function SupplierImport() {
                           <td>{finding.sku ?? "—"}</td>
                           <td align="right">{formatMoney(Number(finding.priceAmount), finding.currencyCode)}</td>
                           <td align="right">{finding.costAmount == null ? "—" : formatMoney(Number(finding.costAmount), finding.currencyCode)}</td>
+                          <td>{getCostSourceLabel(finding.costSource)}</td>
                           <td align="right">{basisPointsToPercent(finding.marginBps)}</td>
                           <td align="right">{suggestedPrice == null ? "—" : formatMoney(suggestedPrice, finding.currencyCode)}</td>
                           <td>{getFindingAction(finding.severity)}</td>

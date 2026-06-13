@@ -1,8 +1,8 @@
 import type { MarginFinding } from "./margin";
-import { calculateMinimumPriceForTargetMargin, getFindingAction } from "./margin";
+import { calculateMinimumPriceForTargetMargin, getCostSourceLabel, getFindingAction } from "./margin";
 import { neutralizeSpreadsheetFormula } from "./security";
 
-export type CsvFinding = Omit<MarginFinding, "severity"> & { severity: string; id?: string; createdAt?: Date | string };
+export type CsvFinding = Omit<MarginFinding, "severity" | "costSource"> & { severity: string; costSource?: string | null; id?: string; createdAt?: Date | string };
 
 function csvEscape(value: unknown): string {
   if (value === null || value === undefined) return "";
@@ -19,6 +19,7 @@ export function findingsToCsv(findings: CsvFinding[], options: { minimumMarginBp
     "sku",
     "price",
     "cost",
+    "cost_source",
     "profit",
     "margin_percent",
     "target_profit",
@@ -36,6 +37,7 @@ export function findingsToCsv(findings: CsvFinding[], options: { minimumMarginBp
     finding.sku ?? "",
     finding.priceAmount.toFixed(2),
     finding.costAmount == null ? "" : finding.costAmount.toFixed(2),
+    getCostSourceLabel(finding.costSource),
     finding.profitAmount == null ? "" : finding.profitAmount.toFixed(2),
     finding.marginBps == null ? "" : (finding.marginBps / 100).toFixed(1),
     finding.targetProfitAmount == null ? "" : finding.targetProfitAmount.toFixed(2),

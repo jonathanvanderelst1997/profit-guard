@@ -19,6 +19,6 @@ export function applyDemoCostsWhenAllMissing(variants: VariantMarginInput[]) {
   if (hasRealCost || variants.length === 0) return { variants, demoMode: false };
   return {
     demoMode: true,
-    variants: variants.map((variant) => ({ ...variant, costAmount: buildDemoCostForVariant(variant), demoCost: true })),
+    variants: variants.map((variant) => ({ ...variant, costAmount: buildDemoCostForVariant(variant), costSource: "DEMO" as const })),
   };
 }

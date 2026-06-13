@@ -23,6 +23,6 @@ export function applyImportedCostsBySku(variants: VariantMarginInput[], imported
   return variants.map((variant) => {
     const sku = variant.sku?.trim();
     if (!sku || !importedCosts.has(sku)) return variant;
-    return { ...variant, costAmount: importedCosts.get(sku) ?? variant.costAmount };
+    return { ...variant, costAmount: importedCosts.get(sku) ?? variant.costAmount, costSource: "SUPPLIER_IMPORT" };
   });
 }

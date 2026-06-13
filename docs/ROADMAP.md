@@ -9,12 +9,12 @@
 - Findings export.
 - Weekly alerts.
 - Public brand: Margin Sentinel.
+- Cost source labels across scans, imports, exports, and alerts.
 
 ## V1.1: competitor-driven UX upgrades
 
 - Vendor, product type, collection, tag, and inventory filters.
-- Issue detail drawer with formula, cost source, suggested price, and next action.
-- Cost source labels: Shopify unit cost, imported supplier cost, demo cost, missing.
+- Issue detail drawer with formula, suggested price, and next action.
 - Import history with file name, matched rows, duplicates, unmatched SKUs, and saved date.
 - Fresh scheduled scan before weekly alert emails.
 - Sample CSV download and first-run checklist.

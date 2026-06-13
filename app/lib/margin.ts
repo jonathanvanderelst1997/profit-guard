@@ -1,4 +1,5 @@
 export type Severity = "LOSS" | "LOW_MARGIN" | "MISSING_COST";
+export type CostSource = "SHOPIFY_UNIT_COST" | "SUPPLIER_IMPORT" | "DEMO" | "MISSING";
 
 export type VariantMarginInput = {
   variantId: string;
@@ -7,6 +8,7 @@ export type VariantMarginInput = {
   sku?: string | null;
   priceAmount: number;
   costAmount?: number | null;
+  costSource?: CostSource | null;
   currencyCode?: string | null;
 };
 
@@ -47,6 +49,19 @@ export function getFindingAction(severity: Severity): string {
   if (severity === "LOSS") return "Raise price or reduce cost before selling more.";
   if (severity === "LOW_MARGIN") return "Review price, supplier cost, or discount rules.";
   return "Add Shopify unit cost or import supplier cost by SKU.";
+}
+
+export function getCostSourceLabel(costSource: CostSource | string | null | undefined): string {
+  if (costSource === "SHOPIFY_UNIT_COST") return "Shopify unit cost";
+  if (costSource === "SUPPLIER_IMPORT") return "Supplier import";
+  if (costSource === "DEMO") return "Demo estimate";
+  return "Missing cost";
+}
+
+function normalizeCostSource(input: VariantMarginInput): CostSource {
+  if (input.costAmount === null || input.costAmount === undefined) return "MISSING";
+  if (input.costSource === "SHOPIFY_UNIT_COST" || input.costSource === "SUPPLIER_IMPORT" || input.costSource === "DEMO") return input.costSource;
+  return "SHOPIFY_UNIT_COST";
 }
 
 export function toBasisPoints(decimalRatio: number): number {
@@ -92,6 +107,7 @@ export function auditVariant(input: VariantMarginInput, minimumMarginBps: number
     return {
       ...input,
       costAmount: null,
+      costSource: "MISSING",
       profitAmount: null,
       marginBps: null,
       targetProfitAmount: null,
@@ -109,6 +125,7 @@ export function auditVariant(input: VariantMarginInput, minimumMarginBps: number
   if (marginBps < 0) {
     return {
       ...input,
+      costSource: normalizeCostSource(input),
       profitAmount,
       marginBps,
       targetProfitAmount,
@@ -121,6 +138,7 @@ export function auditVariant(input: VariantMarginInput, minimumMarginBps: number
   if (marginBps < minimumMarginBps) {
     return {
       ...input,
+      costSource: normalizeCostSource(input),
       profitAmount,
       marginBps,
       targetProfitAmount,
@@ -166,6 +184,6 @@ export function applySupplierCostsBySku(variants: VariantMarginInput[], supplier
   return variants.map((variant) => {
     const sku = variant.sku?.trim();
     if (!sku || !supplierCosts.has(sku)) return variant;
-    return { ...variant, costAmount: supplierCosts.get(sku) ?? variant.costAmount };
+    return { ...variant, costAmount: supplierCosts.get(sku) ?? variant.costAmount, costSource: "SUPPLIER_IMPORT" };
   });
 }

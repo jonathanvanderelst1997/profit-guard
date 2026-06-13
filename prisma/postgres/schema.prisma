@@ -69,6 +69,7 @@ model AuditFinding {
   sku                String?
   priceAmount        Float
   costAmount         Float?
+  costSource         String?
   currencyCode       String?
   profitAmount       Float?
   marginBps          Int?

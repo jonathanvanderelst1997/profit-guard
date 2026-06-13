@@ -66,6 +66,7 @@ function variantToInput(productTitle: string, variant: ShopifyProductNode["varia
     sku: variant.sku,
     priceAmount: moneyToNumber(variant.price),
     costAmount: variant.inventoryItem?.unitCost?.amount ? moneyToNumber(variant.inventoryItem.unitCost.amount) : null,
+    costSource: variant.inventoryItem?.unitCost?.amount ? "SHOPIFY_UNIT_COST" : "MISSING",
     currencyCode: variant.inventoryItem?.unitCost?.currencyCode ?? fallbackCurrencyCode ?? null,
   };
 }
