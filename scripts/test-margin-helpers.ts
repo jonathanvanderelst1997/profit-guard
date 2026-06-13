@@ -27,4 +27,4 @@ const summary = auditVariants(
 assert.deepEqual(summary.findings.map((finding) => finding.severity), ["LOSS", "LOW_MARGIN", "MISSING_COST"]);
 assert.equal(summary.marginGapAmount, 80);
 
-console.log("Profit Guard margin helper tests passed.");
+console.log("Margin Sentinel margin helper tests passed.");

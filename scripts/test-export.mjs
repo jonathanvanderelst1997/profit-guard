@@ -11,4 +11,4 @@ const csv = findingsToCsv([{ severity: "LOW_MARGIN", productTitle: "Blue, Shirt"
 assert.match(csv, /gap_to_target/);
 assert.match(csv, /"Blue, Shirt"/);
 assert.match(csv, /20.00/);
-console.log("Profit Guard export tests passed.");
+console.log("Margin Sentinel export tests passed.");

@@ -14,4 +14,4 @@ const variant = { variantId: "gid://shopify/ProductVariant/1", sku: "ABC", produ
 const cost = buildDemoCostForVariant(variant);
 assert(cost >= 30 && cost <= 70);
 assert.equal(cost, buildDemoCostForVariant(variant));
-console.log("Profit Guard demo-cost tests passed.");
+console.log("Margin Sentinel demo-cost tests passed.");

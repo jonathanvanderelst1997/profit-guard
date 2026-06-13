@@ -19,7 +19,7 @@ export default function App() {
       <header className={styles.header}>
         <a className={styles.brand} href="/">
           <span className={styles.mark}>P</span>
-          <span>Profit Guard</span>
+          <span>Margin Sentinel</span>
         </a>
         <nav className={styles.nav}>
           <a href="/beta">Beta</a>
@@ -32,7 +32,7 @@ export default function App() {
       <div className={styles.content}>
         <p className={styles.eyebrow}>Shopify catalog margin scanner</p>
         <h1 className={styles.heading}>Find products quietly leaking profit.</h1>
-        <p className={styles.text}>Profit Guard scans Shopify variants for missing costs, negative gross margin, and prices below your target margin. It gives merchants a prioritized fix list without changing prices automatically.</p>
+        <p className={styles.text}>Margin Sentinel scans Shopify variants for missing costs, negative gross margin, and prices below your target margin. It gives merchants a prioritized fix list without changing prices automatically.</p>
         <div className={styles.actions}>
           <a className={styles.primaryAction} href="/beta">Join beta</a>
           <a className={styles.secondaryAction} href="/support">Contact support</a>

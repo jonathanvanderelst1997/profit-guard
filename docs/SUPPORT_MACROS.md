@@ -1,7 +1,7 @@
 # Support macros
 
 ## Why many missing costs?
-Profit Guard uses costs saved in Shopify. If missing, true product margin cannot be calculated.
+Margin Sentinel uses costs saved in Shopify. If missing, true product margin cannot be calculated.
 
 ## Does this include shipping/ads/payment fees/tax?
 No. V1 calculates gross product margin from price and product cost.

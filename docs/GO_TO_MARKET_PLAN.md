@@ -2,7 +2,7 @@
 
 ## Positioning
 
-Profit Guard is a Shopify catalog margin leak scanner.
+Margin Sentinel is a Shopify catalog margin leak scanner.
 
 It helps merchants answer:
 
@@ -12,6 +12,8 @@ It helps merchants answer:
 - What should we fix first?
 
 Do not position it as full net-profit analytics until order-level costs, shipping, fees, refunds, taxes, and ad spend are included.
+
+Do not use the old Profit Guard name publicly. A different app with that exact name is already live in the Shopify App Store, and it owns an order-profit story. Margin Sentinel should own the catalog/SKU margin story.
 
 ## Ideal customer profile
 
@@ -32,6 +34,7 @@ Weak fits:
 1. Shopify App Store search
    - Keywords: margin, product margin, COGS, cost of goods, low margin, profit leak, supplier costs, SKU cost.
    - Screenshots should show: Action Center, CSV import preview, suggested minimum price, weekly alerts.
+   - First screenshot should say "Know what to fix first", not "Dashboard".
 
 2. Direct merchant outreach
    - Target stores with large catalogs and visible physical products.

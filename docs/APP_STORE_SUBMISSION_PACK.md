@@ -1,7 +1,8 @@
 # Shopify App Store submission pack
 
 ## Required before submission
-- Final app name everywhere: Profit Guard or renamed brand.
+- Final app name everywhere: Margin Sentinel.
+- Do not submit under the old Profit Guard name because another Shopify App Store app already uses that exact name.
 - Hosted Privacy Policy URL: `https://YOUR_DOMAIN/privacy`.
 - Hosted Terms of Service URL: `https://YOUR_DOMAIN/terms`.
 - Hosted Refund Policy URL: `https://YOUR_DOMAIN/refund`.
@@ -14,7 +15,7 @@
 - Reviewer/demo script: `docs/REVIEWER_DEMO_SCRIPT.md`.
 
 ## Review-safe positioning
-Profit Guard scans product-level gross margin. It is read-only and does not automatically change prices.
+Margin Sentinel scans product-level gross margin. It is read-only and does not automatically change prices.
 
 ## Avoid these claims
 - Guaranteed profit increase.
@@ -29,7 +30,7 @@ Use `docs/REVIEWER_DEMO_SCRIPT.md` as the canonical reviewer walkthrough.
 
 Short version:
 
-1. Install Profit Guard on the review store.
+1. Install Margin Sentinel on the review store.
 2. Open the embedded app from Shopify Admin.
 3. Run a profit scan from the dashboard.
 4. Open Import costs and upload the sample CSV from `mock/supplier-costs.csv`.

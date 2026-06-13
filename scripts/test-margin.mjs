@@ -28,4 +28,4 @@ assert.equal(loss.severity, "LOSS");
 assert.equal(loss.profitAmount, -20);
 assert.equal(loss.gapToTargetAmount, 50);
 assert.equal(auditVariant({ variantId: "4", productTitle: "D", priceAmount: 100, costAmount: null }, 3000).severity, "MISSING_COST");
-console.log("Profit Guard margin tests passed.");
+console.log("Margin Sentinel margin tests passed.");

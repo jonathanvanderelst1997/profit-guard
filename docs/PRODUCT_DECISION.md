@@ -1,6 +1,6 @@
 # Product decision
 
-Chosen product: **Shopify Profit Guard**.
+Chosen product: **Shopify Margin Sentinel**.
 
 One job: find Shopify variants with negative margin, low margin, or missing cost.
 

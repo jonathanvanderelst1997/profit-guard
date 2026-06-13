@@ -1,6 +1,6 @@
 # Beta recruitment tracker
 
-Goal: get 10 Shopify merchants or agencies to run one Profit Guard scan.
+Goal: get 10 Shopify merchants or agencies to run one Margin Sentinel scan.
 
 ## Success criteria
 

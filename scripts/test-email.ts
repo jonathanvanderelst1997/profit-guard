@@ -30,4 +30,4 @@ const noSender = await sendWeeklyAlertEmail(settings as never, audit as never);
 assert.equal(noSender.skipped, true);
 assert.equal(noSender.reason, "ALERTS_FROM_EMAIL is not configured.");
 
-console.log("Profit Guard email tests passed.");
+console.log("Margin Sentinel email tests passed.");

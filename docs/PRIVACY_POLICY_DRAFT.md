@@ -1,6 +1,6 @@
 # Privacy Policy draft
 
-Profit Guard accesses only the store/product data needed for margin-risk scans: shop domain, product titles, variant titles, SKUs, prices, unit costs, settings and audit results.
+Margin Sentinel accesses only the store/product data needed for margin-risk scans: shop domain, product titles, variant titles, SKUs, prices, unit costs, settings and audit results.
 
 V1 does not require customer data, order history, payment details or marketing data.
 

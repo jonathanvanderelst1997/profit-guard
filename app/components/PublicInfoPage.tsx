@@ -74,13 +74,13 @@ const styles = {
   },
 } satisfies Record<string, CSSProperties>;
 
-export function PublicInfoPage({ title, eyebrow = "Profit Guard", children }: PublicInfoPageProps) {
+export function PublicInfoPage({ title, eyebrow = "Margin Sentinel", children }: PublicInfoPageProps) {
   return (
     <div style={styles.shell}>
       <header style={styles.header}>
         <a style={styles.brand} href="/">
           <span style={styles.mark}>P</span>
-          <span>Profit Guard</span>
+          <span>Margin Sentinel</span>
         </a>
         <nav style={styles.nav}>
           <a href="/beta">Beta</a>

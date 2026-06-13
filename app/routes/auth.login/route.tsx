@@ -19,7 +19,7 @@ export default function Auth() {
     <AppProvider embedded={false}>
       <s-page>
         <s-section heading="Log in">
-          <s-paragraph>{errors.shop || "Open Profit Guard from Shopify Admin or install it from a Shopify-owned surface to continue."}</s-paragraph>
+          <s-paragraph>{errors.shop || "Open Margin Sentinel from Shopify Admin or install it from a Shopify-owned surface to continue."}</s-paragraph>
           <s-button href="/beta">Join beta</s-button>
           <Link to="/support">Contact support</Link>
         </s-section>

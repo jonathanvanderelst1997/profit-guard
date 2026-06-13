@@ -20,4 +20,4 @@ const invalid = parseSupplierCostCsv("sku,cost\nBAD,-1\n,10\n");
 assert.equal(invalid.rows.length, 0);
 assert.equal(invalid.errors.length, 2);
 
-console.log("Profit Guard CSV parser tests passed.");
+console.log("Margin Sentinel CSV parser tests passed.");

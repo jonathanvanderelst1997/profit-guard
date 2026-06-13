@@ -13,8 +13,8 @@ export default function Beta() {
   const contactUrl = betaSignupUrl || (supportEmail ? `mailto:${supportEmail}?subject=Profit%20Guard%20beta` : "");
 
   return (
-    <PublicInfoPage title="Join the Profit Guard beta" eyebrow="Closed beta">
-      <p>Profit Guard is looking for Shopify merchants and agencies with physical products, supplier cost changes, or large SKU catalogs.</p>
+    <PublicInfoPage title="Join the Margin Sentinel beta" eyebrow="Closed beta">
+      <p>Margin Sentinel is looking for Shopify merchants and agencies with physical products, supplier cost changes, or large SKU catalogs.</p>
 
       <h2>Who it is for</h2>
       <ul>
@@ -32,12 +32,12 @@ export default function Beta() {
       </ul>
 
       <h2>What we ask for</h2>
-      <p>One short feedback call or written notes after the first scan. The most important question is whether Profit Guard found something useful that would otherwise have been missed.</p>
+      <p>One short feedback call or written notes after the first scan. The most important question is whether Margin Sentinel found something useful that would otherwise have been missed.</p>
 
       {contactUrl ? (
         <p><a href={contactUrl}>Request beta access</a></p>
       ) : (
-        <p>Beta access is invite-only right now. If you received a Profit Guard beta invitation, use the contact details included with that invitation.</p>
+        <p>Beta access is invite-only right now. If you received a Margin Sentinel beta invitation, use the contact details included with that invitation.</p>
       )}
     </PublicInfoPage>
   );

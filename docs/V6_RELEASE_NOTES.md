@@ -1,4 +1,4 @@
-# Profit Guard v6 release notes
+# Margin Sentinel v6 release notes
 
 Built after launch-readiness research.
 

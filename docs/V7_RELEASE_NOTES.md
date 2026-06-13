@@ -1,9 +1,9 @@
-# Profit Guard v7 release notes
+# Margin Sentinel v7 release notes
 
 Release-readiness pass after v6.
 
 ## Added / improved
-- Added a real Prisma migration for Profit Guard tables so fresh deploys create the app schema through `prisma migrate deploy`.
+- Added a real Prisma migration for Margin Sentinel tables so fresh deploys create the app schema through `prisma migrate deploy`.
 - Added `migration_lock.toml` and changed `npm run setup` to exercise migrations instead of `db push`.
 - Kept billing state in sync when Shopify has no active subscription and cleared stale subscription IDs on downgrade.
 - Matched supplier CSV import preview to the current plan's variant limit.

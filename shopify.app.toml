@@ -1,4 +1,4 @@
-name = "Profit Guard"
+name = "Margin Sentinel"
 client_id = "YOUR_SHOPIFY_CLIENT_ID"
 application_url = "https://your-production-app.example.com"
 embedded = true

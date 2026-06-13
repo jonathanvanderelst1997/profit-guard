@@ -52,10 +52,10 @@ export default function Onboarding() {
       </s-section>
 
       <s-section heading="Positioning">
-        <s-paragraph>Profit Guard is a catalog margin guardrail. It helps merchants catch missing costs, loss-making variants, and prices below target margin before those issues hide inside wider accounting reports.</s-paragraph>
+        <s-paragraph>Margin Sentinel is a catalog margin guardrail. It helps merchants catch missing costs, loss-making variants, and prices below target margin before those issues hide inside wider accounting reports.</s-paragraph>
       </s-section>
 
-      <s-section heading="What Profit Guard does not do">
+      <s-section heading="What Margin Sentinel does not do">
         <s-unordered-list>
           <s-list-item>It does not change product prices automatically.</s-list-item>
           <s-list-item>It does not order stock or contact suppliers.</s-list-item>

@@ -4,7 +4,7 @@ Goal: get as close as possible to Shopify App Store readiness without spending m
 
 ## Done in repo
 
-- Public landing/login page with real Profit Guard positioning.
+- Public landing/login page with real Margin Sentinel positioning.
 - Public policy routes:
   - `/privacy`
   - `/terms`

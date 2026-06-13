@@ -30,7 +30,7 @@ Use those hosted links in the Shopify App Store submission.
 
 ## 4. Review flow in Shopify Admin
 
-1. Open Profit Guard.
+1. Open Margin Sentinel.
 2. Click **Run profit scan**.
 3. Open **Import supplier costs** and upload `mock/supplier-costs.csv`.
 4. Tick **Save imported costs for future scans**.

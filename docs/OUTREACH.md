@@ -8,7 +8,7 @@ Subject: quick Shopify margin leak check?
 
 Hi {{first_name}},
 
-I’m building Profit Guard, a Shopify app that scans your catalog for products with missing costs, negative margin, or prices below your target margin.
+I’m building Margin Sentinel, a Shopify app that scans your catalog for products with missing costs, negative margin, or prices below your target margin.
 
 The useful bit: it turns the scan into a short fix list with the margin gap and suggested minimum price. It is read-only and never changes prices automatically.
 
@@ -23,13 +23,13 @@ Subject: worth checking before the next supplier update?
 
 Hi {{first_name}},
 
-Following up once. Profit Guard is built for stores where one wrong cost or discount can quietly turn a product unprofitable.
+Following up once. Margin Sentinel is built for stores where one wrong cost or discount can quietly turn a product unprofitable.
 
 If you have 100+ SKUs, I’d love to run through a beta scan with you and see whether it catches anything useful.
 
 ## LinkedIn DM
 
-Hey {{first_name}}, I’m testing Profit Guard for Shopify stores with lots of SKUs. It finds missing costs, negative margins, and products below target margin, then gives a fix list. If supplier cost changes are annoying for your team, I’d love to show you the beta.
+Hey {{first_name}}, I’m testing Margin Sentinel for Shopify stores with lots of SKUs. It finds missing costs, negative margins, and products below target margin, then gives a fix list. If supplier cost changes are annoying for your team, I’d love to show you the beta.
 
 ## Qualification questions
 1. How many SKUs do you have?

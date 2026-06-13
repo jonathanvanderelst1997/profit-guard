@@ -45,7 +45,7 @@ export default function Alerts() {
   return (
     <s-page heading="Alerts">
       <s-section heading="Weekly margin report">
-        <s-paragraph>Send a weekly email when Profit Guard finds products with loss, low margin, or missing cost. Optional and needs an email provider key in production.</s-paragraph>
+        <s-paragraph>Send a weekly email when Margin Sentinel finds products with loss, low margin, or missing cost. Optional and needs an email provider key in production.</s-paragraph>
         <fetcher.Form method="post">
           <input type="hidden" name="intent" value="save" />
           <s-stack direction="block" gap="base">

@@ -11,4 +11,4 @@ function escapeHtml(value) {
 assert.equal(neutralizeSpreadsheetFormula("=1+1"), "'=1+1");
 assert.equal(neutralizeSpreadsheetFormula("normal"), "normal");
 assert.equal(escapeHtml("<b>x</b>"), "&lt;b&gt;x&lt;/b&gt;");
-console.log("Profit Guard security tests passed.");
+console.log("Margin Sentinel security tests passed.");

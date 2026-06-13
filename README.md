@@ -1,4 +1,4 @@
-# Profit Guard
+# Margin Sentinel
 
 Shopify embedded app for finding products that quietly destroy gross margin.
 

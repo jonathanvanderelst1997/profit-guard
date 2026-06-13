@@ -1,4 +1,4 @@
-# Profit Guard v5 release notes
+# Margin Sentinel v5 release notes
 
 This version implements the most urgent launch-readiness fixes from the v4 assessment.
 

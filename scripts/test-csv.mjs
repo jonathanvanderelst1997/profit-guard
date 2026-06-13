@@ -3,4 +3,4 @@ function splitCsvLine(line) { const result = []; let current = ""; let inQuotes 
 assert.deepEqual(splitCsvLine('sku,cost'), ['sku', 'cost']);
 assert.deepEqual(splitCsvLine('"SKU,1",12.50'), ['SKU,1', '12.50']);
 assert.deepEqual(splitCsvLine('"A ""quoted"" SKU",4'), ['A "quoted" SKU', '4']);
-console.log('Profit Guard CSV tests passed.');
+console.log('Margin Sentinel CSV tests passed.');

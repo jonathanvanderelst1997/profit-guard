@@ -34,7 +34,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const plan = PLAN_LIMITS[planKey];
   const url = new URL(request.url);
   const confirmationUrl = await createRecurringSubscription(admin, {
-    name: `Profit Guard ${plan.label}`,
+    name: `Margin Sentinel ${plan.label}`,
     amount: plan.monthlyPrice,
     returnUrl: `${url.origin}/app/pricing?selected_plan=${planKey}`,
     trialDays: 14,
@@ -53,7 +53,7 @@ export default function Pricing() {
   return (
     <s-page heading="Pricing">
       <s-section heading="Simple catalog-based pricing">
-        <s-paragraph>Current plan: {plans[currentPlan].label}. Profit Guard is priced for catalog margin protection, not full accounting. Public App Store billing should use Shopify App Pricing; this page remains a Billing API fallback for development and closed beta.</s-paragraph>
+        <s-paragraph>Current plan: {plans[currentPlan].label}. Margin Sentinel is priced for catalog margin protection, not full accounting. Public App Store billing should use Shopify App Pricing; this page remains a Billing API fallback for development and closed beta.</s-paragraph>
         {fetcher.data?.ok ? <s-banner tone="success">Plan updated.</s-banner> : null}
         {fetcher.data?.ok === false ? <s-banner tone="critical">{fetcher.data.error}</s-banner> : null}
         <s-grid gridTemplateColumns="repeat(3, minmax(0, 1fr))" gap="base">

@@ -30,4 +30,4 @@ This is a local pre-review against Shopify's public App Store requirements and A
 
 ## Final review posture
 
-Profit Guard is strongest as a focused catalog margin scanner. The review story should emphasize: minimal scopes, read-only scanning, no automatic price changes, clear uninstall cleanup, Shopify billing, and merchant-controlled action.
+Margin Sentinel is strongest as a focused catalog margin scanner. The review story should emphasize: minimal scopes, read-only scanning, no automatic price changes, clear uninstall cleanup, Shopify billing, and merchant-controlled action.

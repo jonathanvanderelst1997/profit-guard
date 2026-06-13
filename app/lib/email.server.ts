@@ -7,7 +7,7 @@ function buildAlertHtml(settings: ShopSettings, audit: AuditRunWithFindings) {
   const currencyCode = audit.findings[0]?.currencyCode ?? "USD";
   const rows = audit.findings.slice(0, 20).map((f) => `<tr><td>${escapeHtml(f.severity)}</td><td>${escapeHtml(f.productTitle)}</td><td>${escapeHtml(f.sku ?? "—")}</td><td style="text-align:right">${escapeHtml(formatMoney(f.priceAmount, currencyCode))}</td><td style="text-align:right">${escapeHtml(formatMoney(f.costAmount, currencyCode))}</td><td style="text-align:right">${escapeHtml(f.marginBps == null ? "—" : `${(f.marginBps / 100).toFixed(1)}%`)}</td></tr>`).join("");
   const demoWarning = audit.demoMode ? "<p><strong>Demo data was active for this scan.</strong> Add real Shopify unit costs or import supplier costs before making pricing decisions.</p>" : "";
-  return `<h1>Profit Guard weekly report</h1>${demoWarning}<p>Target margin: ${(settings.minimumMarginBps / 100).toFixed(1)}%</p><ul><li>${audit.totalVariants} variants checked</li><li>${audit.lossCount} losing money</li><li>${audit.lowMarginCount} below target margin</li><li>${audit.missingCostCount} missing cost</li></ul><table cellpadding="6" cellspacing="0" border="1"><thead><tr><th>Severity</th><th>Product</th><th>SKU</th><th>Price</th><th>Cost</th><th>Margin</th></tr></thead><tbody>${rows || "<tr><td colspan='6'>No findings. Nice work.</td></tr>"}</tbody></table><p>Profit Guard is read-only. Check the app before changing prices.</p>`;
+  return `<h1>Margin Sentinel weekly report</h1>${demoWarning}<p>Target margin: ${(settings.minimumMarginBps / 100).toFixed(1)}%</p><ul><li>${audit.totalVariants} variants checked</li><li>${audit.lossCount} losing money</li><li>${audit.lowMarginCount} below target margin</li><li>${audit.missingCostCount} missing cost</li></ul><table cellpadding="6" cellspacing="0" border="1"><thead><tr><th>Severity</th><th>Product</th><th>SKU</th><th>Price</th><th>Cost</th><th>Margin</th></tr></thead><tbody>${rows || "<tr><td colspan='6'>No findings. Nice work.</td></tr>"}</tbody></table><p>Margin Sentinel is read-only. Check the app before changing prices.</p>`;
 }
 
 export async function sendWeeklyAlertEmail(settings: ShopSettings, audit: AuditRunWithFindings) {
@@ -20,7 +20,7 @@ export async function sendWeeklyAlertEmail(settings: ShopSettings, audit: AuditR
     body: JSON.stringify({
       from: process.env.ALERTS_FROM_EMAIL,
       to: settings.alertEmail,
-      subject: `Profit Guard: ${audit.lossCount + audit.lowMarginCount + audit.missingCostCount} margin risks found`,
+      subject: `Margin Sentinel: ${audit.lossCount + audit.lowMarginCount + audit.missingCostCount} margin risks found`,
       html: buildAlertHtml(settings, audit),
     }),
   });

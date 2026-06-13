@@ -1,6 +1,6 @@
 # Pricing strategy
 
-Profit Guard should launch below broad net-profit suites and slightly above tiny utilities by being clearer, faster, and more actionable.
+Margin Sentinel should launch below broad net-profit suites and slightly above tiny utilities by being clearer, faster, and more actionable.
 
 ## Recommended launch plans
 
@@ -24,7 +24,7 @@ Growth: $39/month
 
 ## Why this price
 
-Direct margin tools cluster around $9-$19/month, while full net-profit analytics products often start around $29-$49/month and scale much higher. Profit Guard is not yet a full net-profit suite with ad spend, fees, shipping, refunds, and P&L, so $49+ as an entry price would be harder to justify.
+Direct margin tools cluster around $9-$19/month, while full net-profit analytics products often start around $29-$49/month and scale much higher. Margin Sentinel is not yet a full net-profit suite with ad spend, fees, shipping, refunds, and P&L, so $49+ as an entry price would be harder to justify.
 
 ## Value metric
 

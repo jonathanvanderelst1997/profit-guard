@@ -55,4 +55,4 @@ assert.equal(result.variants[0].costAmount, null);
 assert.equal(result.variants[1].currencyCode, "USD");
 assert.equal(result.variants[1].costAmount, 7.5);
 
-console.log("Profit Guard Shopify product tests passed.");
+console.log("Margin Sentinel Shopify product tests passed.");

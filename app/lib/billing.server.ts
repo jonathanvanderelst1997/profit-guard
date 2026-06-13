@@ -47,5 +47,5 @@ export async function syncPlanFromShopifyBilling(admin: AdminGraphqlClient, shop
 }
 
 export function paidPlanNames() {
-  return Object.entries(PLAN_LIMITS).filter(([key]) => key !== "free").map(([key, p]) => ({ key, name: `Profit Guard ${p.label}` }));
+  return Object.entries(PLAN_LIMITS).filter(([key]) => key !== "free").map(([key, p]) => ({ key, name: `Margin Sentinel ${p.label}` }));
 }

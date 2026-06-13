@@ -76,7 +76,7 @@ export default function SupplierImport() {
   return (
     <s-page heading="Import supplier costs">
       <s-section heading="Bulk cost import">
-        <s-paragraph>Upload a CSV with SKU and COST. Profit Guard matches rows to Shopify variant SKUs, previews the margin impact, and only saves costs when you tick the save box.</s-paragraph>
+        <s-paragraph>Upload a CSV with SKU and COST. Margin Sentinel matches rows to Shopify variant SKUs, previews the margin impact, and only saves costs when you tick the save box.</s-paragraph>
         <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
           <s-stack direction="block" gap="small">
             <s-heading>CSV template</s-heading>

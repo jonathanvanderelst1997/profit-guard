@@ -1,4 +1,4 @@
-# Profit Guard v4 release notes
+# Margin Sentinel v4 release notes
 
 ## Added
 

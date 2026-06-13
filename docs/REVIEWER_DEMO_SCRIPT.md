@@ -15,7 +15,7 @@ The bundled CSV `mock/supplier-costs.csv` uses SKUs from the development store.
 
 ## Demo path
 
-1. Open Profit Guard from Shopify Admin.
+1. Open Margin Sentinel from Shopify Admin.
 2. Open **Dashboard** and run a profit scan.
 3. Point out the Action Center: loss count, low-margin count, missing-cost count, and margin gap.
 4. Open the prioritized findings table.
@@ -32,4 +32,4 @@ The bundled CSV `mock/supplier-costs.csv` uses SKUs from the development store.
 
 ## Reviewer message
 
-Profit Guard is read-only for Shopify product data. It never changes product prices automatically. Imported supplier costs are stored inside Profit Guard so merchants can compare Shopify unit costs against supplier files before taking action.
+Margin Sentinel is read-only for Shopify product data. It never changes product prices automatically. Imported supplier costs are stored inside Margin Sentinel so merchants can compare Shopify unit costs against supplier files before taking action.

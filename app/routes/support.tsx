@@ -12,8 +12,8 @@ export default function Support() {
   const hasEmail = Boolean(supportEmail);
 
   return (
-    <PublicInfoPage title="Support" eyebrow="Profit Guard help">
-      <p>Need help with Profit Guard? Use this page for installation, scans, CSV imports, exports, alerts, billing questions, or privacy requests.</p>
+    <PublicInfoPage title="Support" eyebrow="Margin Sentinel help">
+      <p>Need help with Margin Sentinel? Use this page for installation, scans, CSV imports, exports, alerts, billing questions, or privacy requests.</p>
 
       <h2>Contact</h2>
       {hasEmail ? (
@@ -31,7 +31,7 @@ export default function Support() {
       </ul>
 
       <h2>Expected response</h2>
-      <p>During beta, Profit Guard aims to respond within two business days. Urgent access or billing issues are reviewed first.</p>
+      <p>During beta, Margin Sentinel aims to respond within two business days. Urgent access or billing issues are reviewed first.</p>
     </PublicInfoPage>
   );
 }

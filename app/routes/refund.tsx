@@ -3,7 +3,7 @@ import { PublicInfoPage } from "../components/PublicInfoPage";
 export default function RefundPolicy() {
   return (
     <PublicInfoPage title="Refund Policy" eyebrow="Last updated: June 13, 2026">
-      <p>Profit Guard subscriptions are billed through Shopify when charges apply. Refund handling follows Shopify billing records and the Profit Guard support process.</p>
+      <p>Margin Sentinel subscriptions are billed through Shopify when charges apply. Refund handling follows Shopify billing records and the Margin Sentinel support process.</p>
 
       <h2>Trials and cancellations</h2>
       <p>If a trial is offered, merchants can cancel before the trial ends to avoid future subscription charges. Cancellations are handled through the Shopify app subscription flow.</p>

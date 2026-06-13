@@ -184,14 +184,14 @@ export default function Dashboard() {
   }, [fetcher.data, shopify]);
 
   return (
-    <s-page heading="Profit Guard">
+    <s-page heading="Margin Sentinel">
       <fetcher.Form method="post">
         <input type="hidden" name="intent" value="scan" />
         <s-button type="submit" variant="primary" disabled={isScanning} loading={isScanning}>Run profit scan</s-button>
       </fetcher.Form>
 
       <s-section heading="Automatic profit scan">
-        <s-paragraph>Profit Guard reads Shopify selling prices, Shopify unit costs, and imported supplier costs. It finds products that lose money, sit below your margin target, or still miss cost data. It never changes prices automatically.</s-paragraph>
+        <s-paragraph>Margin Sentinel reads Shopify selling prices, Shopify unit costs, and imported supplier costs. It finds products that lose money, sit below your margin target, or still miss cost data. It never changes prices automatically.</s-paragraph>
         <s-paragraph>Current plan: {plan.label}. Scan limit: {plan.variantLimit.toLocaleString()} variants.</s-paragraph>
       </s-section>
 
@@ -210,7 +210,7 @@ export default function Dashboard() {
           <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
             <s-stack direction="block" gap="base">
               <s-heading>Start with one scan</s-heading>
-              <s-paragraph>Profit Guard will show missing costs, negative gross margin, low-margin variants, and the exact products to fix first. No product prices are changed.</s-paragraph>
+              <s-paragraph>Margin Sentinel will show missing costs, negative gross margin, low-margin variants, and the exact products to fix first. No product prices are changed.</s-paragraph>
               <s-stack direction="inline" gap="base">
                 <s-link href="/app/import">Import supplier costs first</s-link>
                 <s-link href="/app/onboarding">Open setup checklist</s-link>
@@ -221,7 +221,7 @@ export default function Dashboard() {
           <s-stack direction="block" gap="base">
             {currentAudit.demoMode ? (
               <s-banner tone="info" heading="Demo data active">
-                This store has no real Shopify unit costs or imported supplier costs yet, so Profit Guard generated safe demo costs to show what merchants will see. Import supplier costs or add Shopify unit costs to use real data.
+                This store has no real Shopify unit costs or imported supplier costs yet, so Margin Sentinel generated safe demo costs to show what merchants will see. Import supplier costs or add Shopify unit costs to use real data.
               </s-banner>
             ) : null}
             {currentAudit.scanLimitReached ? (
