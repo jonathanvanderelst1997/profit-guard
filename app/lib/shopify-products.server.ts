@@ -12,6 +12,7 @@ type ShopifyProductNode = {
 
 const PRODUCTS_FOR_AUDIT_QUERY = `#graphql
   query ProfitGuardProducts($first: Int!, $after: String, $variantFirst: Int!) {
+    shop { currencyCode }
     products(first: $first, after: $after, sortKey: UPDATED_AT, reverse: true) {
       pageInfo { hasNextPage endCursor }
       nodes {
@@ -34,6 +35,7 @@ const PRODUCTS_FOR_AUDIT_QUERY = `#graphql
 
 const PRODUCT_VARIANTS_QUERY = `#graphql
   query ProfitGuardProductVariants($productId: ID!, $first: Int!, $after: String) {
+    shop { currencyCode }
     product(id: $productId) {
       id
       title
@@ -56,7 +58,7 @@ function moneyToNumber(value: string | null | undefined): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-function variantToInput(productTitle: string, variant: ShopifyProductNode["variants"]["nodes"][number]): VariantMarginInput {
+function variantToInput(productTitle: string, variant: ShopifyProductNode["variants"]["nodes"][number], fallbackCurrencyCode?: string | null): VariantMarginInput {
   return {
     variantId: variant.id,
     productTitle,
@@ -64,20 +66,21 @@ function variantToInput(productTitle: string, variant: ShopifyProductNode["varia
     sku: variant.sku,
     priceAmount: moneyToNumber(variant.price),
     costAmount: variant.inventoryItem?.unitCost?.amount ? moneyToNumber(variant.inventoryItem.unitCost.amount) : null,
-    currencyCode: variant.inventoryItem?.unitCost?.currencyCode ?? null,
+    currencyCode: variant.inventoryItem?.unitCost?.currencyCode ?? fallbackCurrencyCode ?? null,
   };
 }
 
-async function fetchRemainingVariants(admin: AdminGraphqlClient, productId: string, productTitle: string, after: string | null, maxRemaining: number) {
+async function fetchRemainingVariants(admin: AdminGraphqlClient, productId: string, productTitle: string, after: string | null, maxRemaining: number, fallbackCurrencyCode?: string | null) {
   const variants: VariantMarginInput[] = [];
   let cursor = after;
   while (cursor && variants.length < maxRemaining) {
     const response = await admin.graphql(PRODUCT_VARIANTS_QUERY, { variables: { productId, first: Math.min(100, maxRemaining - variants.length), after: cursor } });
     const json = await response.json();
     if (json.errors?.length) throw new Error(`Shopify GraphQL error: ${JSON.stringify(json.errors)}`);
+    const currencyCode = json.data?.shop?.currencyCode ?? fallbackCurrencyCode ?? null;
     const product = json.data?.product;
     const page = product?.variants?.pageInfo;
-    for (const variant of product?.variants?.nodes ?? []) variants.push(variantToInput(productTitle, variant));
+    for (const variant of product?.variants?.nodes ?? []) variants.push(variantToInput(productTitle, variant, currencyCode));
     cursor = page?.hasNextPage ? page.endCursor : null;
   }
   return variants;
@@ -93,17 +96,18 @@ export async function fetchVariantsForAudit(admin: AdminGraphqlClient, options: 
     const response = await admin.graphql(PRODUCTS_FOR_AUDIT_QUERY, { variables: { first: 50, after, variantFirst: Math.min(100, maxVariants - variants.length) } });
     const json = await response.json();
     if (json.errors?.length) throw new Error(`Shopify GraphQL error: ${JSON.stringify(json.errors)}`);
+    const currencyCode = json.data?.shop?.currencyCode ?? null;
     const products = json.data?.products;
     const nodes = (products?.nodes ?? []) as ShopifyProductNode[];
 
     for (const product of nodes) {
       if (variants.length >= maxVariants) { limitReached = true; break; }
       const remainingForPlan = maxVariants - variants.length;
-      for (const variant of product.variants.nodes.slice(0, remainingForPlan)) variants.push(variantToInput(product.title, variant));
+      for (const variant of product.variants.nodes.slice(0, remainingForPlan)) variants.push(variantToInput(product.title, variant, currencyCode));
 
       const productHasMoreVariants = product.variants.pageInfo.hasNextPage;
       if (productHasMoreVariants && variants.length < maxVariants) {
-        variants.push(...await fetchRemainingVariants(admin, product.id, product.title, product.variants.pageInfo.endCursor, maxVariants - variants.length));
+        variants.push(...await fetchRemainingVariants(admin, product.id, product.title, product.variants.pageInfo.endCursor, maxVariants - variants.length, currencyCode));
       }
       if (productHasMoreVariants && variants.length >= maxVariants) limitReached = true;
     }

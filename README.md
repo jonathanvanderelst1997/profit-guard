@@ -1,8 +1,8 @@
-# Profit Guard v4
+# Profit Guard
 
-Shopify embedded app MVP for finding products that quietly destroy gross margin.
+Shopify embedded app for finding products that quietly destroy gross margin.
 
-## What v4 does
+## What it does
 
 - Runs an automatic profit scan from Shopify product variants.
 - Reads Shopify selling price and `InventoryItem.unitCost`.
@@ -20,6 +20,8 @@ Shopify embedded app MVP for finding products that quietly destroy gross margin.
 - Has Shopify billing fallback page.
 - Has onboarding/setup page for merchants.
 - Has demo mode for empty dev stores.
+- Uses Prisma migrations for release-style database setup.
+- Includes public privacy, terms, refund, and support pages for Shopify review.
 
 ## Quick start
 
@@ -31,6 +33,8 @@ npm run dev
 
 Then open the Shopify dev preview.
 
+Use `mock/supplier-costs.csv` when testing the import flow.
+
 ## Main routes
 
 - `/app` dashboard + Run profit scan
@@ -41,6 +45,27 @@ Then open the Shopify dev preview.
 - `/app/pricing` Shopify billing fallback
 - `/app/settings` margin settings
 - `/app/onboarding` merchant setup guide
+- `/privacy` public privacy policy draft
+- `/terms` public terms draft
+- `/refund` public refund policy draft
+- `/support` public support page
+
+## Environment variables
+
+Required for production:
+
+- `SHOPIFY_API_KEY`
+- `SHOPIFY_API_SECRET`
+- `SHOPIFY_APP_URL`
+- `SCOPES=read_products,read_inventory`
+- `DATABASE_URL`
+- `SUPPORT_EMAIL`
+- `BETA_SIGNUP_URL`
+
+Optional:
+
+- `RESEND_API_KEY`
+- `ALERTS_FROM_EMAIL`
 
 ## CSV import format
 
@@ -62,6 +87,28 @@ Current local tests included:
 - CSV parsing
 - demo cost generation
 - export CSV format
+- spreadsheet formula neutralization and HTML escaping
+
+## Release checks
+
+```bash
+npm run setup
+npm test
+npm run typecheck
+npm run build
+```
+
+## Free beta deployment
+
+Use `render.yaml` with a Neon Postgres `DATABASE_URL` for a no-cost closed beta path. See `docs/FREE_BETA_DEPLOYMENT.md`.
+
+Production-oriented scripts:
+
+```bash
+npm run build:prod
+npm run setup:prod
+npm run start:prod
+```
 
 ## Important
 

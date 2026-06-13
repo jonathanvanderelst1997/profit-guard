@@ -8,9 +8,10 @@
 
 ## 2. Database
 - Use PostgreSQL for production.
-- Update `prisma/schema.prisma` provider from `sqlite` to `postgresql` before public deploy.
+- Use `prisma/postgres/schema.prisma` for beta/production deploys.
 - Set `DATABASE_URL` in hosting environment.
-- Run `npx prisma generate` and `npx prisma db push` or migrations.
+- Run `npm run setup:prod` during production setup, or use `npm run start:prod` as the deploy start command.
+- Keep `prisma db push` for local throwaway databases only.
 
 ## 3. Secrets
 Set these environment variables:
@@ -19,10 +20,20 @@ Set these environment variables:
 - `SHOPIFY_APP_URL`
 - `SCOPES=read_products,read_inventory`
 - `DATABASE_URL`
+- `SUPPORT_EMAIL`
 - `RESEND_API_KEY` if alerts are enabled
 - `ALERTS_FROM_EMAIL`
 
-## 4. Webhooks
+## 4. Public review URLs
+After deployment, use these hosted URLs in Shopify App Store review:
+- `https://YOUR_DOMAIN/privacy`
+- `https://YOUR_DOMAIN/terms`
+- `https://YOUR_DOMAIN/refund`
+- `https://YOUR_DOMAIN/support`
+
+Before submission, review these pages for final legal/business entity wording and confirm `SUPPORT_EMAIL` is set.
+
+## 5. Webhooks
 Verify these are configured and return 200:
 - `app/uninstalled`
 - `shop/redact`
@@ -30,22 +41,23 @@ Verify these are configured and return 200:
 - `customers/redact`
 - `app_subscriptions/update`
 
-## 5. Billing
+## 6. Billing
 - For closed beta: Billing API fallback can be used.
 - For public App Store: configure Shopify App Pricing, then keep in-app feature gating.
 - Test upgrade, downgrade, cancel, reinstall.
 
-## 6. QA commands
+## 7. QA commands
 Run:
 ```bash
 npm install
 npm run setup
+npx prisma migrate status
 npm test
 npm run typecheck
 npm run build
 ```
 
-## 7. Alert cron
+## 8. Alert cron
 Run weekly through your host scheduler:
 ```bash
 npx tsx scripts/run-weekly-alerts.ts

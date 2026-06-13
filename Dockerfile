@@ -8,7 +8,7 @@ RUN npm install
 
 FROM deps AS build
 COPY . .
-RUN npx prisma generate
+RUN npx prisma generate --schema prisma/postgres/schema.prisma
 RUN npm run build
 
 FROM base AS runner
@@ -17,4 +17,4 @@ COPY --from=build /app/build ./build
 COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/package.json ./package.json
 EXPOSE 3000
-CMD ["sh", "-c", "npx prisma db push && npm run start"]
+CMD ["sh", "-c", "npx prisma migrate deploy --schema prisma/postgres/schema.prisma && npm run start"]

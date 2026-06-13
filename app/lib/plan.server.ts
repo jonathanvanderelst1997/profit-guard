@@ -7,19 +7,19 @@ export const PLAN_LIMITS: Record<PlanKey, { label: string; variantLimit: number;
     label: "Free",
     variantLimit: 100,
     monthlyPrice: 0,
-    features: ["Scan up to 100 variants", "Demo mode", "Basic findings table"],
+    features: ["Scan up to 100 variants", "Margin leak dashboard", "CSV findings export"],
   },
   starter: {
     label: "Starter",
     variantLimit: 5000,
-    monthlyPrice: 19,
-    features: ["Scan up to 5,000 variants", "CSV import", "CSV export", "Weekly alerts"],
+    monthlyPrice: 15,
+    features: ["Scan up to 5,000 variants", "Supplier CSV cost import", "Suggested minimum prices", "Weekly alerts"],
   },
   growth: {
     label: "Growth",
     variantLimit: 25000,
-    monthlyPrice: 49,
-    features: ["Scan up to 25,000 variants", "CSV import", "CSV export", "Weekly alerts", "Priority support"],
+    monthlyPrice: 39,
+    features: ["Scan up to 25,000 variants", "Supplier CSV cost import", "Suggested minimum prices", "Weekly alerts", "Priority support"],
   },
 };
 
@@ -36,7 +36,7 @@ export async function setShopPlan(shop: string, planKey: PlanKey, subscriptionId
   return prisma.shopSettings.upsert({
     where: { shop },
     create: { shop, planKey, subscriptionId: subscriptionId ?? null },
-    update: { planKey, subscriptionId: subscriptionId ?? undefined },
+    update: { planKey, subscriptionId: subscriptionId ?? null },
   });
 }
 

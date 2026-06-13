@@ -1,6 +1,7 @@
 node_modules
 .env
 .env.*
+!.env.production.example
 prisma/dev.sqlite
 prisma/dev.sqlite-journal
 build

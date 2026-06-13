@@ -25,8 +25,8 @@ export default function Settings() {
       <s-section heading="Margin rules">
         <fetcher.Form method="post">
           <s-stack direction="block" gap="base">
-            <s-text-field label="Minimum margin %" name="minimumMarginPercent" defaultValue={String(settings.minimumMarginBps / 100)} />
-            <s-button {...(fetcher.state !== "idle" ? { loading: true } : {})}>Save settings</s-button>
+            <s-number-field label="Minimum margin" name="minimumMarginPercent" defaultValue={String(settings.minimumMarginBps / 100)} min={1} max={95} step={0.5} suffix="%" />
+            <s-button type="submit" loading={fetcher.state !== "idle"}>Save settings</s-button>
             {fetcher.data?.ok ? <s-banner tone="success">Settings saved.</s-banner> : null}
           </s-stack>
         </fetcher.Form>

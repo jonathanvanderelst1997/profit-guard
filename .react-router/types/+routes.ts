@@ -35,15 +35,30 @@ type Pages = {
   "/auth/login": {
     params: {};
   };
+  "/healthz": {
+    params: {};
+  };
+  "/privacy": {
+    params: {};
+  };
+  "/support": {
+    params: {};
+  };
   "/auth/*": {
     params: {
       "*": string;
     };
   };
-  "/app": {
+  "/refund": {
     params: {};
   };
-  "/app/additional": {
+  "/terms": {
+    params: {};
+  };
+  "/beta": {
+    params: {};
+  };
+  "/app": {
     params: {};
   };
   "/app/onboarding": {
@@ -72,7 +87,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/auth/login" | "/auth/*" | "/app" | "/app/additional" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
+    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/auth/login" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
   };
   "routes/webhooks.app_subscriptions.update.tsx": {
     id: "routes/webhooks.app_subscriptions.update";
@@ -102,6 +117,18 @@ type RouteFiles = {
     id: "routes/auth.login";
     page: "/auth/login";
   };
+  "routes/healthz.tsx": {
+    id: "routes/healthz";
+    page: "/healthz";
+  };
+  "routes/privacy.tsx": {
+    id: "routes/privacy";
+    page: "/privacy";
+  };
+  "routes/support.tsx": {
+    id: "routes/support";
+    page: "/support";
+  };
   "routes/_index/route.tsx": {
     id: "routes/_index";
     page: "/";
@@ -110,13 +137,21 @@ type RouteFiles = {
     id: "routes/auth.$";
     page: "/auth/*";
   };
+  "routes/refund.tsx": {
+    id: "routes/refund";
+    page: "/refund";
+  };
+  "routes/terms.tsx": {
+    id: "routes/terms";
+    page: "/terms";
+  };
+  "routes/beta.tsx": {
+    id: "routes/beta";
+    page: "/beta";
+  };
   "routes/app.tsx": {
     id: "routes/app";
-    page: "/app" | "/app/additional" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
-  };
-  "routes/app.additional.tsx": {
-    id: "routes/app.additional";
-    page: "/app/additional";
+    page: "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
   };
   "routes/app.onboarding.tsx": {
     id: "routes/app.onboarding";
@@ -161,10 +196,15 @@ type RouteModules = {
   "routes/webhooks.app.uninstalled": typeof import("./app/routes/webhooks.app.uninstalled.tsx");
   "routes/webhooks.shop.redact": typeof import("./app/routes/webhooks.shop.redact.tsx");
   "routes/auth.login": typeof import("./app/routes/auth.login/route.tsx");
+  "routes/healthz": typeof import("./app/routes/healthz.tsx");
+  "routes/privacy": typeof import("./app/routes/privacy.tsx");
+  "routes/support": typeof import("./app/routes/support.tsx");
   "routes/_index": typeof import("./app/routes/_index/route.tsx");
   "routes/auth.$": typeof import("./app/routes/auth.$.tsx");
+  "routes/refund": typeof import("./app/routes/refund.tsx");
+  "routes/terms": typeof import("./app/routes/terms.tsx");
+  "routes/beta": typeof import("./app/routes/beta.tsx");
   "routes/app": typeof import("./app/routes/app.tsx");
-  "routes/app.additional": typeof import("./app/routes/app.additional.tsx");
   "routes/app.onboarding": typeof import("./app/routes/app.onboarding.tsx");
   "routes/app.settings": typeof import("./app/routes/app.settings.tsx");
   "routes/app.pricing": typeof import("./app/routes/app.pricing.tsx");

@@ -36,9 +36,13 @@ export async function syncPlanFromShopifyBilling(admin: AdminGraphqlClient, shop
   const json = await response.json();
   if (json.errors?.length) throw new Error(`Shopify billing query error: ${JSON.stringify(json.errors)}`);
   const subscriptions = json.data?.currentAppInstallation?.activeSubscriptions ?? [];
-  const active = subscriptions.find((s: { name?: string; status?: string }) => String(s.status).toUpperCase() === "ACTIVE") ?? subscriptions[0];
+  const active = subscriptions.find((s: { name?: string; status?: string }) => String(s.status).toUpperCase() === "ACTIVE") ?? null;
+  if (!active) {
+    await setShopPlan(shop, "free", null);
+    return "free";
+  }
   const planKey = normalizePlanKey(planFromSubscriptionName(active?.name));
-  if (planKey !== "free") await setShopPlan(shop, planKey, active?.id ?? null);
+  await setShopPlan(shop, planKey, planKey === "free" ? null : active?.id ?? null);
   return planKey;
 }
 
