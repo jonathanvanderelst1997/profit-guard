@@ -93,19 +93,19 @@ Already strong:
 - Weekly alerts.
 - Read-only/no automatic price changes story.
 - Cost source labels across dashboard, import preview, export, and weekly alerts.
+- Import history for supplier CSV trust and supportability.
 - Simple pricing below heavy profit suites.
 
 Must improve next:
 
 1. Add vendor, collection, product type, tag, and inventory status filters.
 2. Add issue detail drawer with formula, current price, cost source, target margin, suggested price, and exact next action.
-3. Add import history: file name, import date, matched rows, duplicate rows, unmatched SKUs, saved by.
-4. Add "inventory dollars at risk": margin gap multiplied by available inventory when inventory quantity is available.
-5. Make weekly alerts run a fresh scan before sending, not only email the last saved scan.
-6. Add resolved/ignored states so merchants can manage recurring findings.
-7. Add a cost-change what-if: "If supplier cost rises 8%, which SKUs fall below target?"
-8. Add a sample CSV download and guided first-run checklist.
-9. Add real embedded Shopify Admin screenshots for App Store submission.
+3. Add "inventory dollars at risk": margin gap multiplied by available inventory when inventory quantity is available.
+4. Make weekly alerts run a fresh scan before sending, not only email the last saved scan.
+5. Add resolved/ignored states so merchants can manage recurring findings.
+6. Add a cost-change what-if: "If supplier cost rises 8%, which SKUs fall below target?"
+7. Add a sample CSV download and guided first-run checklist.
+8. Add real embedded Shopify Admin screenshots for App Store submission.
 
 Later paid expansion:
 

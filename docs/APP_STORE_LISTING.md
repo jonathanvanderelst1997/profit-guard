@@ -22,6 +22,7 @@ Margin Sentinel never changes product prices automatically.
 - Set a minimum gross margin target.
 - See direct loss, margin gap, suggested minimum price, and next action.
 - Import supplier costs by SKU with CSV preview and duplicate warnings.
+- Review recent supplier CSV imports with matched, unmatched, duplicate, warning, and saved/preview status.
 - Export a full findings CSV for bulk review.
 - Enable weekly margin alerts for new issues.
 - Use demo mode to understand the workflow before real costs are available.

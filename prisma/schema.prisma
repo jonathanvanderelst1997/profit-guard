@@ -94,6 +94,22 @@ model ImportedCost {
   @@index([shop])
 }
 
+model ImportRun {
+  id                String   @id @default(cuid())
+  shop              String
+  fileName          String?
+  saved             Boolean  @default(false)
+  csvRows           Int      @default(0)
+  matchedSkuCount   Int      @default(0)
+  unmatchedSkuCount Int      @default(0)
+  savedCostCount    Int      @default(0)
+  duplicateSkuCount Int      @default(0)
+  warningCount      Int      @default(0)
+  createdAt         DateTime @default(now())
+
+  @@index([shop, createdAt])
+}
+
 
 model AlertLog {
   id        String   @id @default(cuid())

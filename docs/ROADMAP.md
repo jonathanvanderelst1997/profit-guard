@@ -10,12 +10,12 @@
 - Weekly alerts.
 - Public brand: Margin Sentinel.
 - Cost source labels across scans, imports, exports, and alerts.
+- Import history with file name, matched SKUs, unmatched SKUs, duplicate warnings, and saved/preview status.
 
 ## V1.1: competitor-driven UX upgrades
 
 - Vendor, product type, collection, tag, and inventory filters.
 - Issue detail drawer with formula, suggested price, and next action.
-- Import history with file name, matched rows, duplicates, unmatched SKUs, and saved date.
 - Fresh scheduled scan before weekly alert emails.
 - Sample CSV download and first-run checklist.
 

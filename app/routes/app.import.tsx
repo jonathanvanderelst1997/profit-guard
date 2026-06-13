@@ -1,6 +1,6 @@
 import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs } from "react-router";
 import type { CSSProperties } from "react";
-import { useFetcher } from "react-router";
+import { useFetcher, useLoaderData } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate } from "../shopify.server";
 import { applySupplierCostsBySku, auditVariants, basisPointsToPercent, calculateMinimumPriceForTargetMargin, getCostSourceLabel, getFindingAction, getSeverityLabel, type MarginFinding } from "../lib/margin";
@@ -8,6 +8,8 @@ import { parseSupplierCostCsv, supplierRowsToMap } from "../lib/csv";
 import { fetchVariantsForAudit } from "../lib/shopify-products.server";
 import { getShopSettings } from "../lib/settings.server";
 import { upsertImportedCosts } from "../lib/imported-costs.server";
+import { buildImportRunMetrics } from "../lib/import-history";
+import { createImportRun, getRecentImportRuns } from "../lib/import-history.server";
 import { getShopPlan, getVariantLimitForPlan } from "../lib/plan.server";
 import { formatMoney } from "../lib/security";
 
@@ -32,8 +34,8 @@ function severityStyle(severity: PreviewFinding["severity"]): CSSProperties {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  await authenticate.admin(request);
-  return null;
+  const { session } = await authenticate.admin(request);
+  return { importRuns: await getRecentImportRuns(session.shop) };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -53,24 +55,39 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const supplierMap = supplierRowsToMap(parsed.rows);
   const variants = await fetchVariantsForAudit(admin, { maxVariants: variantLimit });
   const updatedVariants = applySupplierCostsBySku(variants.variants, supplierMap);
-  const matchedSkus = new Set(updatedVariants.filter((variant) => variant.sku && supplierMap.has(variant.sku)).map((variant) => variant.sku));
+  const matchedSkus = new Set<string>();
+  for (const variant of updatedVariants) {
+    const sku = variant.sku?.trim();
+    if (sku && supplierMap.has(sku)) matchedSkus.add(sku);
+  }
   const currencyCode = updatedVariants.find((variant) => variant.currencyCode)?.currencyCode ?? null;
   const summary = auditVariants(updatedVariants, settings.minimumMarginBps);
   const imported = shouldSave ? await upsertImportedCosts(session.shop, supplierMap) : 0;
+  const importMetrics = buildImportRunMetrics({ rows: parsed.rows, errors: parsed.errors, matchedSkus, savedCostCount: imported });
+  await createImportRun(session.shop, { ...importMetrics, fileName: file.name, saved: shouldSave });
+  const importRuns = await getRecentImportRuns(session.shop);
 
   return {
     ok: true,
     errors: parsed.errors,
     imported,
-    matchedSkuCount: matchedSkus.size,
-    csvRows: parsed.rows.length,
+    importRuns,
+    matchedSkuCount: importMetrics.matchedSkuCount,
+    unmatchedSkuCount: importMetrics.unmatchedSkuCount,
+    csvRows: importMetrics.csvRows,
     preview: { ...summary, findings: summary.findings.slice(0, 100), minimumMarginBps: settings.minimumMarginBps, scanLimitReached: variants.limitReached, variantLimit, currencyCode },
   };
 };
 
+function formatDateTime(value: string | Date): string {
+  return new Intl.DateTimeFormat("en", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(value));
+}
+
 export default function SupplierImport() {
+  const { importRuns: initialImportRuns } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const data = fetcher.data;
+  const importRuns = data?.importRuns ?? initialImportRuns;
   const isUploading = fetcher.state !== "idle";
 
   return (
@@ -93,6 +110,41 @@ export default function SupplierImport() {
         </fetcher.Form>
       </s-section>
 
+      <s-section heading="Recent imports">
+        {importRuns.length === 0 ? (
+          <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
+            <s-paragraph>No supplier cost imports yet. Your latest previews and saved imports will appear here.</s-paragraph>
+          </s-box>
+        ) : (
+          <s-table variant="auto">
+            <s-table-header-row>
+              <s-table-header listSlot="primary">Date</s-table-header>
+              <s-table-header>File</s-table-header>
+              <s-table-header>Status</s-table-header>
+              <s-table-header format="numeric">Rows</s-table-header>
+              <s-table-header format="numeric">Matched</s-table-header>
+              <s-table-header format="numeric">Unmatched</s-table-header>
+              <s-table-header format="numeric">Duplicates</s-table-header>
+              <s-table-header format="numeric">Warnings</s-table-header>
+            </s-table-header-row>
+            <s-table-body>
+              {importRuns.map((run) => (
+                <s-table-row key={run.id}>
+                  <s-table-cell>{formatDateTime(run.createdAt)}</s-table-cell>
+                  <s-table-cell>{run.fileName ?? "Supplier cost CSV"}</s-table-cell>
+                  <s-table-cell>{run.saved ? `${run.savedCostCount} saved` : "Preview only"}</s-table-cell>
+                  <s-table-cell>{run.csvRows}</s-table-cell>
+                  <s-table-cell>{run.matchedSkuCount}</s-table-cell>
+                  <s-table-cell>{run.unmatchedSkuCount}</s-table-cell>
+                  <s-table-cell>{run.duplicateSkuCount}</s-table-cell>
+                  <s-table-cell>{run.warningCount}</s-table-cell>
+                </s-table-row>
+              ))}
+            </s-table-body>
+          </s-table>
+        )}
+      </s-section>
+
       {data?.errors?.length ? (
         <s-section heading="CSV warnings">
           <s-unordered-list>{data.errors.map((e) => <s-list-item key={e}>{e}</s-list-item>)}</s-unordered-list>
@@ -102,7 +154,7 @@ export default function SupplierImport() {
       {data?.preview ? (
         <s-section heading="Import result">
           <s-stack direction="block" gap="base">
-            <s-paragraph>CSV rows: {data.csvRows}. Matched SKUs: {data.matchedSkuCount}. Saved costs: {data.imported}. Target margin: {basisPointsToPercent(data.preview.minimumMarginBps)}.</s-paragraph>
+            <s-paragraph>CSV rows: {data.csvRows}. Matched SKUs: {data.matchedSkuCount}. Unmatched SKUs: {data.unmatchedSkuCount}. Saved costs: {data.imported}. Target margin: {basisPointsToPercent(data.preview.minimumMarginBps)}.</s-paragraph>
             {data.csvRows > 0 && data.matchedSkuCount === 0 ? (
               <s-banner tone="critical" heading="No Shopify SKUs matched">
                 Check that the CSV SKU column matches Shopify variant SKUs exactly before saving.
