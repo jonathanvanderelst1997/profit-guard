@@ -8,10 +8,9 @@
 
 ## 2. Database
 - Use PostgreSQL for production.
-- Update `prisma/schema.prisma` provider from `sqlite` to `postgresql` before public deploy.
+- Use `prisma/postgres/schema.prisma` for beta/production deploys.
 - Set `DATABASE_URL` in hosting environment.
-- Generate provider-specific Prisma migrations before switching public traffic.
-- Run `npx prisma generate` and `npx prisma migrate deploy` during deploy.
+- Run `npm run setup:prod` during production setup, or use `npm run start:prod` as the deploy start command.
 - Keep `prisma db push` for local throwaway databases only.
 
 ## 3. Secrets

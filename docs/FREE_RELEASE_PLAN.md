@@ -23,9 +23,11 @@ Goal: get as close as possible to Shopify App Store readiness without spending m
 
 - Use Shopify dev store to record the reviewer screencast.
 - Use GitHub Actions CI already configured through the PR.
-- Use a free-tier hosting option if available for the chosen stack.
-- Use trial/free managed PostgreSQL if available and acceptable for beta.
+- Use Render Free for the beta web service if the sleeping/limitations are acceptable.
+- Use Neon Free for beta PostgreSQL.
 - Use DNS/domain only if a domain is already owned. Otherwise use the host-provided URL for beta.
+
+See `docs/FREE_BETA_DEPLOYMENT.md` for the concrete Render + Neon path.
 
 ## Not safe to do automatically
 

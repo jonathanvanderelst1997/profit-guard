@@ -60,6 +60,7 @@ Required for production:
 - `SCOPES=read_products,read_inventory`
 - `DATABASE_URL`
 - `SUPPORT_EMAIL`
+- `BETA_SIGNUP_URL`
 
 Optional:
 
@@ -95,6 +96,18 @@ npm run setup
 npm test
 npm run typecheck
 npm run build
+```
+
+## Free beta deployment
+
+Use `render.yaml` with a Neon Postgres `DATABASE_URL` for a no-cost closed beta path. See `docs/FREE_BETA_DEPLOYMENT.md`.
+
+Production-oriented scripts:
+
+```bash
+npm run build:prod
+npm run setup:prod
+npm run start:prod
 ```
 
 ## Important

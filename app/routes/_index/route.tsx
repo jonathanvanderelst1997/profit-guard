@@ -26,6 +26,7 @@ export default function App() {
           <span>Profit Guard</span>
         </a>
         <nav className={styles.nav}>
+          <a href="/beta">Beta</a>
           <a href="/privacy">Privacy</a>
           <a href="/terms">Terms</a>
           <a href="/refund">Refunds</a>

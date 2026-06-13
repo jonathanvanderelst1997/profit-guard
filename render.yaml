@@ -1,0 +1,36 @@
+# Render Blueprint for a no-cost closed beta web service.
+# Use an external Postgres DATABASE_URL, preferably Neon Free for beta.
+# Render Free web services are for testing/beta and can sleep; upgrade before serious production traffic.
+
+services:
+  - type: web
+    name: profit-guard
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build:prod
+    startCommand: npm run start:prod
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 22.12.0
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: SHOPIFY_API_KEY
+        sync: false
+      - key: SHOPIFY_API_SECRET
+        sync: false
+      - key: SHOPIFY_APP_URL
+        sync: false
+      - key: SCOPES
+        value: read_products,read_inventory
+      - key: SUPPORT_EMAIL
+        sync: false
+      - key: BETA_SIGNUP_URL
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: ALERTS_FROM_EMAIL
+        sync: false
