@@ -70,6 +70,9 @@ type Pages = {
   "/app/pricing": {
     params: {};
   };
+  "/app/what-if": {
+    params: {};
+  };
   "/app/alerts": {
     params: {};
   };
@@ -87,7 +90,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/auth/login" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
+    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/auth/login" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
   };
   "routes/webhooks.app_subscriptions.update.tsx": {
     id: "routes/webhooks.app_subscriptions.update";
@@ -151,7 +154,7 @@ type RouteFiles = {
   };
   "routes/app.tsx": {
     id: "routes/app";
-    page: "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
+    page: "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
   };
   "routes/app.onboarding.tsx": {
     id: "routes/app.onboarding";
@@ -164,6 +167,10 @@ type RouteFiles = {
   "routes/app.pricing.tsx": {
     id: "routes/app.pricing";
     page: "/app/pricing";
+  };
+  "routes/app.what-if.tsx": {
+    id: "routes/app.what-if";
+    page: "/app/what-if";
   };
   "routes/app._index.tsx": {
     id: "routes/app._index";
@@ -208,6 +215,7 @@ type RouteModules = {
   "routes/app.onboarding": typeof import("./app/routes/app.onboarding.tsx");
   "routes/app.settings": typeof import("./app/routes/app.settings.tsx");
   "routes/app.pricing": typeof import("./app/routes/app.pricing.tsx");
+  "routes/app.what-if": typeof import("./app/routes/app.what-if.tsx");
   "routes/app._index": typeof import("./app/routes/app._index.tsx");
   "routes/app.alerts": typeof import("./app/routes/app.alerts.tsx");
   "routes/app.export": typeof import("./app/routes/app.export.tsx");

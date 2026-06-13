@@ -23,6 +23,7 @@ Margin Sentinel never changes product prices automatically.
 - See direct loss, margin gap, inventory dollars at risk, suggested minimum price, and next action.
 - Import supplier costs by SKU with CSV preview and duplicate warnings.
 - Review recent supplier CSV imports with matched, unmatched, duplicate, warning, and saved/preview status.
+- Run supplier cost what-if scenarios before price lists, promos, or reorders.
 - Export a full findings CSV for bulk review.
 - Enable weekly margin alerts for new issues.
 - Use demo mode to understand the workflow before real costs are available.
@@ -41,8 +42,8 @@ Avoid "true profit" and order-profit claims in the listing until fees, shipping,
 
 ## Pricing copy
 - Free: scan up to 100 variants.
-- Starter: $15/month for stores that need supplier CSV import, suggested minimum prices, and weekly alerts.
-- Growth: $39/month for larger catalogs up to 25,000 variants with priority support.
+- Starter: $15/month for stores that need supplier CSV import, suggested minimum prices, cost-change what-if, and weekly alerts.
+- Growth: $39/month for larger catalogs up to 25,000 variants with cost-change what-if and priority support.
 
 ## Disclaimer
 Margin Sentinel calculates gross product margin from selling price and product cost available in Shopify. It does not guarantee net profit.

@@ -10,7 +10,8 @@ Count a beta as successful when the merchant:
 2. Runs one scan.
 3. Imports supplier costs or confirms Shopify unit costs are present.
 4. Reviews the Action Center.
-5. Answers: "Did this find something useful you would otherwise have missed?"
+5. Runs or reviews a supplier-cost what-if scenario.
+6. Answers: "Did this find something useful you would otherwise have missed?"
 
 ## Tracker
 
@@ -39,4 +40,4 @@ Count a beta as successful when the merchant:
 
 ## Outreach rule
 
-Do not send messages automatically. Confirm the exact recipients and message text before sending emails, LinkedIn DMs, or form submissions.
+Codex can draft, personalize, schedule, and send messages after the relevant email/social plugins are connected and Jonathan approves the recipient list and message text. Do not send unsolicited bulk messages without a reviewed target list.

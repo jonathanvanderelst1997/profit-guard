@@ -25,10 +25,11 @@ The bundled CSV `mock/supplier-costs.csv` uses SKUs from the development store.
 8. Preview matched SKUs and margin impact.
 9. Save imported costs only if the reviewer wants to test persistence.
 10. Return to **Dashboard** and run another scan.
-11. Export CSV findings.
-12. Open **Alerts** and show weekly alert settings.
-13. Open **Pricing** and show the plan limits.
-14. Open public Privacy, Terms, Refunds, and Support pages.
+11. Open **What-if** and run supplier cost +8%.
+12. Export CSV findings.
+13. Open **Alerts** and show weekly alert settings.
+14. Open **Pricing** and show the plan limits.
+15. Open public Privacy, Terms, Refunds, and Support pages.
 
 ## Reviewer message
 

@@ -10,6 +10,7 @@ It helps merchants answer:
 - Which variants are below our minimum gross margin?
 - Which products still have missing cost data?
 - What should we fix first?
+- What happens if supplier costs rise before the next promo, reorder, or price list?
 
 Do not position it as full net-profit analytics until order-level costs, shipping, fees, refunds, taxes, and ad spend are included.
 
@@ -33,7 +34,7 @@ Weak fits:
 
 1. Shopify App Store search
    - Keywords: margin, product margin, COGS, cost of goods, low margin, profit leak, supplier costs, SKU cost.
-   - Screenshots should show: Action Center, CSV import preview, suggested minimum price, weekly alerts.
+   - Screenshots should show: Action Center, inventory risk, cost-change what-if, CSV import preview, suggested minimum price, weekly alerts.
    - First screenshot should say "Know what to fix first", not "Dashboard".
 
 2. Direct merchant outreach
@@ -48,7 +49,7 @@ Weak fits:
 4. Content
    - "How to find Shopify products selling below cost."
    - "Why Shopify profit reports need clean product costs."
-   - "Supplier price list changed? Run this Shopify margin check."
+   - "Supplier price list changed? Run this Shopify margin what-if."
 
 ## First 30 days
 
@@ -82,10 +83,10 @@ Week 4:
 ## App Store screenshot sequence
 
 1. Action Center: "Fix this product first."
-2. Findings table: issue, margin, gap, suggested min price.
-3. Supplier CSV import preview.
-4. Weekly alerts setup.
-5. Pricing/simple plans.
+2. Findings table: issue, margin, inventory risk, suggested min price.
+3. Cost-change what-if.
+4. Supplier CSV import preview.
+5. Weekly alerts setup.
 
 ## Beta offer
 

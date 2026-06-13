@@ -13,12 +13,14 @@ Starter: $15/month
 - Scan up to 5,000 variants.
 - Supplier CSV cost import.
 - Suggested minimum prices.
+- Cost-change what-if.
 - Weekly alerts.
 
 Growth: $39/month
 - Scan up to 25,000 variants.
 - Supplier CSV cost import.
 - Suggested minimum prices.
+- Cost-change what-if.
 - Weekly alerts.
 - Priority support.
 
@@ -32,6 +34,7 @@ Primary value metric: variants scanned / catalog size.
 
 Secondary expansion levers:
 - scheduled fresh scans, not only latest-scan email summaries;
+- cost-change what-if scenarios for supplier increases;
 - vendor, collection, and tag filters;
 - saved scan history and import history;
 - bulk price/cost update previews;
@@ -39,4 +42,4 @@ Secondary expansion levers:
 
 ## Paid conversion trigger
 
-The best trial moment is: merchant imports supplier costs, sees a small number of loss-making or low-margin variants, exports the list, and fixes at least one product before the trial ends.
+The best trial moment is: merchant imports supplier costs, sees a small number of loss-making or low-margin variants, runs a supplier cost +8% what-if, exports the list, and fixes at least one product before the trial ends.

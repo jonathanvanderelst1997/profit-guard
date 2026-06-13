@@ -13,13 +13,13 @@ export const PLAN_LIMITS: Record<PlanKey, { label: string; variantLimit: number;
     label: "Starter",
     variantLimit: 5000,
     monthlyPrice: 15,
-    features: ["Scan up to 5,000 variants", "Supplier CSV cost import", "Suggested minimum prices", "Weekly alerts"],
+    features: ["Scan up to 5,000 variants", "Supplier CSV cost import", "Suggested minimum prices", "Cost-change what-if", "Weekly alerts"],
   },
   growth: {
     label: "Growth",
     variantLimit: 25000,
     monthlyPrice: 39,
-    features: ["Scan up to 25,000 variants", "Supplier CSV cost import", "Suggested minimum prices", "Weekly alerts", "Priority support"],
+    features: ["Scan up to 25,000 variants", "Supplier CSV cost import", "Suggested minimum prices", "Cost-change what-if", "Weekly alerts", "Priority support"],
   },
 };
 

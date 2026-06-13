@@ -16,6 +16,8 @@ Goal: get as close as possible to Shopify App Store readiness without spending m
 - Competitor benchmark.
 - Go-to-market plan.
 - Outreach email and LinkedIn copy.
+- Marketing execution pack for beta posts, emails, and call scripts.
+- Final owner checklist with deployment, review, and account-action links.
 - Review checklist and reviewer instructions.
 - Test coverage for margin helper logic, CSV parsing, export, demo costs, product fetch mapping, and security helpers.
 

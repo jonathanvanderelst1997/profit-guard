@@ -12,6 +12,7 @@
 - Cost source labels across scans, imports, exports, and alerts.
 - Import history with file name, matched SKUs, unmatched SKUs, duplicate warnings, and saved/preview status.
 - Inventory dollars at risk from margin gap multiplied by current Shopify inventory quantity.
+- Cost-change what-if scenarios for supplier cost increases.
 
 ## V1.1: competitor-driven UX upgrades
 
@@ -22,7 +23,6 @@
 
 ## V1.2: stronger merchant value
 
-- Cost-change what-if scenarios for supplier increases.
 - Resolved and ignored finding states.
 - Vendor/category rollups.
 - Real embedded Shopify Admin screenshots for App Store review.

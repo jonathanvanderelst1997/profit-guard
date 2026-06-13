@@ -1,6 +1,6 @@
 # Exact next actions for Jonathan
 
-These are the account-dependent steps Codex cannot safely complete without the final accounts, production URL, and support contact.
+These are the account-dependent steps Codex cannot safely complete without the final accounts, production URL, support contact, and approved plugin/account connections. The fuller checklist is `docs/FINAL_OWNER_STEPS.md`.
 
 ## 1. Choose production basics
 
@@ -38,7 +38,8 @@ Use those hosted links in the Shopify App Store submission.
 6. Open **Download findings CSV**.
 7. Open **Alerts**.
 8. Open **Pricing**.
-9. Open **Setup**.
+9. Open **What-if** and run supplier cost +8%.
+10. Open **Setup**.
 
 ## 5. Submit when ready
 

@@ -248,6 +248,7 @@ export default function Dashboard() {
             <s-paragraph>Target margin: {basisPointsToPercent(currentAudit.minimumMarginBps)}. Inventory risk is gap to target margin multiplied by current Shopify inventory quantity. Showing the first 100 findings in-app. CSV export includes all saved findings.</s-paragraph>
             <s-stack direction="inline" gap="base">
               <s-link href="/app/import">Import supplier costs</s-link>
+              <s-link href="/app/what-if">Run cost what-if</s-link>
               <s-link href="/app/export">Download findings CSV</s-link>
               <s-link href="/app/alerts">Set weekly alerts</s-link>
               <s-link href="/app/pricing">Pricing</s-link>

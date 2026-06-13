@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Margin Sentinel - Shopify margin leak scanner</title>
-  <meta name="description" content="Find Shopify products with missing costs, negative margin, or prices below your target margin.">
+  <meta name="description" content="Find Shopify products with missing costs, negative margin, inventory dollars at risk, or prices below your target margin.">
   <style>
     :root {
       color-scheme: light;
@@ -92,7 +92,7 @@
       <div>
         <span class="eyebrow">For Shopify catalog teams</span>
         <h1>Find the products quietly leaking profit.</h1>
-        <p>Margin Sentinel scans your Shopify catalog for missing costs, negative margin, and products priced below your target margin. It gives you a short fix list with the margin gap and suggested minimum price.</p>
+        <p>Margin Sentinel scans your Shopify catalog for missing costs, negative margin, products priced below your target margin, and inventory dollars at risk. Run cost-change what-if checks before supplier increases turn into expensive mistakes.</p>
         <div class="actions">
           <a class="button primary" href="/beta">Join the beta</a>
           <a class="button secondary" href="#features">See how it works</a>
@@ -115,13 +115,13 @@
           </div>
           <div class="action-center">
             <strong>Fix first: Blue hoodie / Large</strong>
-            Raise price or reduce cost before selling more. Suggested minimum price: $42.86.
+            $1,240 inventory risk if supplier cost rises 8%. Suggested minimum price: $42.86.
           </div>
           <table>
-            <thead><tr><th>Issue</th><th>Product</th><th>SKU</th><th>Min price</th></tr></thead>
+            <thead><tr><th>Issue</th><th>Product</th><th>SKU</th><th>Risk</th></tr></thead>
             <tbody>
-              <tr><td><span class="pill loss">Loss</span></td><td>Blue hoodie</td><td>HD-BL-L</td><td>$42.86</td></tr>
-              <tr><td><span class="pill low">Low margin</span></td><td>Black tee</td><td>TEE-B-M</td><td>$28.57</td></tr>
+              <tr><td><span class="pill loss">Loss</span></td><td>Blue hoodie</td><td>HD-BL-L</td><td>$1,240</td></tr>
+              <tr><td><span class="pill low">Low margin</span></td><td>Black tee</td><td>TEE-B-M</td><td>$640</td></tr>
               <tr><td><span class="pill missing">Missing cost</span></td><td>Canvas bag</td><td>BAG-CAN</td><td>-</td></tr>
             </tbody>
           </table>
@@ -137,8 +137,8 @@
       <div class="features">
         <div class="feature"><h3>Margin leak scan</h3><p>Catch negative gross margin, low-margin variants, and missing cost data in one scan.</p></div>
         <div class="feature"><h3>Supplier CSV preview</h3><p>Import costs by SKU and preview the impact before saving anything.</p></div>
-        <div class="feature"><h3>Suggested minimum price</h3><p>Convert target margin into a price the team can act on.</p></div>
-        <div class="feature"><h3>Weekly alerts</h3><p>Keep watch after the first cleanup so new issues do not sit unnoticed.</p></div>
+        <div class="feature"><h3>Inventory risk</h3><p>See margin gap multiplied by current Shopify inventory so teams fix the highest-value SKUs first.</p></div>
+        <div class="feature"><h3>Cost-change what-if</h3><p>Model supplier cost increases before a price list, promo, or reorder hurts margin.</p></div>
       </div>
     </section>
 
@@ -147,8 +147,8 @@
       <p>Priced for catalog margin protection, not heavy accounting software.</p>
       <div class="plans">
         <div class="plan"><h3>Free</h3><strong>$0</strong><p>Scan up to 100 variants and export findings.</p></div>
-        <div class="plan"><h3>Starter</h3><strong>$15/mo</strong><p>Scan up to 5,000 variants, import supplier CSVs, and enable weekly alerts.</p></div>
-        <div class="plan"><h3>Growth</h3><strong>$39/mo</strong><p>Scan up to 25,000 variants with priority support for larger catalogs.</p></div>
+        <div class="plan"><h3>Starter</h3><strong>$15/mo</strong><p>Scan up to 5,000 variants, import supplier CSVs, run what-if checks, and enable weekly alerts.</p></div>
+        <div class="plan"><h3>Growth</h3><strong>$39/mo</strong><p>Scan up to 25,000 variants with what-if checks and priority support for larger catalogs.</p></div>
       </div>
     </section>
 

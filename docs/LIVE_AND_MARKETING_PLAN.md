@@ -11,6 +11,7 @@ Margin Sentinel is close to beta-ready. The core product now has:
 - cost source labels;
 - supplier import history;
 - inventory dollars at risk;
+- supplier cost-change what-if scenarios;
 - CSV export;
 - weekly alert infrastructure;
 - privacy, terms, refund, support, pricing, and onboarding pages;
@@ -88,4 +89,4 @@ shopify app deploy
 
 ## Next feature with the highest paid upside
 
-Cost-change what-if scenarios: a merchant enters "supplier cost +8%" or "freight +5%" and Margin Sentinel shows which SKUs fall below target margin and how much inventory value becomes risky. This is a direct paid feature because it helps merchants before a supplier price update, promo, or reorder.
+Resolved/ignored finding states: merchants need a workflow for recurring issues after the first scan. This makes the product stickier for teams and agencies because it turns Margin Sentinel from a one-time scanner into a weekly margin operations queue.

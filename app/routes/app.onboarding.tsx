@@ -18,7 +18,7 @@ export default function Onboarding() {
   return (
     <s-page heading="Merchant setup">
       <s-section heading="Recommended first run">
-        <s-grid gridTemplateColumns="repeat(3, minmax(0, 1fr))" gap="base">
+        <s-grid gridTemplateColumns="repeat(4, minmax(0, 1fr))" gap="base">
           <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
             <s-heading>1. Add costs</s-heading>
             <s-paragraph>Use Shopify unit costs or import supplier costs by SKU. Missing costs are the most common reason profit reports cannot be trusted.</s-paragraph>
@@ -31,6 +31,10 @@ export default function Onboarding() {
             <s-heading>3. Fix the list</s-heading>
             <s-paragraph>{latestAudit ? `${latestAudit.lossCount + latestAudit.lowMarginCount + latestAudit.missingCostCount} issues were found in the latest scan.` : "Run a scan to get a prioritized fix list."}</s-paragraph>
           </s-box>
+          <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
+            <s-heading>4. Run what-if</s-heading>
+            <s-paragraph>Model supplier cost increases before a promo, reorder, or price list update.</s-paragraph>
+          </s-box>
         </s-grid>
       </s-section>
 
@@ -40,6 +44,7 @@ export default function Onboarding() {
           <s-list-item>Add Shopify unit costs, or import supplier costs with a CSV.</s-list-item>
           <s-list-item>Set the minimum margin target. The default is 30%.</s-list-item>
           <s-list-item>Run the profit scan.</s-list-item>
+          <s-list-item>Run a cost-change what-if scenario for the next supplier increase.</s-list-item>
           <s-list-item>Export the findings and fix the highest-risk products first.</s-list-item>
           <s-list-item>Enable weekly alerts so new low-margin products are caught automatically.</s-list-item>
         </s-ordered-list>
@@ -48,7 +53,10 @@ export default function Onboarding() {
       <s-section heading="CSV format">
         <s-paragraph>Use this exact header. SKU must match the Shopify variant SKU.</s-paragraph>
         <pre>{`SKU,COST\nABC123,12.50\nXYZ999,8.40\nEU-SKU-9,"1.234,56"`}</pre>
-        <s-link href="/app/import">Import supplier costs</s-link>
+        <s-stack direction="inline" gap="base">
+          <s-link href="/app/import">Import supplier costs</s-link>
+          <s-link href="/app/what-if">Run cost-change what-if</s-link>
+        </s-stack>
       </s-section>
 
       <s-section heading="Positioning">
