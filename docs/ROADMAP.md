@@ -11,6 +11,7 @@
 - Public brand: Margin Sentinel.
 - Cost source labels across scans, imports, exports, and alerts.
 - Import history with file name, matched SKUs, unmatched SKUs, duplicate warnings, and saved/preview status.
+- Inventory dollars at risk from margin gap multiplied by current Shopify inventory quantity.
 
 ## V1.1: competitor-driven UX upgrades
 
@@ -21,7 +22,6 @@
 
 ## V1.2: stronger merchant value
 
-- Inventory dollars at risk.
 - Cost-change what-if scenarios for supplier increases.
 - Resolved and ignored finding states.
 - Vendor/category rollups.

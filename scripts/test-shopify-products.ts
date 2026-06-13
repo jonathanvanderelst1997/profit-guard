@@ -23,6 +23,7 @@ const admin = {
                     title: "Default Title",
                     sku: "NO-COST",
                     price: "19.99",
+                    inventoryQuantity: 3,
                     inventoryItem: { id: "gid://shopify/InventoryItem/1", unitCost: null },
                   },
                   {
@@ -30,6 +31,7 @@ const admin = {
                     title: "Blue",
                     sku: "WITH-COST",
                     price: "25.00",
+                    inventoryQuantity: 12,
                     inventoryItem: {
                       id: "gid://shopify/InventoryItem/2",
                       unitCost: { amount: "7.50", currencyCode: "USD" },
@@ -53,8 +55,10 @@ assert.equal(result.variants.length, 2);
 assert.equal(result.variants[0].currencyCode, "EUR");
 assert.equal(result.variants[0].costAmount, null);
 assert.equal(result.variants[0].costSource, "MISSING");
+assert.equal(result.variants[0].inventoryQuantity, 3);
 assert.equal(result.variants[1].currencyCode, "USD");
 assert.equal(result.variants[1].costAmount, 7.5);
 assert.equal(result.variants[1].costSource, "SHOPIFY_UNIT_COST");
+assert.equal(result.variants[1].inventoryQuantity, 12);
 
 console.log("Margin Sentinel Shopify product tests passed.");

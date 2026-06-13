@@ -9,6 +9,7 @@ export type VariantMarginInput = {
   priceAmount: number;
   costAmount?: number | null;
   costSource?: CostSource | null;
+  inventoryQuantity?: number | null;
   currencyCode?: string | null;
 };
 
@@ -18,6 +19,7 @@ export type MarginFinding = VariantMarginInput & {
   marginBps: number | null;
   targetProfitAmount: number | null;
   gapToTargetAmount: number | null;
+  inventoryRiskAmount: number | null;
   reason: string;
 };
 
@@ -30,6 +32,7 @@ export type AuditSummary = {
   totalPriceAmount: number;
   lossAmount: number;
   marginGapAmount: number;
+  inventoryRiskAmount: number;
   findings: MarginFinding[];
 };
 
@@ -98,6 +101,13 @@ export function calculateMinimumPriceForTargetMargin(costAmount: number | null |
   return roundMoney(costAmount / (1 - marginRatio));
 }
 
+export function calculateInventoryRiskAmount(gapToTargetAmount: number | null | undefined, inventoryQuantity: number | null | undefined): number | null {
+  if (gapToTargetAmount === null || gapToTargetAmount === undefined) return null;
+  if (inventoryQuantity === null || inventoryQuantity === undefined) return null;
+  if (!Number.isFinite(gapToTargetAmount) || !Number.isFinite(inventoryQuantity)) return null;
+  return roundMoney(Math.max(0, inventoryQuantity) * gapToTargetAmount);
+}
+
 export function roundMoney(value: number): number {
   return Math.round((value + Number.EPSILON) * 100) / 100;
 }
@@ -112,6 +122,7 @@ export function auditVariant(input: VariantMarginInput, minimumMarginBps: number
       marginBps: null,
       targetProfitAmount: null,
       gapToTargetAmount: null,
+      inventoryRiskAmount: null,
       severity: "MISSING_COST",
       reason: "No cost is set for this variant, so true product margin is unknown.",
     };
@@ -121,6 +132,7 @@ export function auditVariant(input: VariantMarginInput, minimumMarginBps: number
   const marginBps = calculateMarginBps(input.priceAmount, input.costAmount);
   const targetProfitAmount = calculateTargetProfitAmount(input.priceAmount, minimumMarginBps);
   const gapToTargetAmount = roundMoney(Math.max(0, targetProfitAmount - profitAmount));
+  const inventoryRiskAmount = calculateInventoryRiskAmount(gapToTargetAmount, input.inventoryQuantity);
 
   if (marginBps < 0) {
     return {
@@ -130,6 +142,7 @@ export function auditVariant(input: VariantMarginInput, minimumMarginBps: number
       marginBps,
       targetProfitAmount,
       gapToTargetAmount,
+      inventoryRiskAmount,
       severity: "LOSS",
       reason: "Cost is higher than selling price.",
     };
@@ -143,6 +156,7 @@ export function auditVariant(input: VariantMarginInput, minimumMarginBps: number
       marginBps,
       targetProfitAmount,
       gapToTargetAmount,
+      inventoryRiskAmount,
       severity: "LOW_MARGIN",
       reason: `Margin is below target of ${basisPointsToPercent(minimumMarginBps)}.`,
     };
@@ -165,6 +179,7 @@ export function auditVariants(inputs: VariantMarginInput[], minimumMarginBps: nu
     findings.filter((f) => f.severity === "LOSS").reduce((sum, f) => sum + Math.abs(Math.min(0, f.profitAmount ?? 0)), 0),
   );
   const marginGapAmount = roundMoney(findings.reduce((sum, f) => sum + (f.gapToTargetAmount ?? 0), 0));
+  const inventoryRiskAmount = roundMoney(findings.reduce((sum, f) => sum + (f.inventoryRiskAmount ?? 0), 0));
   const totalPriceAmount = roundMoney(inputs.reduce((sum, input) => sum + input.priceAmount, 0));
 
   return {
@@ -176,6 +191,7 @@ export function auditVariants(inputs: VariantMarginInput[], minimumMarginBps: nu
     totalPriceAmount,
     lossAmount,
     marginGapAmount,
+    inventoryRiskAmount,
     findings,
   };
 }

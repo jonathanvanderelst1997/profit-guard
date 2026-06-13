@@ -45,7 +45,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 type StatTone = "critical" | "warning" | "neutral";
 type FindingFilter = "ALL" | Severity;
-type FindingSort = "priority" | "gap" | "margin" | "product";
+type FindingSort = "priority" | "risk" | "gap" | "margin" | "product";
 type AuditFinding = Omit<MarginFinding, "severity" | "costSource"> & { id?: string | null; severity: string; costSource?: string | null };
 type DashboardAudit = {
   totalVariants: number;
@@ -55,6 +55,7 @@ type DashboardAudit = {
   okCount: number;
   lossAmount: unknown;
   marginGapAmount: unknown;
+  inventoryRiskAmount: unknown;
   minimumMarginBps: number;
   findings: AuditFinding[];
 };
@@ -83,6 +84,7 @@ function findingMatchesQuery(finding: AuditFinding, query: string): boolean {
 
 function sortFindings(findings: AuditFinding[], sort: FindingSort): AuditFinding[] {
   return [...findings].sort((a, b) => {
+    if (sort === "risk") return (b.inventoryRiskAmount ?? 0) - (a.inventoryRiskAmount ?? 0);
     if (sort === "gap") return (b.gapToTargetAmount ?? 0) - (a.gapToTargetAmount ?? 0);
     if (sort === "margin") return (a.marginBps ?? Number.POSITIVE_INFINITY) - (b.marginBps ?? Number.POSITIVE_INFINITY);
     if (sort === "product") return `${a.productTitle} ${a.variantTitle ?? ""}`.localeCompare(`${b.productTitle} ${b.variantTitle ?? ""}`);
@@ -134,7 +136,7 @@ function ActionCenter({ audit, minimumMarginBps }: { audit: DashboardAudit; mini
           <s-grid gridTemplateColumns="repeat(3, minmax(0, 1fr))" gap="base">
             <StatCard label="Catalog healthy" value={`${coverage}%`} />
             <StatCard label="Issues to review" value={issueCount} tone={issueCount > 0 ? "warning" : "neutral"} />
-            <StatCard label="Potential recovery" value={formatMoney(Number(audit.marginGapAmount ?? 0), firstPriority?.currencyCode)} tone="warning" />
+            <StatCard label="Inventory risk" value={formatMoney(Number(audit.inventoryRiskAmount ?? 0), firstPriority?.currencyCode)} tone="warning" />
           </s-grid>
           {firstPriority ? (
             <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
@@ -237,12 +239,13 @@ export default function Dashboard() {
               <StatCard label="Low margin" value={currentAudit.lowMarginCount} tone="warning" />
               <StatCard label="Missing cost" value={currentAudit.missingCostCount} tone="warning" />
             </s-grid>
-            <s-grid gridTemplateColumns="repeat(3, minmax(0, 1fr))" gap="base">
+            <s-grid gridTemplateColumns="repeat(4, minmax(0, 1fr))" gap="base">
               <StatCard label="Direct loss found" value={formatMoney(Number(currentAudit.lossAmount ?? 0), currentAudit.findings?.[0]?.currencyCode)} tone="critical" />
               <StatCard label="Margin gap to target" value={formatMoney(Number(currentAudit.marginGapAmount ?? 0), currentAudit.findings?.[0]?.currencyCode)} tone="warning" />
+              <StatCard label="Inventory risk" value={formatMoney(Number(currentAudit.inventoryRiskAmount ?? 0), currentAudit.findings?.[0]?.currencyCode)} tone="warning" />
               <StatCard label="OK variants" value={currentAudit.okCount} />
             </s-grid>
-            <s-paragraph>Target margin: {basisPointsToPercent(currentAudit.minimumMarginBps)}. Showing the first 100 findings in-app. CSV export includes all saved findings.</s-paragraph>
+            <s-paragraph>Target margin: {basisPointsToPercent(currentAudit.minimumMarginBps)}. Inventory risk is gap to target margin multiplied by current Shopify inventory quantity. Showing the first 100 findings in-app. CSV export includes all saved findings.</s-paragraph>
             <s-stack direction="inline" gap="base">
               <s-link href="/app/import">Import supplier costs</s-link>
               <s-link href="/app/export">Download findings CSV</s-link>
@@ -271,6 +274,7 @@ export default function Dashboard() {
                     <span>Sort</span>
                     <select value={sort} onChange={(event) => setSort(event.currentTarget.value as FindingSort)} style={{ minWidth: 180, padding: "8px 10px", border: "1px solid #c9cccf", borderRadius: 6 }}>
                       <option value="priority">Highest priority</option>
+                      <option value="risk">Highest inventory risk</option>
                       <option value="gap">Largest margin gap</option>
                       <option value="margin">Lowest margin</option>
                       <option value="product">Product name</option>
@@ -282,7 +286,7 @@ export default function Dashboard() {
             </s-box>
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead><tr><th align="left">Issue</th><th align="left">Product</th><th align="left">SKU</th><th align="right">Price</th><th align="right">Cost</th><th align="left">Cost source</th><th align="right">Profit</th><th align="right">Margin</th><th align="right">Gap</th><th align="right">Suggested min price</th><th align="left">Next action</th></tr></thead>
+                <thead><tr><th align="left">Issue</th><th align="left">Product</th><th align="left">SKU</th><th align="right">Price</th><th align="right">Cost</th><th align="left">Cost source</th><th align="right">Profit</th><th align="right">Margin</th><th align="right">Gap</th><th align="right">Inventory</th><th align="right">Inventory risk</th><th align="right">Suggested min price</th><th align="left">Next action</th></tr></thead>
                 <tbody>
                   {visibleFindings.map((f) => {
                     const suggestedPrice = calculateMinimumPriceForTargetMargin(f.costAmount, currentAudit.minimumMarginBps);
@@ -298,6 +302,8 @@ export default function Dashboard() {
                       <td align="right">{f.profitAmount == null ? "—" : formatMoney(Number(f.profitAmount), f.currencyCode)}</td>
                       <td align="right">{basisPointsToPercent(f.marginBps)}</td>
                       <td align="right">{f.gapToTargetAmount == null ? "—" : formatMoney(Number(f.gapToTargetAmount), f.currencyCode)}</td>
+                      <td align="right">{f.inventoryQuantity ?? "—"}</td>
+                      <td align="right">{f.inventoryRiskAmount == null ? "—" : formatMoney(Number(f.inventoryRiskAmount), f.currencyCode)}</td>
                       <td align="right">{suggestedPrice == null ? "—" : formatMoney(suggestedPrice, f.currencyCode)}</td>
                       <td>{getFindingAction(severity)}</td>
                     </tr>

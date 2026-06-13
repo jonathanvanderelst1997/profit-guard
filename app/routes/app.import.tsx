@@ -176,14 +176,15 @@ export default function SupplierImport() {
               <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{data.preview.lowMarginCount}</s-heading><s-text>Low margin</s-text></s-box>
               <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{data.preview.missingCostCount}</s-heading><s-text>Missing cost</s-text></s-box>
             </s-grid>
-            <s-grid gridTemplateColumns="repeat(2, minmax(0, 1fr))" gap="base">
+            <s-grid gridTemplateColumns="repeat(3, minmax(0, 1fr))" gap="base">
               <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{formatMoney(Number(data.preview.lossAmount ?? 0), data.preview.currencyCode)}</s-heading><s-text>Direct loss found</s-text></s-box>
               <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{formatMoney(Number(data.preview.marginGapAmount ?? 0), data.preview.currencyCode)}</s-heading><s-text>Gap to target margin</s-text></s-box>
+              <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{formatMoney(Number(data.preview.inventoryRiskAmount ?? 0), data.preview.currencyCode)}</s-heading><s-text>Inventory risk</s-text></s-box>
             </s-grid>
             {data.preview.findings.length > 0 ? (
               <div style={{ overflowX: "auto" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead><tr><th align="left">Issue</th><th align="left">Product</th><th align="left">SKU</th><th align="right">Price</th><th align="right">Imported cost</th><th align="left">Cost source</th><th align="right">Margin</th><th align="right">Suggested min price</th><th align="left">Next action</th></tr></thead>
+                  <thead><tr><th align="left">Issue</th><th align="left">Product</th><th align="left">SKU</th><th align="right">Price</th><th align="right">Imported cost</th><th align="left">Cost source</th><th align="right">Margin</th><th align="right">Inventory</th><th align="right">Inventory risk</th><th align="right">Suggested min price</th><th align="left">Next action</th></tr></thead>
                   <tbody>
                     {(data.preview.findings as PreviewFinding[]).slice(0, 25).map((finding) => {
                       const suggestedPrice = calculateMinimumPriceForTargetMargin(finding.costAmount, data.preview.minimumMarginBps);
@@ -196,6 +197,8 @@ export default function SupplierImport() {
                           <td align="right">{finding.costAmount == null ? "—" : formatMoney(Number(finding.costAmount), finding.currencyCode)}</td>
                           <td>{getCostSourceLabel(finding.costSource)}</td>
                           <td align="right">{basisPointsToPercent(finding.marginBps)}</td>
+                          <td align="right">{finding.inventoryQuantity ?? "—"}</td>
+                          <td align="right">{finding.inventoryRiskAmount == null ? "—" : formatMoney(Number(finding.inventoryRiskAmount), finding.currencyCode)}</td>
                           <td align="right">{suggestedPrice == null ? "—" : formatMoney(suggestedPrice, finding.currencyCode)}</td>
                           <td>{getFindingAction(finding.severity)}</td>
                         </tr>

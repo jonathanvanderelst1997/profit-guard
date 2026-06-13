@@ -6,7 +6,7 @@ type ShopifyProductNode = {
   title: string;
   variants: {
     pageInfo: { hasNextPage: boolean; endCursor: string | null };
-    nodes: Array<{ id: string; title: string; sku: string | null; price: string; inventoryItem?: { id: string; unitCost?: { amount: string; currencyCode: string; } | null; } | null; }>;
+    nodes: Array<{ id: string; title: string; sku: string | null; price: string; inventoryQuantity: number | null; inventoryItem?: { id: string; unitCost?: { amount: string; currencyCode: string; } | null; } | null; }>;
   };
 };
 
@@ -25,6 +25,7 @@ const PRODUCTS_FOR_AUDIT_QUERY = `#graphql
             title
             sku
             price
+            inventoryQuantity
             inventoryItem { id unitCost { amount currencyCode } }
           }
         }
@@ -46,6 +47,7 @@ const PRODUCT_VARIANTS_QUERY = `#graphql
           title
           sku
           price
+          inventoryQuantity
           inventoryItem { id unitCost { amount currencyCode } }
         }
       }
@@ -67,6 +69,7 @@ function variantToInput(productTitle: string, variant: ShopifyProductNode["varia
     priceAmount: moneyToNumber(variant.price),
     costAmount: variant.inventoryItem?.unitCost?.amount ? moneyToNumber(variant.inventoryItem.unitCost.amount) : null,
     costSource: variant.inventoryItem?.unitCost?.amount ? "SHOPIFY_UNIT_COST" : "MISSING",
+    inventoryQuantity: variant.inventoryQuantity,
     currencyCode: variant.inventoryItem?.unitCost?.currencyCode ?? fallbackCurrencyCode ?? null,
   };
 }

@@ -39,45 +39,48 @@ model ShopSettings {
 }
 
 model AuditRun {
-  id               String         @id @default(cuid())
-  shop             String
-  minimumMarginBps Int
-  totalVariants    Int
-  lossCount        Int
-  lowMarginCount   Int
-  missingCostCount Int
-  okCount          Int
-  totalPriceAmount Float          @default(0)
-  lossAmount       Float          @default(0)
-  marginGapAmount  Float          @default(0)
-  demoMode         Boolean        @default(false)
-  scanLimitReached Boolean        @default(false)
-  createdAt        DateTime       @default(now())
-  findings         AuditFinding[]
+  id                  String         @id @default(cuid())
+  shop                String
+  minimumMarginBps    Int
+  totalVariants       Int
+  lossCount           Int
+  lowMarginCount      Int
+  missingCostCount    Int
+  okCount             Int
+  totalPriceAmount    Float          @default(0)
+  lossAmount          Float          @default(0)
+  marginGapAmount     Float          @default(0)
+  inventoryRiskAmount Float          @default(0)
+  demoMode            Boolean        @default(false)
+  scanLimitReached    Boolean        @default(false)
+  createdAt           DateTime       @default(now())
+  findings            AuditFinding[]
 
   @@index([shop, createdAt])
 }
 
 model AuditFinding {
-  id                 String   @id @default(cuid())
-  auditRunId         String
-  auditRun           AuditRun @relation(fields: [auditRunId], references: [id], onDelete: Cascade)
-  shop               String
-  variantId          String
-  productTitle       String
-  variantTitle       String?
-  sku                String?
-  priceAmount        Float
-  costAmount         Float?
-  costSource         String?
-  currencyCode       String?
-  profitAmount       Float?
-  marginBps          Int?
-  targetProfitAmount Float?
-  gapToTargetAmount  Float?
-  severity           String
-  reason             String
-  createdAt          DateTime @default(now())
+  id                  String   @id @default(cuid())
+  auditRunId          String
+  auditRun            AuditRun @relation(fields: [auditRunId], references: [id], onDelete: Cascade)
+  shop                String
+  variantId           String
+  productTitle        String
+  variantTitle        String?
+  sku                 String?
+  priceAmount         Float
+  costAmount          Float?
+  costSource          String?
+  inventoryQuantity   Int?
+  currencyCode        String?
+  profitAmount        Float?
+  marginBps           Int?
+  targetProfitAmount  Float?
+  gapToTargetAmount   Float?
+  inventoryRiskAmount Float?
+  severity            String
+  reason              String
+  createdAt           DateTime @default(now())
 
   @@index([shop, severity])
   @@index([auditRunId])
