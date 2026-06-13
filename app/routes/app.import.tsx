@@ -12,6 +12,7 @@ import { buildImportRunMetrics } from "../lib/import-history";
 import { createImportRun, getRecentImportRuns } from "../lib/import-history.server";
 import { getShopPlan, getVariantLimitForPlan } from "../lib/plan.server";
 import { formatMoney } from "../lib/security";
+import { getVariantCostKeys } from "../lib/cost-matching";
 
 type PreviewFinding = MarginFinding & { id?: string | null };
 
@@ -55,15 +56,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const supplierMap = supplierRowsToMap(parsed.rows);
   const variants = await fetchVariantsForAudit(admin, { maxVariants: variantLimit });
   const updatedVariants = applySupplierCostsBySku(variants.variants, supplierMap);
-  const matchedSkus = new Set<string>();
+  const matchedKeys = new Set<string>();
   for (const variant of updatedVariants) {
-    const sku = variant.sku?.trim();
-    if (sku && supplierMap.has(sku)) matchedSkus.add(sku);
+    for (const key of getVariantCostKeys(variant)) {
+      if (supplierMap.has(key)) matchedKeys.add(key);
+    }
   }
   const currencyCode = updatedVariants.find((variant) => variant.currencyCode)?.currencyCode ?? null;
   const summary = auditVariants(updatedVariants, settings.minimumMarginBps);
   const imported = shouldSave ? await upsertImportedCosts(session.shop, supplierMap) : 0;
-  const importMetrics = buildImportRunMetrics({ rows: parsed.rows, errors: parsed.errors, matchedSkus, savedCostCount: imported });
+  const importMetrics = buildImportRunMetrics({ rows: parsed.rows, errors: parsed.errors, matchedKeys, savedCostCount: imported });
   await createImportRun(session.shop, { ...importMetrics, fileName: file.name, saved: shouldSave });
   const importRuns = await getRecentImportRuns(session.shop);
 
@@ -93,12 +95,13 @@ export default function SupplierImport() {
   return (
     <s-page heading="Import supplier costs">
       <s-section heading="Bulk cost import">
-        <s-paragraph>Upload a CSV with SKU and COST. Margin Sentinel matches rows to Shopify variant SKUs, previews the margin impact, and only saves costs when you tick the save box.</s-paragraph>
+        <s-paragraph>Upload a CSV with variant_id, inventory_item_id, or SKU plus COST. Margin Sentinel matches rows to Shopify variants, previews the margin impact, and only saves costs when you tick the save box.</s-paragraph>
         <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
           <s-stack direction="block" gap="small">
             <s-heading>CSV template</s-heading>
-            <pre>{`SKU,COST\nABC123,12.50\nEU-SKU-9,"1.234,56"`}</pre>
-            <s-paragraph>Costs can include currency symbols, commas, or EU decimal formatting. Duplicate SKUs are reported as warnings.</s-paragraph>
+            <pre>{`variant_id,inventory_item_id,sku,cost\ngid://shopify/ProductVariant/123,,ABC123,12.50\n,gid://shopify/InventoryItem/456,,8.40`}</pre>
+            <s-paragraph>Use the generated template when you do not know SKUs. Costs can include currency symbols, commas, or EU decimal formatting.</s-paragraph>
+            <s-link href="/app/import/template">Download variant cost template</s-link>
           </s-stack>
         </s-box>
         <fetcher.Form method="post" encType="multipart/form-data">
@@ -122,8 +125,8 @@ export default function SupplierImport() {
               <s-table-header>File</s-table-header>
               <s-table-header>Status</s-table-header>
               <s-table-header format="numeric">Rows</s-table-header>
-              <s-table-header format="numeric">Matched</s-table-header>
-              <s-table-header format="numeric">Unmatched</s-table-header>
+              <s-table-header format="numeric">Matched rows</s-table-header>
+              <s-table-header format="numeric">Unmatched rows</s-table-header>
               <s-table-header format="numeric">Duplicates</s-table-header>
               <s-table-header format="numeric">Warnings</s-table-header>
             </s-table-header-row>
@@ -154,15 +157,15 @@ export default function SupplierImport() {
       {data?.preview ? (
         <s-section heading="Import result">
           <s-stack direction="block" gap="base">
-            <s-paragraph>CSV rows: {data.csvRows}. Matched SKUs: {data.matchedSkuCount}. Unmatched SKUs: {data.unmatchedSkuCount}. Saved costs: {data.imported}. Target margin: {basisPointsToPercent(data.preview.minimumMarginBps)}.</s-paragraph>
+            <s-paragraph>CSV rows: {data.csvRows}. Matched rows: {data.matchedSkuCount}. Unmatched rows: {data.unmatchedSkuCount}. Saved costs: {data.imported}. Target margin: {basisPointsToPercent(data.preview.minimumMarginBps)}.</s-paragraph>
             {data.csvRows > 0 && data.matchedSkuCount === 0 ? (
-              <s-banner tone="critical" heading="No Shopify SKUs matched">
-                Check that the CSV SKU column matches Shopify variant SKUs exactly before saving.
+              <s-banner tone="critical" heading="No Shopify variants matched">
+                Use the generated template or check that variant_id, inventory_item_id, or SKU matches Shopify exactly before saving.
               </s-banner>
             ) : null}
             {data.matchedSkuCount > 0 ? (
               <s-banner tone="success" heading="Costs matched">
-                {data.matchedSkuCount} SKUs matched Shopify variants. Review the preview below before changing prices or supplier costs elsewhere.
+                {data.matchedSkuCount} rows matched Shopify variants. Review the preview below before changing prices or supplier costs elsewhere.
               </s-banner>
             ) : null}
             {data.preview.scanLimitReached ? (

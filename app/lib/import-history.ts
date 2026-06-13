@@ -1,4 +1,4 @@
-export type ImportMetricRow = { sku: string };
+export type ImportMetricRow = { matchKey: string };
 
 export type ImportRunMetrics = {
   csvRows: number;
@@ -12,16 +12,16 @@ export type ImportRunMetrics = {
 export function buildImportRunMetrics(input: {
   rows: ImportMetricRow[];
   errors: string[];
-  matchedSkus: Set<string>;
+  matchedKeys: Set<string>;
   savedCostCount: number;
 }): ImportRunMetrics {
-  const csvSkus = new Set(input.rows.map((row) => row.sku).filter(Boolean));
-  const unmatchedSkuCount = [...csvSkus].filter((sku) => !input.matchedSkus.has(sku)).length;
-  const duplicateSkuCount = input.errors.filter((error) => error.includes("duplicate SKU")).length;
+  const csvKeys = new Set(input.rows.map((row) => row.matchKey).filter(Boolean));
+  const unmatchedSkuCount = [...csvKeys].filter((key) => !input.matchedKeys.has(key)).length;
+  const duplicateSkuCount = input.errors.filter((error) => error.includes("duplicate")).length;
 
   return {
     csvRows: input.rows.length,
-    matchedSkuCount: input.matchedSkus.size,
+    matchedSkuCount: input.matchedKeys.size,
     unmatchedSkuCount,
     savedCostCount: input.savedCostCount,
     duplicateSkuCount,

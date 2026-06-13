@@ -82,6 +82,9 @@ type Pages = {
   "/app/import": {
     params: {};
   };
+  "/app/import/template": {
+    params: {};
+  };
   "/app/csv": {
     params: {};
   };
@@ -90,7 +93,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/auth/login" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
+    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/auth/login" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/import/template" | "/app/csv";
   };
   "routes/webhooks.app_subscriptions.update.tsx": {
     id: "routes/webhooks.app_subscriptions.update";
@@ -154,7 +157,7 @@ type RouteFiles = {
   };
   "routes/app.tsx": {
     id: "routes/app";
-    page: "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/csv";
+    page: "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/import/template" | "/app/csv";
   };
   "routes/app.onboarding.tsx": {
     id: "routes/app.onboarding";
@@ -186,7 +189,11 @@ type RouteFiles = {
   };
   "routes/app.import.tsx": {
     id: "routes/app.import";
-    page: "/app/import";
+    page: "/app/import" | "/app/import/template";
+  };
+  "routes/app.import.template.tsx": {
+    id: "routes/app.import.template";
+    page: "/app/import/template";
   };
   "routes/app.csv.tsx": {
     id: "routes/app.csv";
@@ -220,5 +227,6 @@ type RouteModules = {
   "routes/app.alerts": typeof import("./app/routes/app.alerts.tsx");
   "routes/app.export": typeof import("./app/routes/app.export.tsx");
   "routes/app.import": typeof import("./app/routes/app.import.tsx");
+  "routes/app.import.template": typeof import("./app/routes/app.import.template.tsx");
   "routes/app.csv": typeof import("./app/routes/app.csv.tsx");
 };

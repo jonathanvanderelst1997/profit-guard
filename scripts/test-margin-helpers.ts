@@ -8,6 +8,8 @@ import {
   getSeverityLabel,
 } from "../app/lib/margin";
 import { applyCostIncreaseScenario, buildCostIncreaseScenario, normalizeCostIncreasePercent } from "../app/lib/what-if";
+import { findImportedCostForVariant, getVariantCostKeys, normalizeStoredCostKey } from "../app/lib/cost-matching";
+import { variantsToCostTemplateCsv } from "../app/lib/cost-template";
 
 assert.equal(calculateMinimumPriceForTargetMargin(30, 3000), 42.86);
 assert.equal(calculateMinimumPriceForTargetMargin(null, 3000), null);
@@ -57,5 +59,13 @@ assert.equal(scenario.baseline.findings.length, 1);
 assert.equal(scenario.scenario.findings.length, 2);
 assert.equal(scenario.newlyAtRiskCount, 1);
 assert.equal(scenario.addedInventoryRiskAmount, 64);
+
+const keyedVariant = { variantId: "gid://shopify/ProductVariant/1", inventoryItemId: "gid://shopify/InventoryItem/1", sku: "SKU-1", productTitle: "Cost key", priceAmount: 40 };
+assert.deepEqual(getVariantCostKeys(keyedVariant), ["variant:gid://shopify/ProductVariant/1", "inventory_item:gid://shopify/InventoryItem/1", "sku:SKU-1"]);
+assert.equal(normalizeStoredCostKey("LEGACY-SKU"), "sku:LEGACY-SKU");
+assert.equal(findImportedCostForVariant(keyedVariant, new Map([["inventory_item:gid://shopify/InventoryItem/1", 21]])), 21);
+const template = variantsToCostTemplateCsv([keyedVariant]);
+assert.match(template, /variant_id,inventory_item_id,sku/);
+assert.match(template, /gid:\/\/shopify\/ProductVariant\/1/);
 
 console.log("Margin Sentinel margin helper tests passed.");

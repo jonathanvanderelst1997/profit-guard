@@ -1,4 +1,14 @@
-export type SupplierCostRow = { sku: string; cost: number; rowNumber: number; };
+import { costKeyFromInventoryItemId, costKeyFromSku, costKeyFromVariantId } from "./cost-matching";
+
+export type SupplierCostRow = {
+  sku: string;
+  variantId?: string | null;
+  inventoryItemId?: string | null;
+  matchKey: string;
+  matchLabel: string;
+  cost: number;
+  rowNumber: number;
+};
 export type CsvParseResult = { rows: SupplierCostRow[]; errors: string[]; };
 
 export function splitCsvLine(line: string): string[] {
@@ -50,24 +60,33 @@ export function parseSupplierCostCsv(text: string): CsvParseResult {
   if (lines.length < 2) return { rows: [], errors: ["CSV must include a header row and at least one data row."] };
   const headers = splitCsvLine(lines[0]).map(normalizeHeader);
   const skuIndex = headers.findIndex((h) => ["sku", "variant_sku", "product_sku"].includes(h));
+  const variantIdIndex = headers.findIndex((h) => ["variant_id", "shopify_variant_id", "product_variant_id"].includes(h));
+  const inventoryItemIdIndex = headers.findIndex((h) => ["inventory_item_id", "inventoryitemid", "shopify_inventory_item_id"].includes(h));
   const costIndex = headers.findIndex((h) => ["cost", "unit_cost", "new_cost", "supplier_cost", "price"].includes(h));
   const errors: string[] = [];
-  if (skuIndex === -1) errors.push("Missing SKU column. Use 'sku'.");
+  if (skuIndex === -1 && variantIdIndex === -1 && inventoryItemIdIndex === -1) errors.push("Missing identifier column. Use 'variant_id', 'inventory_item_id', or 'sku'.");
   if (costIndex === -1) errors.push("Missing cost column. Use 'cost'.");
   if (errors.length > 0) return { rows: [], errors };
   const rows: SupplierCostRow[] = [];
-  const seenSkus = new Set<string>();
+  const seenKeys = new Set<string>();
   for (let i = 1; i < lines.length; i += 1) {
     const columns = splitCsvLine(lines[i]);
     const rowNumber = i + 1;
-    const sku = columns[skuIndex]?.trim();
+    const sku = skuIndex === -1 ? "" : columns[skuIndex]?.trim() ?? "";
+    const variantId = variantIdIndex === -1 ? "" : columns[variantIdIndex]?.trim() ?? "";
+    const inventoryItemId = inventoryItemIdIndex === -1 ? "" : columns[inventoryItemIdIndex]?.trim() ?? "";
+    const variantKey = costKeyFromVariantId(variantId);
+    const inventoryItemKey = costKeyFromInventoryItemId(inventoryItemId);
+    const skuKey = costKeyFromSku(sku);
+    const matchKey = variantKey ?? inventoryItemKey ?? skuKey;
+    const matchLabel = variantKey ? "variant_id" : inventoryItemKey ? "inventory_item_id" : "sku";
     const cost = parseNumber(columns[costIndex] ?? "");
-    if (!sku) { errors.push(`Row ${rowNumber}: missing SKU.`); continue; }
-    if (cost === null || cost < 0) { errors.push(`Row ${rowNumber}: invalid cost for SKU ${sku}.`); continue; }
-    if (seenSkus.has(sku)) errors.push(`Row ${rowNumber}: duplicate SKU ${sku}; latest cost will be used.`);
-    seenSkus.add(sku);
-    rows.push({ sku, cost, rowNumber });
+    if (!matchKey) { errors.push(`Row ${rowNumber}: missing variant_id, inventory_item_id, or SKU.`); continue; }
+    if (cost === null || cost < 0) { errors.push(`Row ${rowNumber}: invalid cost for ${matchLabel}.`); continue; }
+    if (seenKeys.has(matchKey)) errors.push(`Row ${rowNumber}: duplicate ${matchLabel}; latest cost will be used.`);
+    seenKeys.add(matchKey);
+    rows.push({ sku, variantId, inventoryItemId, matchKey, matchLabel, cost, rowNumber });
   }
   return { rows, errors };
 }
-export function supplierRowsToMap(rows: SupplierCostRow[]): Map<string, number> { return new Map(rows.map((row) => [row.sku, row.cost])); }
+export function supplierRowsToMap(rows: SupplierCostRow[]): Map<string, number> { return new Map(rows.map((row) => [row.matchKey, row.cost])); }

@@ -14,13 +14,23 @@ assert.equal(parsed.rows.length, 5);
 assert.equal(parsed.rows[0].cost, 12.5);
 assert.equal(parsed.rows[1].cost, 1234.56);
 assert.equal(parsed.rows[2].cost, 1234.56);
-assert.match(parsed.errors.join("\n"), /duplicate SKU DUPLICATE/);
-assert.equal(supplierRowsToMap(parsed.rows).get("DUPLICATE"), 11);
+assert.match(parsed.errors.join("\n"), /duplicate sku/);
+assert.equal(supplierRowsToMap(parsed.rows).get("sku:DUPLICATE"), 11);
+
+const idParsed = parseSupplierCostCsv(`variant_id,inventory_item_id,sku,cost
+gid://shopify/ProductVariant/1,,IGNORED-SKU,19.99
+,gid://shopify/InventoryItem/2,,8.40
+,,FALLBACK-SKU,5
+`);
+assert.equal(idParsed.errors.length, 0);
+assert.equal(idParsed.rows[0].matchKey, "variant:gid://shopify/ProductVariant/1");
+assert.equal(idParsed.rows[1].matchKey, "inventory_item:gid://shopify/InventoryItem/2");
+assert.equal(idParsed.rows[2].matchKey, "sku:FALLBACK-SKU");
 
 const metrics = buildImportRunMetrics({
   rows: parsed.rows,
   errors: parsed.errors,
-  matchedSkus: new Set(["EURO-DECIMAL", "DUPLICATE"]),
+  matchedKeys: new Set(["sku:EURO-DECIMAL", "sku:DUPLICATE"]),
   savedCostCount: 2,
 });
 assert.deepEqual(metrics, {

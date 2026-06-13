@@ -63,6 +63,7 @@ function moneyToNumber(value: string | null | undefined): number {
 function variantToInput(productTitle: string, variant: ShopifyProductNode["variants"]["nodes"][number], fallbackCurrencyCode?: string | null): VariantMarginInput {
   return {
     variantId: variant.id,
+    inventoryItemId: variant.inventoryItem?.id ?? null,
     productTitle,
     variantTitle: variant.title,
     sku: variant.sku,

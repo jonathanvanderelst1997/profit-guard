@@ -6,14 +6,14 @@ Shopify embedded app for finding products that quietly destroy gross margin.
 
 - Runs an automatic profit scan from Shopify product variants.
 - Reads Shopify selling price and `InventoryItem.unitCost`.
-- Applies imported supplier costs by SKU when Shopify costs are missing or need override.
+- Applies imported supplier costs by Shopify variant ID, inventory item ID, or SKU when Shopify costs are missing or need override.
 - Flags:
   - loss products
   - low-margin products
   - missing-cost products
 - Shows direct loss found and gap to target margin.
 - Exports findings as CSV.
-- Imports supplier costs from CSV.
+- Imports supplier costs from CSV and provides a generated variant cost template.
 - Stores imported costs for future scans.
 - Stores latest scan and findings in Prisma/SQLite.
 - Has weekly alert settings and scheduler structure.
@@ -70,10 +70,12 @@ Optional:
 ## CSV import format
 
 ```csv
-SKU,COST
-ABC123,12.50
-XYZ999,8.40
+variant_id,inventory_item_id,sku,cost
+gid://shopify/ProductVariant/123,,ABC123,12.50
+,gid://shopify/InventoryItem/456,,8.40
 ```
+
+Merchants can download a prefilled template from `/app/import/template`, add `new_cost`, and re-upload it. SKU is optional when the template includes Shopify variant or inventory item IDs.
 
 ## Tests
 

@@ -56,9 +56,11 @@ assert.equal(result.variants[0].currencyCode, "EUR");
 assert.equal(result.variants[0].costAmount, null);
 assert.equal(result.variants[0].costSource, "MISSING");
 assert.equal(result.variants[0].inventoryQuantity, 3);
+assert.equal(result.variants[0].inventoryItemId, "gid://shopify/InventoryItem/1");
 assert.equal(result.variants[1].currencyCode, "USD");
 assert.equal(result.variants[1].costAmount, 7.5);
 assert.equal(result.variants[1].costSource, "SHOPIFY_UNIT_COST");
 assert.equal(result.variants[1].inventoryQuantity, 12);
+assert.equal(result.variants[1].inventoryItemId, "gid://shopify/InventoryItem/2");
 
 console.log("Margin Sentinel Shopify product tests passed.");

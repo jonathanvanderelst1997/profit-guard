@@ -3,6 +3,7 @@ export type CostSource = "SHOPIFY_UNIT_COST" | "SUPPLIER_IMPORT" | "DEMO" | "MIS
 
 export type VariantMarginInput = {
   variantId: string;
+  inventoryItemId?: string | null;
   productTitle: string;
   variantTitle?: string | null;
   sku?: string | null;
