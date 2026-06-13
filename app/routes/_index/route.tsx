@@ -1,7 +1,5 @@
 import type { LoaderFunctionArgs } from "react-router";
-import { redirect, Form, useLoaderData } from "react-router";
-
-import { login } from "../../shopify.server";
+import { redirect } from "react-router";
 
 import styles from "./styles.module.css";
 
@@ -12,12 +10,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     throw redirect(`/app?${url.searchParams.toString()}`);
   }
 
-  return { showForm: Boolean(login) };
+  return null;
 };
 
 export default function App() {
-  const { showForm } = useLoaderData<typeof loader>();
-
   return (
     <div className={styles.index}>
       <header className={styles.header}>
@@ -37,18 +33,10 @@ export default function App() {
         <p className={styles.eyebrow}>Shopify catalog margin scanner</p>
         <h1 className={styles.heading}>Find products quietly leaking profit.</h1>
         <p className={styles.text}>Profit Guard scans Shopify variants for missing costs, negative gross margin, and prices below your target margin. It gives merchants a prioritized fix list without changing prices automatically.</p>
-        {showForm && (
-          <Form className={styles.form} method="post" action="/auth/login">
-            <label className={styles.label}>
-              <span>Shop domain</span>
-              <input className={styles.input} type="text" name="shop" placeholder="my-store.myshopify.com" />
-              <span>Use your Shopify admin store domain.</span>
-            </label>
-            <button className={styles.button} type="submit">
-              Log in
-            </button>
-          </Form>
-        )}
+        <div className={styles.actions}>
+          <a className={styles.primaryAction} href="/beta">Join beta</a>
+          <a className={styles.secondaryAction} href="/support">Contact support</a>
+        </div>
         <ul className={styles.list}>
           <li>
             <strong>Margin leak scan.</strong> Catch loss-making, low-margin, and missing-cost variants from Shopify product data.
