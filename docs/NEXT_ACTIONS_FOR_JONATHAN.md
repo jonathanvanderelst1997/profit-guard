@@ -32,7 +32,7 @@ Use those hosted links in the Shopify App Store submission.
 
 1. Open Margin Sentinel.
 2. Click **Run profit scan**.
-3. Open **Import supplier costs** and upload `mock/supplier-costs.csv`.
+3. Open **Import supplier costs**, download the template, and upload a cost CSV.
 4. Tick **Save imported costs for future scans**.
 5. Go back to dashboard and run scan again.
 6. Open **Download findings CSV**.

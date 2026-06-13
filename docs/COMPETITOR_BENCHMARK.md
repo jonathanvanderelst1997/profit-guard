@@ -176,6 +176,6 @@ I would not believe in it as "another profit analytics dashboard" with broad cla
 
 - Public brand: use **Margin Sentinel** instead of Profit Guard.
 - Main category story: catalog/SKU margin leak scanner.
-- App Store tagline: "Find SKU margin leaks before they cost you."
+- App Store tagline: "Find catalog margin leaks before they cost you."
 - Lead screenshot: Action Center, not a generic dashboard.
 - Next feature sprint: filters, issue detail drawer, fresh weekly scans, and cost-change what-if scenarios.

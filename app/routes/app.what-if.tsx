@@ -5,7 +5,7 @@ import { authenticate } from "../shopify.server";
 import { applyDemoCostsWhenAllMissing } from "../lib/demo-costs";
 import { getImportedCosts, applyImportedCostsBySku } from "../lib/imported-costs.server";
 import { basisPointsToPercent, calculateMinimumPriceForTargetMargin, getCostSourceLabel, getFindingAction, getSeverityLabel, type MarginFinding } from "../lib/margin";
-import { getShopPlan, getVariantLimitForPlan, PLAN_LIMITS } from "../lib/plan.server";
+import { getShopPlan, getVariantLimitForPlan, isPaidPlan, PLAN_LIMITS } from "../lib/plan.server";
 import { getShopSettings } from "../lib/settings.server";
 import { fetchVariantsForAudit } from "../lib/shopify-products.server";
 import { buildCostIncreaseScenario, normalizeCostIncreasePercent } from "../lib/what-if";
@@ -17,7 +17,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
   const settings = await getShopSettings(session.shop);
   const planKey = await getShopPlan(session.shop);
-  return { settings, plan: PLAN_LIMITS[planKey], defaultIncreasePercent: 8 };
+  return { settings, plan: PLAN_LIMITS[planKey], planKey, canRunWhatIf: isPaidPlan(planKey), defaultIncreasePercent: 8 };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -26,6 +26,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const costIncreasePercent = normalizeCostIncreasePercent(formData.get("costIncreasePercent"));
   const settings = await getShopSettings(session.shop);
   const planKey = await getShopPlan(session.shop);
+  if (!isPaidPlan(planKey)) return { ok: false, error: "Upgrade to Starter to run cost-change what-if scenarios." };
   const variantLimit = getVariantLimitForPlan(planKey);
   const scan = await fetchVariantsForAudit(admin, { maxVariants: variantLimit });
   const importedCosts = await getImportedCosts(session.shop);
@@ -54,7 +55,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function WhatIfScenario() {
-  const { settings, plan, defaultIncreasePercent } = useLoaderData<typeof loader>();
+  const { settings, plan, canRunWhatIf, defaultIncreasePercent } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const data = fetcher.data;
   const isRunning = fetcher.state !== "idle";
@@ -63,13 +64,20 @@ export default function WhatIfScenario() {
     <s-page heading="Cost-change what-if">
       <s-section heading="Model supplier cost changes">
         <s-paragraph>Enter a supplier cost increase to see which SKUs would fall below your target margin and how much inventory value becomes risky. Margin Sentinel does not change prices.</s-paragraph>
+        {!canRunWhatIf ? (
+          <s-banner tone="warning" heading="Starter feature">
+            Upgrade to Starter to run supplier cost-change scenarios.
+            <s-link href="/app/pricing">Open pricing</s-link>
+          </s-banner>
+        ) : null}
         <fetcher.Form method="post">
           <s-stack direction="inline" gap="base" alignItems="end">
             <s-number-field label="Supplier cost increase" name="costIncreasePercent" defaultValue={String(defaultIncreasePercent)} min={0} max={100} step={0.5} suffix="%" />
-            <s-button type="submit" variant="primary" disabled={isRunning} loading={isRunning}>Run what-if</s-button>
+            <s-button type="submit" variant="primary" disabled={isRunning || !canRunWhatIf} loading={isRunning}>Run what-if</s-button>
           </s-stack>
         </fetcher.Form>
         <s-paragraph>Current target margin: {basisPointsToPercent(settings.minimumMarginBps)}. Current plan: {plan.label}, scanning up to {plan.variantLimit.toLocaleString()} variants.</s-paragraph>
+        {data?.ok === false ? <s-banner tone="critical">{data.error}</s-banner> : null}
       </s-section>
 
       {data?.ok ? (
@@ -92,7 +100,7 @@ export default function WhatIfScenario() {
               <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{formatMoney(Number(data.scenarioInventoryRiskAmount ?? 0), data.currencyCode)}</s-heading><s-text>Total inventory risk</s-text></s-box>
             </s-grid>
             <s-paragraph>Issues before scenario: {data.baselineIssueCount}. Issues after scenario: {data.scenarioIssueCount}. Added margin gap: {formatMoney(Number(data.addedMarginGapAmount ?? 0), data.currencyCode)}.</s-paragraph>
-            {data.findings.length > 0 ? (
+            {(data.findings?.length ?? 0) > 0 ? (
               <s-table variant="auto">
                 <s-table-header-row>
                   <s-table-header listSlot="primary">Product</s-table-header>
@@ -108,8 +116,8 @@ export default function WhatIfScenario() {
                   <s-table-header>Next action</s-table-header>
                 </s-table-header-row>
                 <s-table-body>
-                  {(data.findings as ScenarioFinding[]).slice(0, 25).map((finding) => {
-                    const suggestedPrice = calculateMinimumPriceForTargetMargin(finding.costAmount, data.minimumMarginBps);
+                  {((data.findings ?? []) as ScenarioFinding[]).slice(0, 25).map((finding) => {
+                    const suggestedPrice = calculateMinimumPriceForTargetMargin(finding.costAmount, data.minimumMarginBps ?? settings.minimumMarginBps);
                     return (
                       <s-table-row key={finding.id ?? finding.variantId}>
                         <s-table-cell>{finding.productTitle}{finding.variantTitle && finding.variantTitle !== "Default Title" ? ` / ${finding.variantTitle}` : ""}</s-table-cell>

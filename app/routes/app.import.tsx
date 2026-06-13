@@ -10,7 +10,7 @@ import { getShopSettings } from "../lib/settings.server";
 import { upsertImportedCosts } from "../lib/imported-costs.server";
 import { buildImportRunMetrics } from "../lib/import-history";
 import { createImportRun, getRecentImportRuns } from "../lib/import-history.server";
-import { getShopPlan, getVariantLimitForPlan } from "../lib/plan.server";
+import { getShopPlan, getVariantLimitForPlan, isPaidPlan, PLAN_LIMITS } from "../lib/plan.server";
 import { formatMoney } from "../lib/security";
 import { getVariantCostKeys } from "../lib/cost-matching";
 
@@ -36,7 +36,8 @@ function severityStyle(severity: PreviewFinding["severity"]): CSSProperties {
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
-  return { importRuns: await getRecentImportRuns(session.shop) };
+  const planKey = await getShopPlan(session.shop);
+  return { importRuns: await getRecentImportRuns(session.shop), planKey, plan: PLAN_LIMITS[planKey], canImport: isPaidPlan(planKey) };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -44,6 +45,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const file = formData.get("supplierCsv");
   const shouldSave = String(formData.get("saveCosts") ?? "false") === "true";
+  const planKey = await getShopPlan(session.shop);
+  if (!isPaidPlan(planKey)) {
+    return { ok: false, errors: ["Upgrade to Starter to preview and save supplier cost imports."], preview: null, importRuns: await getRecentImportRuns(session.shop) };
+  }
 
   if (!(file instanceof File)) return { ok: false, errors: ["Please upload a CSV file."], preview: null };
 
@@ -51,7 +56,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (parsed.errors.length > 0 && parsed.rows.length === 0) return { ok: false, errors: parsed.errors, preview: null };
 
   const settings = await getShopSettings(session.shop);
-  const planKey = await getShopPlan(session.shop);
   const variantLimit = getVariantLimitForPlan(planKey);
   const supplierMap = supplierRowsToMap(parsed.rows);
   const variants = await fetchVariantsForAudit(admin, { maxVariants: variantLimit });
@@ -86,7 +90,7 @@ function formatDateTime(value: string | Date): string {
 }
 
 export default function SupplierImport() {
-  const { importRuns: initialImportRuns } = useLoaderData<typeof loader>();
+  const { importRuns: initialImportRuns, plan, canImport } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const data = fetcher.data;
   const importRuns = data?.importRuns ?? initialImportRuns;
@@ -96,6 +100,12 @@ export default function SupplierImport() {
     <s-page heading="Import supplier costs">
       <s-section heading="Bulk cost import">
         <s-paragraph>Upload a CSV with variant_id, inventory_item_id, or SKU plus COST. Margin Sentinel matches rows to Shopify variants, previews the margin impact, and only saves costs when you tick the save box.</s-paragraph>
+        {!canImport ? (
+          <s-banner tone="warning" heading="Starter feature">
+            Your current plan is {plan.label}. Upgrade to Starter to preview and save supplier cost imports.
+            <s-link href="/app/pricing">Open pricing</s-link>
+          </s-banner>
+        ) : null}
         <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
           <s-stack direction="block" gap="small">
             <s-heading>CSV template</s-heading>
@@ -108,7 +118,7 @@ export default function SupplierImport() {
           <s-stack direction="block" gap="base">
             <input type="file" name="supplierCsv" accept=".csv,text/csv" />
             <label><input type="checkbox" name="saveCosts" value="true" /> Save imported costs for future scans</label>
-            <s-button type="submit" disabled={isUploading} loading={isUploading}>Preview / import costs</s-button>
+            <s-button type="submit" disabled={isUploading || !canImport} loading={isUploading}>Preview / import costs</s-button>
           </s-stack>
         </fetcher.Form>
       </s-section>

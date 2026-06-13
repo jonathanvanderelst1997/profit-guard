@@ -8,21 +8,22 @@ The current development store includes sample snowboard products. To make the fi
 
 - Red Snowboard: price below cost so it appears as a loss.
 - Green Snowboard: price above cost but below the target margin.
+- The Multi-managed Snowboard: below target margin with inventory risk.
 - The Collection Snowboard: Liquid: healthy margin.
-- Several variants with no unit cost so missing-cost findings remain visible.
+- The remaining variants have unit costs so the reviewer sees a clean production-like scan with `Missing cost = 0`.
 
-The bundled CSV `mock/supplier-costs.csv` uses SKUs from the development store.
+The import flow can use the generated cost template, Shopify variant IDs, inventory item IDs, or SKUs.
 
 ## Demo path
 
 1. Open Margin Sentinel from Shopify Admin.
 2. Open **Dashboard** and run a profit scan.
-3. Point out the Action Center: loss count, low-margin count, missing-cost count, and margin gap.
+3. Point out the Action Center: loss count, low-margin count, margin gap, and inventory dollars at risk.
 4. Open the prioritized findings table.
 5. Show suggested minimum price and next action.
 6. Open **Import costs**.
-7. Upload `mock/supplier-costs.csv`.
-8. Preview matched SKUs and margin impact.
+7. Download the variant cost template or upload a supplier cost CSV.
+8. Preview matched rows and margin impact.
 9. Save imported costs only if the reviewer wants to test persistence.
 10. Return to **Dashboard** and run another scan.
 11. Open **What-if** and run supplier cost +8%.

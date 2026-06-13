@@ -13,7 +13,7 @@ export const PLAN_LIMITS: Record<PlanKey, { label: string; variantLimit: number;
     label: "Starter",
     variantLimit: 5000,
     monthlyPrice: 15,
-    features: ["Scan up to 5,000 variants", "Supplier CSV cost import", "Suggested minimum prices", "Cost-change what-if", "Weekly alerts"],
+    features: ["Scan up to 5,000 variants", "Variant cost template and supplier import", "Suggested minimum prices", "Cost-change what-if", "Weekly alerts"],
   },
   growth: {
     label: "Growth",
@@ -42,4 +42,8 @@ export async function setShopPlan(shop: string, planKey: PlanKey, subscriptionId
 
 export function getVariantLimitForPlan(planKey: PlanKey): number {
   return PLAN_LIMITS[planKey].variantLimit;
+}
+
+export function isPaidPlan(planKey: PlanKey): boolean {
+  return planKey === "starter" || planKey === "growth";
 }

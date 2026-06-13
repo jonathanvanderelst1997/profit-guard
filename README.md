@@ -33,7 +33,7 @@ npm run dev
 
 Then open the Shopify dev preview.
 
-Use `mock/supplier-costs.csv` when testing the import flow.
+Use the in-app variant cost template when testing the import flow.
 
 ## Main routes
 

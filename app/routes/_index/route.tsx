@@ -42,7 +42,7 @@ export default function App() {
             <strong>Margin leak scan.</strong> Catch loss-making, low-margin, and missing-cost variants from Shopify product data.
           </li>
           <li>
-            <strong>Supplier cost import.</strong> Upload CSV costs by SKU and preview the impact before saving.
+            <strong>Supplier cost import.</strong> Download a variant template, upload costs by variant ID or SKU, and preview the impact before saving.
           </li>
           <li>
             <strong>Actionable export.</strong> Download findings with margin gap, next action, and suggested minimum price.

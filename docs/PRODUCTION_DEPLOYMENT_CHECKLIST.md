@@ -42,7 +42,7 @@ Verify these are configured and return 200:
 - `app_subscriptions/update`
 
 ## 6. Billing
-- For closed beta: Billing API fallback can be used.
+- For paid public launch: verify Shopify Billing API or Shopify App Pricing approval flow before submission.
 - For public App Store: configure Shopify App Pricing, then keep in-app feature gating.
 - Test upgrade, downgrade, cancel, reinstall.
 

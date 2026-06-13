@@ -33,7 +33,7 @@ Short version:
 1. Install Margin Sentinel on the review store.
 2. Open the embedded app from Shopify Admin.
 3. Run a profit scan from the dashboard.
-4. Open Import costs and upload the sample CSV from `mock/supplier-costs.csv`.
+4. Open Import costs, download the variant cost template, then upload a cost CSV.
 5. Tick save imported costs, then submit.
 6. Return to the dashboard and run the scan again.
 7. Review Action Center, findings, inventory risk, suggested minimum prices, and export CSV.

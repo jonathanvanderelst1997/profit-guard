@@ -10,7 +10,7 @@
 - Weekly alerts.
 - Public brand: Margin Sentinel.
 - Cost source labels across scans, imports, exports, and alerts.
-- Import history with file name, matched SKUs, unmatched SKUs, duplicate warnings, and saved/preview status.
+- Import history with file name, matched rows, unmatched rows, duplicate warnings, and saved/preview status.
 - Inventory dollars at risk from margin gap multiplied by current Shopify inventory quantity.
 - Cost-change what-if scenarios for supplier cost increases.
 

@@ -21,7 +21,7 @@ export default function Onboarding() {
         <s-grid gridTemplateColumns="repeat(4, minmax(0, 1fr))" gap="base">
           <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
             <s-heading>1. Add costs</s-heading>
-            <s-paragraph>Use Shopify unit costs or import supplier costs by SKU. Missing costs are the most common reason profit reports cannot be trusted.</s-paragraph>
+            <s-paragraph>Use Shopify unit costs or import supplier costs with the generated variant template. Missing costs are the most common reason profit reports cannot be trusted.</s-paragraph>
           </s-box>
           <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
             <s-heading>2. Set target</s-heading>
@@ -40,8 +40,7 @@ export default function Onboarding() {
 
       <s-section heading="Launch checklist for the merchant">
         <s-ordered-list>
-          <s-list-item>Open Products in Shopify and make sure variants have SKUs.</s-list-item>
-          <s-list-item>Add Shopify unit costs, or import supplier costs with a CSV.</s-list-item>
+          <s-list-item>Add Shopify unit costs, or import supplier costs with the generated CSV template.</s-list-item>
           <s-list-item>Set the minimum margin target. The default is 30%.</s-list-item>
           <s-list-item>Run the profit scan.</s-list-item>
           <s-list-item>Run a cost-change what-if scenario for the next supplier increase.</s-list-item>
@@ -51,8 +50,8 @@ export default function Onboarding() {
       </s-section>
 
       <s-section heading="CSV format">
-        <s-paragraph>Use this exact header. SKU must match the Shopify variant SKU.</s-paragraph>
-        <pre>{`SKU,COST\nABC123,12.50\nXYZ999,8.40\nEU-SKU-9,"1.234,56"`}</pre>
+        <s-paragraph>Use the generated template when SKUs are missing or inconsistent.</s-paragraph>
+        <pre>{`variant_id,inventory_item_id,sku,cost\ngid://shopify/ProductVariant/123,,ABC123,12.50\n,gid://shopify/InventoryItem/456,,8.40`}</pre>
         <s-stack direction="inline" gap="base">
           <s-link href="/app/import">Import supplier costs</s-link>
           <s-link href="/app/what-if">Run cost-change what-if</s-link>
