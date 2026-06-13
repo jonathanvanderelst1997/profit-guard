@@ -1,6 +1,6 @@
 name = "Margin Sentinel"
-client_id = "YOUR_SHOPIFY_CLIENT_ID"
-application_url = "https://your-production-app.example.com"
+client_id = "a13cf877db2a9dbc1119b90eb287a7cf"
+application_url = "https://profit-guard-xzku.onrender.com"
 embedded = true
 
 [access_scopes]
@@ -8,9 +8,9 @@ scopes = "read_products,read_inventory"
 
 [auth]
 redirect_urls = [
-  "https://your-production-app.example.com/auth/callback",
-  "https://your-production-app.example.com/auth/shopify/callback",
-  "https://your-production-app.example.com/api/auth/callback"
+  "https://profit-guard-xzku.onrender.com/auth/callback",
+  "https://profit-guard-xzku.onrender.com/auth/shopify/callback",
+  "https://profit-guard-xzku.onrender.com/api/auth/callback"
 ]
 
 [webhooks]

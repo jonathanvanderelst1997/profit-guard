@@ -2,7 +2,7 @@
 
 client_id = "a13cf877db2a9dbc1119b90eb287a7cf"
 name = "Margin Sentinel"
-application_url = "https://example.com"
+application_url = "https://profit-guard-xzku.onrender.com"
 embedded = true
 
 [build]
@@ -18,4 +18,8 @@ optional_scopes = [ ]
 use_legacy_install_flow = false
 
 [auth]
-redirect_urls = [ ]
+redirect_urls = [
+  "https://profit-guard-xzku.onrender.com/auth/callback",
+  "https://profit-guard-xzku.onrender.com/auth/shopify/callback",
+  "https://profit-guard-xzku.onrender.com/api/auth/callback"
+]
