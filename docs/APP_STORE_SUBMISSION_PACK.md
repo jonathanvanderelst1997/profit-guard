@@ -10,6 +10,8 @@
 - 3-5 screenshots from real embedded app UI.
 - 1 short screencast for Shopify reviewer.
 - Reviewer instructions: install app, run scan, import CSV, export CSV, test pricing.
+- Local self-review notes: `docs/SHOPIFY_SELF_REVIEW_2026-06-13.md`.
+- Reviewer/demo script: `docs/REVIEWER_DEMO_SCRIPT.md`.
 
 ## Review-safe positioning
 Profit Guard scans product-level gross margin. It is read-only and does not automatically change prices.
@@ -23,6 +25,10 @@ Profit Guard scans product-level gross margin. It is read-only and does not auto
 Find products with risky margins before they become expensive mistakes.
 
 ## Reviewer instructions draft
+Use `docs/REVIEWER_DEMO_SCRIPT.md` as the canonical reviewer walkthrough.
+
+Short version:
+
 1. Install Profit Guard on the review store.
 2. Open the embedded app from Shopify Admin.
 3. Run a profit scan from the dashboard.
@@ -30,7 +36,7 @@ Find products with risky margins before they become expensive mistakes.
 5. Tick save imported costs, then submit.
 6. Return to the dashboard and run the scan again.
 7. Review Action Center, findings, suggested minimum prices, and export CSV.
-8. Open Alerts and save a test alert email. If email provider keys are not configured in review mode, the app should show a clear skipped-provider message.
+8. Open Alerts and save a test alert email. If email provider keys are not configured in review mode, the app shows a clear skipped-provider message.
 9. Open Pricing and confirm plan gates are visible.
 
 ## Screenshot plan

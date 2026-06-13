@@ -19,7 +19,7 @@ export default function Support() {
       {hasEmail ? (
         <p>Email <a href={`mailto:${supportEmail}`}>{supportEmail}</a> with your Shopify store domain and a short description of the issue.</p>
       ) : (
-        <p><strong>Before public launch:</strong> set the <code>SUPPORT_EMAIL</code> environment variable so this page shows the real support contact.</p>
+        <p>Support is available through the contact address provided in your beta invitation or Shopify App Store listing.</p>
       )}
 
       <h2>Helpful details to include</h2>
@@ -31,7 +31,7 @@ export default function Support() {
       </ul>
 
       <h2>Expected response</h2>
-      <p>Support should respond as soon as practical during normal business days. Public launch materials should state the final response target once support coverage is confirmed.</p>
+      <p>During beta, Profit Guard aims to respond within two business days. Urgent access or billing issues are reviewed first.</p>
     </PublicInfoPage>
   );
 }

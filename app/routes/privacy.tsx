@@ -15,7 +15,7 @@ export default function PrivacyPolicy() {
       <p>Data is used to calculate product-level gross margin, identify variants with missing costs, negative margin, or margin below the merchant target, generate exports, and send optional margin alert emails when configured.</p>
 
       <h2>Data storage</h2>
-      <p>Profit Guard stores app sessions, merchant settings, imported supplier costs, audit runs, and audit findings so merchants can review their latest scans and exports. Production storage should use a managed database configured by the app operator.</p>
+      <p>Profit Guard stores app sessions, merchant settings, imported supplier costs, audit runs, and audit findings so merchants can review their latest scans and exports. Production storage uses the application database configured for the deployed app.</p>
 
       <h2>Data deletion</h2>
       <p>When a merchant uninstalls Profit Guard, the app handles the Shopify uninstall webhook and deletes stored shop data, including scan findings, imported costs, settings, and sessions.</p>

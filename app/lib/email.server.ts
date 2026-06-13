@@ -13,11 +13,12 @@ function buildAlertHtml(settings: ShopSettings, audit: AuditRunWithFindings) {
 export async function sendWeeklyAlertEmail(settings: ShopSettings, audit: AuditRunWithFindings) {
   if (!settings.alertEmail || !settings.weeklyAlertsEnabled) return { skipped: true, reason: "Alerts disabled or no email set." };
   if (!process.env.RESEND_API_KEY) return { skipped: true, reason: "RESEND_API_KEY is not configured." };
+  if (!process.env.ALERTS_FROM_EMAIL) return { skipped: true, reason: "ALERTS_FROM_EMAIL is not configured." };
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      from: process.env.ALERTS_FROM_EMAIL || "Profit Guard <alerts@example.com>",
+      from: process.env.ALERTS_FROM_EMAIL,
       to: settings.alertEmail,
       subject: `Profit Guard: ${audit.lossCount + audit.lowMarginCount + audit.missingCostCount} margin risks found`,
       html: buildAlertHtml(settings, audit),

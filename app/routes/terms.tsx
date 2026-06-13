@@ -3,7 +3,7 @@ import { PublicInfoPage } from "../components/PublicInfoPage";
 export default function TermsOfService() {
   return (
     <PublicInfoPage title="Terms of Service" eyebrow="Last updated: June 13, 2026">
-      <p>These terms describe the intended use of Profit Guard. They should be reviewed before public launch and matched to the final business entity, billing provider, and support contact.</p>
+      <p>These terms describe how merchants may use Profit Guard to review product-level gross margin risk in Shopify.</p>
 
       <h2>Service</h2>
       <p>Profit Guard is a Shopify app that scans product and variant data to identify missing costs, negative gross margin, and prices below a merchant-defined target margin.</p>
@@ -15,7 +15,7 @@ export default function TermsOfService() {
       <p>Profit Guard does not automatically change product prices, supplier costs, inventory, orders, or customer records. Suggested minimum prices are informational and should be reviewed by the merchant.</p>
 
       <h2>Billing</h2>
-      <p>Paid plans, trials, upgrades, downgrades, and cancellations should be handled through Shopify billing or Shopify App Pricing when the app is publicly listed.</p>
+      <p>Paid plans, trials, upgrades, downgrades, and cancellations are handled through Shopify billing or Shopify App Pricing when charges apply.</p>
 
       <h2>Availability</h2>
       <p>The app operator may update, pause, or discontinue features as needed to maintain the service, comply with Shopify requirements, or improve reliability.</p>

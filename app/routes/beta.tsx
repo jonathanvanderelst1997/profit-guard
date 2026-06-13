@@ -37,7 +37,7 @@ export default function Beta() {
       {contactUrl ? (
         <p><a href={contactUrl}>Request beta access</a></p>
       ) : (
-        <p><strong>Before public beta:</strong> set `BETA_SIGNUP_URL` or `SUPPORT_EMAIL` so this page has a working contact link.</p>
+        <p>Beta access is invite-only right now. If you received a Profit Guard beta invitation, use the contact details included with that invitation.</p>
       )}
     </PublicInfoPage>
   );
