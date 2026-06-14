@@ -1,29 +1,26 @@
 Dashboard: issues, inventory risk, suggested prices
-[00:00:00.000 - 00:00:13.000] Dashboard. Click Run profit scan to refresh the margin scan.
-[00:00:13.000 - 00:00:29.000] The Action center summarizes catalog health, issues to review, and inventory risk.
-[00:00:29.000 - 00:00:45.000] Click the Fix first card area to focus on the suggested minimum price and next action.
-[00:00:45.000 - 00:01:02.000] Click Export full fix list. Margin Sentinel stays read-only and never changes Shopify prices automatically.
+[00:00:00.000 - 00:00:11.000] Dashboard. Click Run profit scan to refresh the margin scan.
+[00:00:11.000 - 00:00:24.000] The Action center shows catalog health, issues to review, and inventory risk.
+[00:00:24.000 - 00:00:36.000] The Fix first card shows the suggested minimum price and next action.
+[00:00:36.000 - 00:00:46.000] Margin Sentinel is read-only. It does not change Shopify prices automatically.
 
-Dashboard findings and actionable fix list
-[00:01:02.000 - 00:01:14.000] Click a finding row to see the product that needs attention.
-[00:01:14.000 - 00:01:27.000] The row shows SKU, price, cost, margin, inventory risk, and suggested minimum price.
-[00:01:27.000 - 00:01:40.000] Click the suggested price and next-action columns to show what the merchant should do next.
-[00:01:40.000 - 00:01:50.000] This makes the scan actionable instead of just reporting a number.
+Findings table: actionable fix list
+[00:00:46.000 - 00:00:56.000] The findings table lists losing-money and low-margin variants.
+[00:00:56.000 - 00:01:09.000] Each row includes price, cost, margin, inventory risk, and suggested minimum price.
+[00:01:09.000 - 00:01:24.000] The merchant can use this as a concrete fix list for pricing or supplier review.
 
-Pricing page: plans and billing
-[00:01:50.000 - 00:02:03.000] Pricing page. Click each plan to show what the merchant gets.
-[00:02:03.000 - 00:02:18.000] Free includes a small scan and CSV export. Starter unlocks larger scans, supplier import, what-if, and alerts.
-[00:02:18.000 - 00:02:30.000] Growth is for bigger catalogs and priority support.
-[00:02:30.000 - 00:02:40.000] Click Start 14-day trial. Paid plans are handled through Shopify billing.
+Pricing: plans and billing
+[00:01:24.000 - 00:01:34.000] Pricing page. Free, Starter, and Growth plans are shown clearly.
+[00:01:34.000 - 00:01:49.000] Starter unlocks larger scans, supplier import, what-if checks, suggested prices, and weekly alerts.
+[00:01:49.000 - 00:02:06.000] Paid plan actions go through Shopify billing with a 14-day trial.
 
-Supplier import and cost-change what-if
-[00:02:40.000 - 00:02:55.000] Supplier import. Click the CSV area to show the accepted columns: variant ID, inventory item ID, SKU, and cost.
-[00:02:55.000 - 00:03:11.000] Click the matched count. The preview confirms which rows match Shopify variants before saving.
-[00:03:11.000 - 00:03:28.000] Click the What-if controls to model supplier cost increases.
-[00:03:28.000 - 00:03:42.000] This helps merchants respond before low-margin products continue selling.
+Supplier import and what-if
+[00:02:06.000 - 00:02:19.000] Supplier import accepts variant ID, inventory item ID, SKU, and cost.
+[00:02:19.000 - 00:02:31.000] The preview shows matched rows before costs are saved.
+[00:02:31.000 - 00:02:46.000] The what-if panel models supplier cost increases and newly at-risk SKUs.
+[00:02:46.000 - 00:02:58.000] This helps merchants act before low-margin products keep selling.
 
 Export and next steps
-[00:03:42.000 - 00:03:53.000] Export. Click Download findings CSV to create the saved fix list.
-[00:03:53.000 - 00:04:07.000] The CSV includes issue type, product, cost source, margin gap, inventory risk, and next action.
-[00:04:07.000 - 00:04:18.000] Actionable next steps are clear: raise price, reduce cost, fix missing cost, or review discount rules.
-[00:04:18.000 - 00:04:26.000] That is the core promise: catch margin leaks before products keep selling.
+[00:02:58.000 - 00:03:09.000] Export. Click Download CSV to create the full saved fix list.
+[00:03:09.000 - 00:03:23.000] The CSV includes cost source, margin gap, inventory risk, suggested price, and next action.
+[00:03:23.000 - 00:03:40.000] Final steps are clear: raise price, reduce cost, add missing cost, or review discount rules.
