@@ -17,12 +17,13 @@ Recommended description:
 ```
 Margin Sentinel is a Shopify embedded app for catalog margin protection.
 
-This screencast shows:
-1. Dashboard with margin issues, inventory risk, and suggested prices
-2. Findings table with actionable fix list
-3. Pricing page with Free, Starter, and Growth plans
-4. Supplier import and cost-change what-if workflow
-5. Export and actionable next steps
+This screencast shows real clicks in a local reviewer demo:
+1. Dashboard scan with issues, inventory risk, and suggested prices
+2. Finding selection and actionable fix list
+3. Supplier import preview
+4. Cost-change what-if
+5. Pricing and Shopify billing path
+6. Export CSV and next steps
 
 Margin Sentinel is read-only for product pricing. It reads Shopify product and inventory data, Shopify unit cost, and merchant-imported supplier costs. It does not change product prices automatically.
 ```

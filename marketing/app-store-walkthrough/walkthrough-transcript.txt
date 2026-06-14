@@ -1,26 +1,22 @@
-Dashboard: issues, inventory risk, suggested prices
-[00:00:00.000 - 00:00:11.000] Dashboard. Click Run profit scan to refresh the margin scan.
-[00:00:11.000 - 00:00:24.000] The Action center shows catalog health, issues to review, and inventory risk.
-[00:00:24.000 - 00:00:36.000] The Fix first card shows the suggested minimum price and next action.
-[00:00:36.000 - 00:00:46.000] Margin Sentinel is read-only. It does not change Shopify prices automatically.
-
-Findings table: actionable fix list
-[00:00:46.000 - 00:00:56.000] The findings table lists losing-money and low-margin variants.
-[00:00:56.000 - 00:01:09.000] Each row includes price, cost, margin, inventory risk, and suggested minimum price.
-[00:01:09.000 - 00:01:24.000] The merchant can use this as a concrete fix list for pricing or supplier review.
-
-Pricing: plans and billing
-[00:01:24.000 - 00:01:34.000] Pricing page. Free, Starter, and Growth plans are shown clearly.
-[00:01:34.000 - 00:01:49.000] Starter unlocks larger scans, supplier import, what-if checks, suggested prices, and weekly alerts.
-[00:01:49.000 - 00:02:06.000] Paid plan actions go through Shopify billing with a 14-day trial.
-
-Supplier import and what-if
-[00:02:06.000 - 00:02:19.000] Supplier import accepts variant ID, inventory item ID, SKU, and cost.
-[00:02:19.000 - 00:02:31.000] The preview shows matched rows before costs are saved.
-[00:02:31.000 - 00:02:46.000] The what-if panel models supplier cost increases and newly at-risk SKUs.
-[00:02:46.000 - 00:02:58.000] This helps merchants act before low-margin products keep selling.
-
-Export and next steps
-[00:02:58.000 - 00:03:09.000] Export. Click Download CSV to create the full saved fix list.
-[00:03:09.000 - 00:03:23.000] The CSV includes cost source, margin gap, inventory risk, suggested price, and next action.
-[00:03:23.000 - 00:03:40.000] Final steps are clear: raise price, reduce cost, add missing cost, or review discount rules.
+[00:00:00.000 - 00:00:05.502] Open Margin Sentinel. This is a local reviewer demo with real clicks and real UI state changes.
+[00:00:05.502 - 00:00:10.193] Click Run profit scan. The dashboard moves from ready state to scanning and then shows real findings.
+[00:00:10.193 - 00:00:18.710] After the scan, the Action center shows catalog health, issues to review, and inventory risk.
+[00:00:18.710 - 00:00:28.174] Click the Fix first card to open the priority finding and suggested minimum price.
+[00:00:28.174 - 00:00:39.113] Click a finding row. The table highlights the selected product and keeps price, cost, margin, risk, and suggested price visible.
+[00:00:39.113 - 00:00:46.594] Open Import costs. Merchants can use variant ID, inventory item ID, or SKU plus cost.
+[00:00:46.594 - 00:00:56.556] Click Download variant cost template. This is useful when SKUs are missing or inconsistent.
+[00:00:56.556 - 00:01:01.506] Click Preview / import costs. The app matches CSV rows to Shopify variants before saving.
+[00:01:01.506 - 00:01:11.008] The import preview now shows matched rows, saved costs, warnings, and margin impact.
+[00:01:11.008 - 00:01:18.914] Open What-if. This models supplier cost increases before low-margin products keep selling.
+[00:01:18.914 - 00:01:23.845] Click Run what-if. The scenario recalculates at-risk SKUs and inventory risk.
+[00:01:23.845 - 00:01:33.348] The what-if result shows new at-risk SKUs, added inventory risk, and next actions by product.
+[00:01:33.348 - 00:01:41.794] Open Pricing. Plans are clear: Free, Starter, and Growth.
+[00:01:41.794 - 00:01:52.715] Click Start 14-day trial on Starter. In production, this opens Shopify managed billing.
+[00:01:52.715 - 00:01:58.638] Close the billing preview and return to the app.
+[00:01:58.638 - 00:02:06.614] Open Export. Merchants can download a team-ready CSV fix list.
+[00:02:06.614 - 00:02:16.581] Click Download CSV. This generates a saved findings export without changing Shopify prices.
+[00:02:16.581 - 00:02:25.583] The export includes issue type, product, cost source, margin gap, inventory risk, suggested price, and next action.
+[00:02:25.583 - 00:02:34.084] Final reviewer takeaway: Margin Sentinel finds margin leaks, explains what to fix first, and remains read-only.
+[00:02:34.084 - 00:02:46.086] This walkthrough covered the required review path: dashboard, finding details, supplier import, what-if, pricing, and export.
+[00:02:46.086 - 00:02:58.088] The important behavior is visible: buttons change state, results appear after clicks, and export confirms a generated download.
+[00:02:58.088 - 00:03:10.090] Margin Sentinel recommends actions, but merchants stay in control of price and supplier cost changes.
