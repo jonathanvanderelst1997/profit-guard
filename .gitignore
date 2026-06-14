@@ -8,3 +8,4 @@ build
 .cache
 .shopify
 .DS_Store
+marketing/app-store-assets/_render/

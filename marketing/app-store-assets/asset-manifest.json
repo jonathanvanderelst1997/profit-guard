@@ -1,0 +1,12 @@
+{
+  "generatedAt": "2026-06-14T12:33:57.883Z",
+  "imageSize": "1600x900",
+  "featureMedia": "feature-media-1600x900.png",
+  "screenshots": [
+    "screenshot-1-dashboard.png",
+    "screenshot-2-pricing.png",
+    "screenshot-3-import-what-if.png"
+  ],
+  "screencast": "margin-sentinel-reviewer-screencast.mp4",
+  "youtubeInstructions": "youtube-upload-instructions.md"
+}
