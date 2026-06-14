@@ -20,6 +20,7 @@ Set these environment variables:
 - `SHOPIFY_APP_URL`
 - `SCOPES=read_products,read_inventory`
 - `DATABASE_URL`
+- `SHOPIFY_BILLING_TEST=false` for paid public launch. Use `true` only while approving test charges on a development store.
 - `SUPPORT_EMAIL`
 - `RESEND_API_KEY` if alerts are enabled
 - `ALERTS_FROM_EMAIL`
@@ -44,6 +45,7 @@ Verify these are configured and return 200:
 ## 6. Billing
 - For paid public launch: verify Shopify Billing API or Shopify App Pricing approval flow before submission.
 - For public App Store: configure Shopify App Pricing, then keep in-app feature gating.
+- For development-store approval testing on a production host, temporarily set `SHOPIFY_BILLING_TEST=true`.
 - Test upgrade, downgrade, cancel, reinstall.
 
 ## 7. QA commands

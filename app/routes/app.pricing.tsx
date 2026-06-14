@@ -1,17 +1,21 @@
 import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs } from "react-router";
-import { redirect, useFetcher, useLoaderData } from "react-router";
+import { useFetcher, useLoaderData } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate } from "../shopify.server";
-import { createRecurringSubscription, syncPlanFromShopifyBilling } from "../lib/billing.server";
+import {
+  billingPlanNameForKey,
+  buildBillingReturnUrl,
+  isBillablePlanKey,
+  shouldUseTestBilling,
+  syncPlanFromShopifyBilling,
+} from "../lib/billing.server";
 import { getShopPlan, PLAN_LIMITS, setShopPlan, type PlanKey } from "../lib/plan.server";
-
-const BILLABLE_PLANS: PlanKey[] = ["starter", "growth"];
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { admin, session } = await authenticate.admin(request);
   const url = new URL(request.url);
   const selectedPlan = url.searchParams.get("selected_plan") as PlanKey | null;
-  if (selectedPlan && BILLABLE_PLANS.includes(selectedPlan)) {
+  if (isBillablePlanKey(selectedPlan)) {
     await setShopPlan(session.shop, selectedPlan, url.searchParams.get("charge_id"));
   }
   let currentPlan = await getShopPlan(session.shop);
@@ -20,7 +24,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const { admin, session } = await authenticate.admin(request);
+  const { billing, session } = await authenticate.admin(request);
   const formData = await request.formData();
   const planKey = String(formData.get("plan") ?? "starter") as PlanKey;
 
@@ -29,21 +33,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return { ok: true, downgraded: true };
   }
 
-  if (!BILLABLE_PLANS.includes(planKey)) return { ok: false, error: "Unknown plan." };
+  if (!isBillablePlanKey(planKey)) return { ok: false, error: "Unknown plan." };
 
-  const plan = PLAN_LIMITS[planKey];
-  const url = new URL(request.url);
-  const confirmationUrl = await createRecurringSubscription(admin, {
-    name: `Margin Sentinel ${plan.label}`,
-    amount: plan.monthlyPrice,
-    returnUrl: `${url.origin}/app/pricing?selected_plan=${planKey}`,
-    trialDays: 14,
-  }).catch((error) => {
-    console.error("Failed to create Shopify billing confirmation URL", error);
-    return null;
-  });
-  if (!confirmationUrl) return { ok: false, error: "Could not create Shopify billing confirmation URL." };
-  return redirect(confirmationUrl);
+  try {
+    return await billing.request({
+      plan: billingPlanNameForKey(planKey),
+      isTest: shouldUseTestBilling(),
+      returnUrl: buildBillingReturnUrl(request, session.shop, planKey),
+      trialDays: 14,
+    });
+  } catch (error) {
+    if (error instanceof Response) throw error;
+    console.error("Failed to request Shopify billing approval", error);
+    return { ok: false, error: "Could not open Shopify billing approval." };
+  }
 };
 
 export default function Pricing() {

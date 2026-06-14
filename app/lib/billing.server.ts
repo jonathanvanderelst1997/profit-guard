@@ -1,19 +1,43 @@
 type AdminGraphqlClient = { graphql: (query: string, options?: { variables?: Record<string, unknown> }) => Promise<Response>; };
 import { PLAN_LIMITS, normalizePlanKey, setShopPlan, type PlanKey } from "./plan.server";
 
-export async function createRecurringSubscription(admin: AdminGraphqlClient, input: { name: string; amount: number; returnUrl: string; trialDays?: number; test?: boolean }) {
-  const response = await admin.graphql(`#graphql
-    mutation ProfitGuardSubscriptionCreate($name: String!, $lineItems: [AppSubscriptionLineItemInput!]!, $returnUrl: URL!, $trialDays: Int, $test: Boolean) {
-      appSubscriptionCreate(name: $name, returnUrl: $returnUrl, lineItems: $lineItems, trialDays: $trialDays, test: $test) {
-        userErrors { field message }
-        appSubscription { id name status }
-        confirmationUrl
-      }
-    }`, { variables: { name: input.name, returnUrl: input.returnUrl, trialDays: input.trialDays ?? 14, test: input.test ?? process.env.NODE_ENV !== "production", lineItems: [{ plan: { appRecurringPricingDetails: { interval: "EVERY_30_DAYS", price: { amount: input.amount, currencyCode: "USD" } } } }] } });
-  const json = await response.json();
-  const payload = json.data?.appSubscriptionCreate;
-  if (payload?.userErrors?.length) throw new Error(payload.userErrors.map((e: { message: string }) => e.message).join(", "));
-  return payload?.confirmationUrl as string | undefined;
+export type BillablePlanKey = Exclude<PlanKey, "free">;
+
+export const BILLABLE_PLAN_KEYS = ["starter", "growth"] as const satisfies readonly BillablePlanKey[];
+
+export const STARTER_BILLING_PLAN = "Margin Sentinel Starter";
+export const GROWTH_BILLING_PLAN = "Margin Sentinel Growth";
+
+export const BILLING_PLAN_NAMES: Record<BillablePlanKey, string> = {
+  starter: STARTER_BILLING_PLAN,
+  growth: GROWTH_BILLING_PLAN,
+};
+
+export function isBillablePlanKey(value: unknown): value is BillablePlanKey {
+  return BILLABLE_PLAN_KEYS.includes(value as BillablePlanKey);
+}
+
+export function billingPlanNameForKey(planKey: BillablePlanKey) {
+  return BILLING_PLAN_NAMES[planKey];
+}
+
+export function shouldUseTestBilling() {
+  const override = process.env.SHOPIFY_BILLING_TEST;
+  if (override === "true") return true;
+  if (override === "false") return false;
+  return process.env.NODE_ENV !== "production";
+}
+
+export function buildBillingReturnUrl(request: Request, shop: string, planKey: BillablePlanKey) {
+  const requestUrl = new URL(request.url);
+  const returnUrl = new URL("/app/pricing", requestUrl.origin);
+  const host = requestUrl.searchParams.get("host");
+
+  returnUrl.searchParams.set("selected_plan", planKey);
+  returnUrl.searchParams.set("shop", shop);
+  if (host) returnUrl.searchParams.set("host", host);
+
+  return returnUrl.toString();
 }
 
 const ACTIVE_SUBSCRIPTIONS_QUERY = `#graphql
