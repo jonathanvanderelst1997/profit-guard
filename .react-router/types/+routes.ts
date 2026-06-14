@@ -32,6 +32,9 @@ type Pages = {
   "/webhooks/shop/redact": {
     params: {};
   };
+  "/webhooks/compliance": {
+    params: {};
+  };
   "/auth/login": {
     params: {};
   };
@@ -93,7 +96,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/auth/login" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/import/template" | "/app/csv";
+    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/webhooks/compliance" | "/auth/login" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/import/template" | "/app/csv";
   };
   "routes/webhooks.app_subscriptions.update.tsx": {
     id: "routes/webhooks.app_subscriptions.update";
@@ -118,6 +121,10 @@ type RouteFiles = {
   "routes/webhooks.shop.redact.tsx": {
     id: "routes/webhooks.shop.redact";
     page: "/webhooks/shop/redact";
+  };
+  "routes/webhooks.compliance.tsx": {
+    id: "routes/webhooks.compliance";
+    page: "/webhooks/compliance";
   };
   "routes/auth.login/route.tsx": {
     id: "routes/auth.login";
@@ -209,6 +216,7 @@ type RouteModules = {
   "routes/webhooks.customers.redact": typeof import("./app/routes/webhooks.customers.redact.tsx");
   "routes/webhooks.app.uninstalled": typeof import("./app/routes/webhooks.app.uninstalled.tsx");
   "routes/webhooks.shop.redact": typeof import("./app/routes/webhooks.shop.redact.tsx");
+  "routes/webhooks.compliance": typeof import("./app/routes/webhooks.compliance.tsx");
   "routes/auth.login": typeof import("./app/routes/auth.login/route.tsx");
   "routes/healthz": typeof import("./app/routes/healthz.tsx");
   "routes/privacy": typeof import("./app/routes/privacy.tsx");
