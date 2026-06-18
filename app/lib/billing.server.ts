@@ -28,14 +28,14 @@ export function shouldUseTestBilling() {
   return process.env.NODE_ENV !== "production";
 }
 
-export function buildBillingReturnUrl(request: Request, shop: string, planKey: BillablePlanKey) {
-  const requestUrl = new URL(request.url);
-  const returnUrl = new URL("/app/pricing", requestUrl.origin);
-  const host = requestUrl.searchParams.get("host");
+export function shopHandleFromDomain(shop: string) {
+  return shop.replace(/\.myshopify\.com$/i, "");
+}
 
+export function buildBillingReturnUrl(_request: Request, shop: string, planKey: BillablePlanKey, appHandle = process.env.SHOPIFY_API_KEY || "") {
+  const storeHandle = shopHandleFromDomain(shop);
+  const returnUrl = new URL(`/store/${storeHandle}/apps/${appHandle}/app/pricing`, "https://admin.shopify.com");
   returnUrl.searchParams.set("selected_plan", planKey);
-  returnUrl.searchParams.set("shop", shop);
-  if (host) returnUrl.searchParams.set("host", host);
 
   return returnUrl.toString();
 }

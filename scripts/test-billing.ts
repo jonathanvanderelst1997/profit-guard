@@ -10,12 +10,12 @@ const request = new Request(
   "https://profit-guard-xzku.onrender.com/app/pricing?embedded=1&shop=profit-guard-putjxynn.myshopify.com&host=YWRtaW4uc2hvcGlmeS5jb20vc3RvcmUvcHJvZml0LWd1YXJkLXB1dGp5eW5u&id_token=temporary",
 );
 
-const returnUrl = new URL(buildBillingReturnUrl(request, "profit-guard-putjxynn.myshopify.com", "starter"));
-assert.equal(returnUrl.origin, "https://profit-guard-xzku.onrender.com");
-assert.equal(returnUrl.pathname, "/app/pricing");
+const returnUrl = new URL(buildBillingReturnUrl(request, "profit-guard-putjxynn.myshopify.com", "starter", "a13cf877db2a9dbc1119b90eb287a7cf"));
+assert.equal(returnUrl.origin, "https://admin.shopify.com");
+assert.equal(returnUrl.pathname, "/store/profit-guard-putjxynn/apps/a13cf877db2a9dbc1119b90eb287a7cf/app/pricing");
 assert.equal(returnUrl.searchParams.get("selected_plan"), "starter");
-assert.equal(returnUrl.searchParams.get("shop"), "profit-guard-putjxynn.myshopify.com");
-assert.equal(returnUrl.searchParams.get("host"), "YWRtaW4uc2hvcGlmeS5jb20vc3RvcmUvcHJvZml0LWd1YXJkLXB1dGp5eW5u");
+assert.equal(returnUrl.searchParams.has("shop"), false);
+assert.equal(returnUrl.searchParams.has("host"), false);
 assert.equal(returnUrl.searchParams.has("embedded"), false);
 assert.equal(returnUrl.searchParams.has("id_token"), false);
 

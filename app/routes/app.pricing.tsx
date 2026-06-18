@@ -20,7 +20,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   }
   let currentPlan = await getShopPlan(session.shop);
   try { currentPlan = await syncPlanFromShopifyBilling(admin, session.shop); } catch { /* Billing sync can fail in local/dev mode. Keep stored plan. */ }
-  return { plans: PLAN_LIMITS, currentPlan };
+  return { plans: PLAN_LIMITS, currentPlan, selectedPlan: isBillablePlanKey(selectedPlan) ? selectedPlan : null };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -50,13 +50,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Pricing() {
-  const { plans, currentPlan } = useLoaderData<typeof loader>();
+  const { plans, currentPlan, selectedPlan } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const isSubmitting = fetcher.state !== "idle";
+  const approvedPlan = selectedPlan && currentPlan === selectedPlan ? plans[selectedPlan].label : null;
   return (
     <s-page heading="Pricing">
       <s-section heading="Simple catalog-based pricing">
         <s-paragraph>Current plan: {plans[currentPlan].label}. Margin Sentinel is priced for catalog margin protection, not full accounting. Upgrade when you need larger catalog scans, supplier cost imports, cost-change what-if checks, weekly alerts, or priority support.</s-paragraph>
+        {approvedPlan ? <s-banner tone="success">Subscription approved. Current plan: {approvedPlan}.</s-banner> : null}
         {fetcher.data?.ok ? <s-banner tone="success">Plan updated.</s-banner> : null}
         {fetcher.data?.ok === false ? <s-banner tone="critical">{fetcher.data.error}</s-banner> : null}
         <s-grid gridTemplateColumns="repeat(3, minmax(0, 1fr))" gap="base">
