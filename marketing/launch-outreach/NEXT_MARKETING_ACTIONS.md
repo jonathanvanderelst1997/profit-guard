@@ -16,6 +16,7 @@ Agencies can introduce Margin Sentinel to multiple Shopify merchants at once. Th
 
 - 2026-06-29: follow up with all non-repliers from the first agency batch.
 - 2026-07-03: research and send a third batch of 5-8 agencies only if bounce/reply quality is acceptable.
+- 2026-07-03 or later: use `batch_4_drafts.md` only if earlier outreach has no bounce/reputation issues.
 - Stop following up after one follow-up unless they engage.
 
 ## Next free growth channels
