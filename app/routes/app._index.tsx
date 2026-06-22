@@ -163,6 +163,70 @@ function sortFindings(findings: AuditFinding[], sort: FindingSort): AuditFinding
   });
 }
 
+function findingDisplayName(finding: AuditFinding): string {
+  return `${finding.productTitle}${finding.variantTitle && finding.variantTitle !== "Default Title" ? ` / ${finding.variantTitle}` : ""}`;
+}
+
+function buildFindingSummaryLine(finding: AuditFinding, minimumMarginBps: number, index: number): string {
+  const severity = normalizeSeverity(finding.severity);
+  const suggestedPrice = calculateMinimumPriceForTargetMargin(finding.costAmount, minimumMarginBps);
+  const parts = [
+    `${index + 1}. ${findingDisplayName(finding)}${finding.sku ? ` (${finding.sku})` : ""}`,
+    `Issue: ${getSeverityLabel(severity)}`,
+    `Price: ${formatMoney(Number(finding.priceAmount), finding.currencyCode)}`,
+    `Cost: ${formatMoney(finding.costAmount, finding.currencyCode)} via ${getCostSourceLabel(finding.costSource)}`,
+    `Margin: ${basisPointsToPercent(finding.marginBps)}`,
+    `Inventory risk: ${formatMoney(finding.inventoryRiskAmount, finding.currencyCode)}`,
+  ];
+  if (suggestedPrice != null) parts.push(`Suggested minimum price: ${formatMoney(suggestedPrice, finding.currencyCode)}`);
+  parts.push(`Next action: ${getFindingAction(severity)}`);
+  return parts.join(" | ");
+}
+
+function buildSuggestedFixSummary(audit: DashboardAudit, findings: AuditFinding[]): string {
+  const topFindings = (findings.length > 0 ? findings : sortFindings(audit.findings, "priority")).slice(0, 5);
+  const currencyCode = topFindings[0]?.currencyCode ?? audit.findings[0]?.currencyCode;
+  const issueCount = audit.lossCount + audit.lowMarginCount + audit.missingCostCount;
+  const lines = [
+    "Margin Sentinel suggested fix summary",
+    `Target margin: ${basisPointsToPercent(audit.minimumMarginBps)}`,
+    `Variants checked: ${audit.totalVariants.toLocaleString()}`,
+    `Issues found: ${issueCount} total (${audit.lossCount} losing money, ${audit.lowMarginCount} low margin, ${audit.missingCostCount} missing cost)`,
+    `Direct loss found: ${formatMoney(Number(audit.lossAmount ?? 0), currencyCode)}`,
+    `Margin gap to target: ${formatMoney(Number(audit.marginGapAmount ?? 0), currencyCode)}`,
+    `Inventory risk: ${formatMoney(Number(audit.inventoryRiskAmount ?? 0), currencyCode)}`,
+    "",
+    "Top suggested fixes:",
+    ...(topFindings.length > 0 ? topFindings.map((finding, index) => buildFindingSummaryLine(finding, audit.minimumMarginBps, index)) : ["No active findings in the latest scan."]),
+    "",
+    "Recommended order:",
+    "1. Confirm costs before changing prices.",
+    "2. Fix direct losses first.",
+    "3. Review highest inventory risk next.",
+    "4. Export the full CSV from Margin Sentinel for team follow-up.",
+    "",
+    "Margin Sentinel is read-only and does not change prices automatically.",
+  ];
+  return lines.join("\n");
+}
+
+async function copyTextToClipboard(text: string): Promise<void> {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "true");
+  textarea.style.position = "fixed";
+  textarea.style.top = "-1000px";
+  textarea.style.left = "-1000px";
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textarea);
+}
+
 function severityStyle(severity: Severity): CSSProperties {
   const palette: Record<Severity, CSSProperties> = {
     LOSS: { color: "#8e1f0b", background: "#fff1ed", borderColor: "#ffd2c2" },
@@ -238,6 +302,7 @@ export default function Dashboard() {
   const [issueFilter, setIssueFilter] = useState<FindingFilter>("ALL");
   const [sort, setSort] = useState<FindingSort>("priority");
   const [query, setQuery] = useState("");
+  const [isCopyingSummary, setIsCopyingSummary] = useState(false);
   const currentAudit = fetcher.data?.type === "scan" ? fetcher.data.auditRun : latestAudit;
   const isScanning = fetcher.state !== "idle" && fetcher.formData?.get("intent") === "scan";
   const isSavingSettings = fetcher.state !== "idle" && fetcher.formData?.get("intent") === "settings";
@@ -254,6 +319,20 @@ export default function Dashboard() {
     if (fetcher.data?.ok && fetcher.data.type === "scan") shopify.toast.show("Profit scan completed");
     if (fetcher.data?.ok && fetcher.data.type === "settings") shopify.toast.show("Settings saved");
   }, [fetcher.data, shopify]);
+
+  async function copySuggestedFixSummary() {
+    if (!currentAudit) return;
+    setIsCopyingSummary(true);
+    try {
+      const summary = buildSuggestedFixSummary(currentAudit as DashboardAudit, visibleFindings);
+      await copyTextToClipboard(summary);
+      shopify.toast.show("Suggested fix summary copied");
+    } catch {
+      shopify.toast.show("Could not copy summary");
+    } finally {
+      setIsCopyingSummary(false);
+    }
+  }
 
   return (
     <s-page heading="Margin Sentinel">
@@ -352,6 +431,7 @@ export default function Dashboard() {
                       <option value="product">Product name</option>
                     </select>
                   </label>
+                  <s-button type="button" onClick={copySuggestedFixSummary} disabled={isCopyingSummary || currentAudit.findings.length === 0} loading={isCopyingSummary}>Copy suggested fix summary</s-button>
                 </s-stack>
                 <s-paragraph>Showing {humanNumber(visibleFindings.length)} of {humanNumber(currentAudit.findings.length)} saved findings.</s-paragraph>
               </s-stack>
