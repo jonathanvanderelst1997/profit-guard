@@ -8,12 +8,25 @@ import { getShopSettings, updateAlertSettings } from "../lib/settings.server";
 import { getLatestAuditRun } from "../lib/audit-store.server";
 import { sendWeeklyAlertEmail, type AuditRunWithFindings } from "../lib/email.server";
 import { getShopPlan, isPaidPlan, PLAN_LIMITS } from "../lib/plan.server";
+import { basisPointsToPercent, getCostSourceLabel, getSeverityLabel, type Severity } from "../lib/margin";
+import { formatMoney } from "../lib/security";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => { const { session } = await authenticate.admin(request); const settings = await getShopSettings(session.shop); const latestAudit = await getLatestAuditRun(session.shop); const planKey = await getShopPlan(session.shop); return { settings, hasAudit: Boolean(latestAudit), plan: PLAN_LIMITS[planKey], canUseAlerts: isPaidPlan(planKey) }; };
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const { session } = await authenticate.admin(request);
+  const [settings, latestAudit, planKey] = await Promise.all([
+    getShopSettings(session.shop),
+    getLatestAuditRun(session.shop),
+    getShopPlan(session.shop),
+  ]);
+  return { settings, latestAudit, hasAudit: Boolean(latestAudit), plan: PLAN_LIMITS[planKey], canUseAlerts: isPaidPlan(planKey) };
+};
 
 function skippedAlertReason(result: unknown): string | null {
   if (!result || typeof result !== "object" || !("skipped" in result)) return null;
   const reason = "reason" in result ? result.reason : null;
+  if (reason === "RESEND_API_KEY is not configured." || reason === "ALERTS_FROM_EMAIL is not configured.") {
+    return "Email delivery is not fully configured yet. Your alert settings can still be saved, but test emails are not available right now.";
+  }
   return typeof reason === "string" ? reason : "Test alert skipped.";
 }
 
@@ -35,11 +48,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const updated = await updateAlertSettings(session.shop, { alertEmail: String(formData.get("alertEmail") ?? ""), weeklyAlertsEnabled: formData.get("weeklyAlertsEnabled") === "on" });
   return { ok: true, message: "Alert settings saved.", settings: updated };
 };
+
+function issueCount(audit: AuditRunWithFindings | null): number {
+  if (!audit) return 0;
+  return audit.lossCount + audit.lowMarginCount + audit.missingCostCount;
+}
+
+function normalizeSeverity(value: string): Severity {
+  if (value === "LOSS" || value === "LOW_MARGIN" || value === "MISSING_COST") return value;
+  return "LOW_MARGIN";
+}
+
 export default function Alerts() {
-  const { settings, hasAudit, plan, canUseAlerts } = useLoaderData<typeof loader>();
+  const { settings, hasAudit, plan, canUseAlerts, latestAudit } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const shopify = useAppBridge();
   const isSubmitting = fetcher.state !== "idle";
+  const alertPreviewAudit = latestAudit as AuditRunWithFindings | null;
+  const canSendTest = Boolean(hasAudit && settings.alertEmail && settings.weeklyAlertsEnabled && canUseAlerts);
 
   useEffect(() => {
     if (fetcher.data?.ok) shopify.toast.show(fetcher.data.message);
@@ -48,7 +74,7 @@ export default function Alerts() {
   return (
     <s-page heading="Alerts">
       <s-section heading="Weekly margin report">
-        <s-paragraph>Send a weekly email when Margin Sentinel finds products with loss, low margin, or missing cost. Optional and needs an email provider key in production.</s-paragraph>
+        <s-paragraph>Send a weekly email when Margin Sentinel finds products with loss, low margin, or missing cost. The report is read-only and points the team back to the app before anyone changes prices.</s-paragraph>
         {!canUseAlerts ? (
           <s-banner tone="warning" heading="Starter feature">
             Your current plan is {plan.label}. Upgrade to Starter to enable weekly alerts.
@@ -65,11 +91,64 @@ export default function Alerts() {
         </fetcher.Form>
       </s-section>
 
+      <s-section heading="Weekly report preview">
+        {!alertPreviewAudit ? (
+          <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
+            <s-stack direction="block" gap="small">
+              <s-heading>No scan to preview yet</s-heading>
+              <s-paragraph>Run a profit scan first. The weekly report preview will then show the exact summary your team receives.</s-paragraph>
+              <s-link href="/app">Run profit scan</s-link>
+            </s-stack>
+          </s-box>
+        ) : (
+          <s-stack direction="block" gap="base">
+            {alertPreviewAudit.demoMode ? (
+              <s-banner tone="info" heading="Demo data in latest scan">
+                Add Shopify unit costs or import supplier costs before relying on weekly alert numbers for pricing decisions.
+              </s-banner>
+            ) : null}
+            <s-grid gridTemplateColumns="repeat(auto-fit, minmax(170px, 1fr))" gap="base">
+              <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{alertPreviewAudit.totalVariants.toLocaleString()}</s-heading><s-text>Variants checked</s-text></s-box>
+              <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{issueCount(alertPreviewAudit)}</s-heading><s-text>Issues in report</s-text></s-box>
+              <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{alertPreviewAudit.missingCostCount}</s-heading><s-text>Missing costs</s-text></s-box>
+              <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{formatMoney(Number(alertPreviewAudit.inventoryRiskAmount ?? 0), alertPreviewAudit.findings[0]?.currencyCode)}</s-heading><s-text>Inventory risk</s-text></s-box>
+            </s-grid>
+            <s-paragraph>Target margin: {basisPointsToPercent(alertPreviewAudit.minimumMarginBps)}. The email includes the highest-priority findings and tells the team to review Margin Sentinel before changing prices.</s-paragraph>
+            {alertPreviewAudit.findings.length > 0 ? (
+              <s-table variant="auto">
+                <s-table-header-row>
+                  <s-table-header listSlot="primary">Product</s-table-header>
+                  <s-table-header>Issue</s-table-header>
+                  <s-table-header>SKU</s-table-header>
+                  <s-table-header>Cost source</s-table-header>
+                  <s-table-header format="currency">Inventory risk</s-table-header>
+                </s-table-header-row>
+                <s-table-body>
+                  {alertPreviewAudit.findings.slice(0, 5).map((finding) => (
+                    <s-table-row key={finding.id}>
+                      <s-table-cell>{finding.productTitle}{finding.variantTitle && finding.variantTitle !== "Default Title" ? ` / ${finding.variantTitle}` : ""}</s-table-cell>
+                      <s-table-cell>{getSeverityLabel(normalizeSeverity(finding.severity))}</s-table-cell>
+                      <s-table-cell>{finding.sku ?? "—"}</s-table-cell>
+                      <s-table-cell>{getCostSourceLabel(finding.costSource)}</s-table-cell>
+                      <s-table-cell>{formatMoney(Number(finding.inventoryRiskAmount ?? 0), finding.currencyCode)}</s-table-cell>
+                    </s-table-row>
+                  ))}
+                </s-table-body>
+              </s-table>
+            ) : (
+              <s-banner tone="success" heading="Clean report">
+                The latest scan has no findings. Weekly alerts will still help catch new issues after product, supplier, or pricing changes.
+              </s-banner>
+            )}
+          </s-stack>
+        )}
+      </s-section>
+
       <s-section heading="Send test">
-        <s-paragraph>{hasAudit ? "A latest scan exists, so a test email can use real findings." : "Run a scan first before sending a test email."}</s-paragraph>
+        <s-paragraph>{canSendTest ? `Send a test report to ${settings.alertEmail}.` : "Save an alert email, enable weekly alerts, and run a scan before sending a test report."}</s-paragraph>
         <fetcher.Form method="post">
           <input type="hidden" name="intent" value="send-test" />
-          <s-button type="submit" disabled={!hasAudit || isSubmitting || !canUseAlerts} loading={isSubmitting}>Send test alert</s-button>
+          <s-button type="submit" disabled={!canSendTest || isSubmitting} loading={isSubmitting}>Send test alert</s-button>
         </fetcher.Form>
         {fetcher.data?.message ? <s-banner tone={fetcher.data.ok ? "success" : "warning"}>{fetcher.data.message}</s-banner> : null}
       </s-section>

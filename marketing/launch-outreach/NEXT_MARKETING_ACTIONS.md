@@ -28,8 +28,8 @@ Agencies can introduce Margin Sentinel to multiple Shopify merchants at once. Th
 
 ## Product work that can make money
 
-- Add a "first scan checklist" onboarding flow so merchants know exactly what to do after install.
-- Add a "send weekly margin report" email preview inside the app.
+- Added a "first scan checklist" onboarding flow so merchants know exactly what to do after install.
+- Added a weekly margin report preview inside the app so alerts feel concrete before activation.
 - Add a "supplier cost template by vendor" import mode.
 - Add an agency/demo mode that lets agencies run a clean demo for clients.
 - Add a one-click "copy suggested fix summary" for merchants to send to their team.
