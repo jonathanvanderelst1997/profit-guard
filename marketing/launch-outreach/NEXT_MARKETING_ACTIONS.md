@@ -4,6 +4,7 @@
 
 - Shopify App Store listing made fully visible.
 - 12 targeted agency outreach emails sent from Outlook.
+- LinkedIn public launch post published: https://www.linkedin.com/feed/update/urn:li:share:7474813677028909056
 - App listing verified live: https://apps.shopify.com/margin-sentinel
 - Render health verified after launch: https://profit-guard-xzku.onrender.com/healthz
 
@@ -19,7 +20,7 @@ Agencies can introduce Margin Sentinel to multiple Shopify merchants at once. Th
 
 ## Next free growth channels
 
-- Publish one founder launch post on LinkedIn.
+- Monitor the LinkedIn launch post for comments, DMs, or profile visits.
 - Publish one practical margin leak post on Reddit or Shopify Community without spam language.
 - Prepare one short public case-study using demo data: "How one catalog scan found 4 margin leaks."
 - Add a homepage section linking directly to the Shopify App Store listing.

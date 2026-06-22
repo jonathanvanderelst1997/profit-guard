@@ -18,3 +18,7 @@ Use this to track manual sends and replies.
 | 2026-06-22 | YourStoreMatters | info@yourstorematters.com | Outlook email | Sent | Shopify Plus CRO/migration/Klaviyo angle | 2026-06-29 |
 | 2026-06-22 | Domaine | Contact form | Website form | Message prepared | Use contact form version | Submit manually |
 | 2026-06-22 | Not selling liquid | Contact form | Website form | Message prepared | Fashion agency angle | Submit manually |
+| 2026-06-22 | magic42 | hello@magic42.co.uk | Outlook draft | Draft ready | Shopify Plus migration/ERP/B2B/retainer angle | Send after reply quality check |
+| 2026-06-22 | Charle | hello@charle.co.uk | Outlook draft | Draft ready | CRO/catalog audit angle | Send after reply quality check |
+| 2026-06-22 | Shero Commerce | hello@sherocommerce.com | Outlook draft | Draft ready | Shopify Plus migration/integration/audit angle | Send after reply quality check |
+| 2026-06-22 | 4TFM | info@4tfm.de | Outlook draft | Draft ready | B2B/migration/custom app/support angle | Send after reply quality check |
