@@ -75,3 +75,66 @@ Margin Sentinel is live, and I am treating the next 30 days as a learning sprint
 Can Shopify merchants with physical catalogs find SKU margin leaks fast enough to pay $15/month?
 
 https://apps.shopify.com/margin-sentinel
+
+## LinkedIn post - public launch, stronger version
+
+Margin Sentinel is now fully visible on the Shopify App Store.
+
+The product is simple on purpose:
+
+Shopify merchants already have dashboards. What they often do not have is a fast answer to:
+
+"Which variants are quietly hurting margin right now?"
+
+Margin Sentinel scans variant prices, Shopify unit costs, imported supplier costs, target margin, and inventory quantity. Then it turns the result into a short fix list:
+
+- losing variants
+- low-margin variants
+- missing cost data
+- inventory risk tied to margin gaps
+- suggested minimum margin guidance
+- exportable CSV for the team
+
+It is read-only and does not change prices automatically.
+
+I am looking for early Shopify merchants and agencies who are willing to run one scan and tell me what is useful, confusing, or missing.
+
+https://apps.shopify.com/margin-sentinel
+
+## Mini case-study post using demo data
+
+A demo Margin Sentinel scan found 4 issues in a Shopify catalog:
+
+- 1 product losing money
+- 3 products below target margin
+- 0 missing costs after supplier import
+- $5,904 of inventory risk tied to one managed variant
+
+The useful part was not a huge report.
+
+It was knowing what to fix first:
+
+1. stop selling the loss-making SKU at the current economics
+2. review the largest inventory risk
+3. check supplier costs before changing prices
+4. export the fix list for the team
+
+That is the job Margin Sentinel is built for: a small, practical margin guardrail at catalog level.
+
+https://apps.shopify.com/margin-sentinel
+
+## Shopify Community / Reddit value post
+
+Practical SKU margin check I use for Shopify catalogs:
+
+1. Make sure variants have SKUs.
+2. Add Shopify unit cost where possible.
+3. Keep a supplier cost CSV for costs that live outside Shopify.
+4. Check margin at variant level, not only store average.
+5. Multiply margin gap by inventory quantity to see what matters first.
+
+Average margin can hide small products that lose money or larger inventory positions sitting below target margin.
+
+I built Margin Sentinel around that workflow for Shopify merchants who want a short fix list instead of a giant analytics dashboard:
+
+https://apps.shopify.com/margin-sentinel
