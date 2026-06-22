@@ -10,4 +10,4 @@ Created on 2026-06-22.
 | Swanky | humans@swankyagency.com | New Shopify margin guardrail for your clients | Created in Outlook |
 | VAAN Group | vaangroup@vaangroup.com | New Shopify margin guardrail for your clients | Created in Outlook |
 
-Do not create duplicate drafts for these contacts. Review once, then send or archive.
+These five messages were sent directly through Outlook on 2026-06-22. Do not send the older drafts again; archive/delete them from Outlook Drafts if they are still visible.
