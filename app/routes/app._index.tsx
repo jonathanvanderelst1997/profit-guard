@@ -46,6 +46,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 type StatTone = "critical" | "warning" | "neutral";
 type FindingFilter = "ALL" | Severity;
 type FindingSort = "priority" | "risk" | "gap" | "margin" | "product";
+type ChecklistState = "complete" | "current" | "waiting";
 type AuditFinding = Omit<MarginFinding, "severity" | "costSource"> & { id?: string | null; severity: string; costSource?: string | null };
 type DashboardAudit = {
   totalVariants: number;
@@ -73,6 +74,74 @@ function StatCard({ label, value, tone }: { label: string; value: number | strin
         <s-heading>{value}</s-heading>
       </s-stack>
     </s-box>
+  );
+}
+
+function checklistStatusStyle(state: ChecklistState): CSSProperties {
+  const palette: Record<ChecklistState, CSSProperties> = {
+    complete: { color: "#0b6b35", background: "#eaf8ef", borderColor: "#b7e4c7" },
+    current: { color: "#704900", background: "#fff5d6", borderColor: "#e9cc75" },
+    waiting: { color: "#4a5568", background: "#f4f6f8", borderColor: "#d8dde3" },
+  };
+  return {
+    ...palette[state],
+    border: "1px solid",
+    borderRadius: 6,
+    padding: "2px 8px",
+    fontSize: 12,
+    fontWeight: 600,
+    whiteSpace: "nowrap",
+  };
+}
+
+function checklistStatusLabel(state: ChecklistState): string {
+  if (state === "complete") return "Done";
+  if (state === "current") return "Next";
+  return "Later";
+}
+
+function ChecklistRow({ label, detail, state, href }: { label: string; detail: string; state: ChecklistState; href: string }) {
+  return (
+    <s-box padding="small" borderWidth="base" borderRadius="base" background="subdued">
+      <s-stack direction="inline" gap="small" justifyContent="space-between" alignItems="center">
+        <s-stack direction="block" gap="small">
+          <s-link href={href}>{label}</s-link>
+          <s-text>{detail}</s-text>
+        </s-stack>
+        <span style={checklistStatusStyle(state)}>{checklistStatusLabel(state)}</span>
+      </s-stack>
+    </s-box>
+  );
+}
+
+function FirstScanGuide({ audit, weeklyAlertsEnabled }: { audit?: (DashboardAudit & { demoMode?: boolean | null }) | null; weeklyAlertsEnabled: boolean }) {
+  const hasScan = Boolean(audit);
+  const issueCount = audit ? audit.lossCount + audit.lowMarginCount + audit.missingCostCount : 0;
+  const costsReady = Boolean(audit && !audit.demoMode && audit.missingCostCount === 0);
+  const nextHref = !hasScan ? "/app" : !costsReady ? "/app/import" : issueCount > 0 ? "/app/export" : !weeklyAlertsEnabled ? "/app/alerts" : "/app/what-if";
+  const nextLabel = !hasScan ? "Run first scan" : !costsReady ? "Add supplier costs" : issueCount > 0 ? "Export fix list" : !weeklyAlertsEnabled ? "Set weekly alerts" : "Run what-if";
+
+  return (
+    <s-section heading="First scan checklist">
+      <s-stack direction="block" gap="base">
+        <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
+          <s-stack direction="inline" justifyContent="space-between" alignItems="center" gap="base">
+            <s-stack direction="block" gap="small">
+              <s-heading>{nextLabel}</s-heading>
+              <s-paragraph>{hasScan ? `${issueCount} issues in the latest scan. Use the checklist to turn the scan into action.` : "Start with one scan. Margin Sentinel will build the first margin fix list from Shopify product data."}</s-paragraph>
+            </s-stack>
+            <s-link href={nextHref}>{nextLabel}</s-link>
+          </s-stack>
+        </s-box>
+        <s-grid gridTemplateColumns="repeat(auto-fit, minmax(210px, 1fr))" gap="base">
+          <ChecklistRow label="Scan catalog" detail={hasScan ? `${audit?.totalVariants.toLocaleString() ?? "0"} variants checked` : "Create the first fix list"} state={hasScan ? "complete" : "current"} href="/app" />
+          <ChecklistRow label="Confirm costs" detail={costsReady ? "Cost data ready" : "Import costs or add Shopify unit costs"} state={!hasScan ? "waiting" : costsReady ? "complete" : "current"} href="/app/import" />
+          <ChecklistRow label="Review risk" detail={hasScan ? `${issueCount} issues to review` : "Appears after scan"} state={!hasScan ? "waiting" : issueCount > 0 ? "current" : "complete"} href="/app" />
+          <ChecklistRow label="Keep watch" detail={weeklyAlertsEnabled ? "Weekly alerts enabled" : "Enable alerts after first scan"} state={weeklyAlertsEnabled ? "complete" : hasScan ? "current" : "waiting"} href="/app/alerts" />
+        </s-grid>
+        <s-link href="/app/onboarding">Open full first scan guide</s-link>
+      </s-stack>
+    </s-section>
   );
 }
 
@@ -207,6 +276,8 @@ export default function Dashboard() {
           </s-stack>
         </fetcher.Form>
       </s-section>
+
+      <FirstScanGuide audit={currentAudit as DashboardAudit | null | undefined} weeklyAlertsEnabled={Boolean(settings.weeklyAlertsEnabled)} />
 
       <s-section heading="Latest scan">
         {!currentAudit ? (
