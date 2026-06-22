@@ -20,7 +20,7 @@ export default function Auth() {
       <s-page>
         <s-section heading="Log in">
           <s-paragraph>{errors.shop || "Open Margin Sentinel from Shopify Admin or install it from a Shopify-owned surface to continue."}</s-paragraph>
-          <s-button href="/beta">Join beta</s-button>
+          <s-button href="https://apps.shopify.com/margin-sentinel">Install from Shopify App Store</s-button>
           <Link to="/support">Contact support</Link>
         </s-section>
       </s-page>

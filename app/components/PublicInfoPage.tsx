@@ -83,7 +83,7 @@ export function PublicInfoPage({ title, eyebrow = "Margin Sentinel", children }:
           <span>Margin Sentinel</span>
         </a>
         <nav style={styles.nav}>
-          <a href="/beta">Beta</a>
+          <a href="/beta">Launch offer</a>
           <a href="/privacy">Privacy</a>
           <a href="/terms">Terms</a>
           <a href="/refund">Refunds</a>

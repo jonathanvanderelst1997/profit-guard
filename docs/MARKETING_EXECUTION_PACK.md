@@ -2,7 +2,7 @@
 
 ## Core offer
 
-Free 60-day Growth beta for Shopify merchants or agencies with physical catalogs, supplier price lists, or frequent bulk product edits.
+Launch margin audit for Shopify merchants or agencies with physical catalogs, supplier price lists, or frequent bulk product edits.
 
 ## Lead promise
 
@@ -10,7 +10,7 @@ Free 60-day Growth beta for Shopify merchants or agencies with physical catalogs
 
 ## Channels Codex can run when plugins/accounts are connected
 
-- Email: personalize and send beta outreach, follow-ups, call summaries, and onboarding instructions.
+- Email: personalize and send launch outreach, follow-ups, call summaries, and onboarding instructions.
 - LinkedIn/X: draft posts and DMs, prepare prospect-specific messages, and schedule/post if a connected plugin supports it.
 - GitHub: keep releases, issues, docs, and launch branches organized.
 - Shopify: help with App Store listing, review instructions, product screenshots, and support docs.
@@ -20,7 +20,7 @@ Free 60-day Growth beta for Shopify merchants or agencies with physical catalogs
 
 ### LinkedIn founder post
 
-I’m opening beta access for Margin Sentinel, a Shopify app for stores with physical catalogs and supplier cost changes.
+Margin Sentinel is live on the Shopify App Store. It is built for stores with physical catalogs and supplier cost changes.
 
 It scans your catalog for:
 - missing product costs;
@@ -31,7 +31,7 @@ It scans your catalog for:
 
 It is read-only and never changes prices automatically.
 
-I’m looking for 10 Shopify merchants or agencies to run one margin scan and tell me what it catches. Free Growth beta for 60 days.
+I’m looking for 10 Shopify merchants or agencies to run one margin scan and tell me what it catches.
 
 ### X / short post
 
@@ -41,7 +41,7 @@ It finds missing costs, low/negative margins, inventory dollars at risk, and sup
 
 Read-only. No automatic repricing.
 
-Looking for 10 beta stores/agencies.
+Looking for 10 early stores/agencies.
 
 ## Email sequence
 
@@ -55,7 +55,7 @@ I’m testing Margin Sentinel, a Shopify app that scans product margins and show
 
 It is read-only and never changes prices automatically.
 
-Would you be open to a free beta scan? Best fit is stores with 100+ physical SKUs or supplier CSV price lists.
+Would you be open to a first scan review? Best fit is stores with 100+ physical SKUs or supplier CSV price lists.
 
 Thanks,
 Jonathan
@@ -68,7 +68,7 @@ Hi {{first_name}},
 
 Following up once. The most useful Margin Sentinel check is: "If supplier costs rise 8%, which SKUs fall below target margin and how much inventory value becomes risky?"
 
-If that sounds useful, I can show you the beta in 15 minutes.
+If that sounds useful, I can show you the app in 15 minutes.
 
 Thanks,
 Jonathan
