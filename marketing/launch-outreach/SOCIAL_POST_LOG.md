@@ -36,7 +36,7 @@ Next action:
 
 ### Shopify Community supplier CSV reply
 
-Status: published
+Status: hidden by staff / awaiting approval
 
 URL: https://community.shopify.com/t/how-to-only-update-cost-and-prices-according-to-supplier-list/295931/7
 
@@ -46,5 +46,6 @@ Goal:
 - Disclose that Margin Sentinel is our read-only Shopify app and link to the App Store listing.
 
 Next action:
-- Watch for replies or moderation changes.
-- Do not post another community reply until there is a genuinely relevant thread.
+- Wait for Shopify Community moderation.
+- Do not repost this message while it is pending.
+- If rejected, rewrite as a shorter advice-first reply with fewer links.

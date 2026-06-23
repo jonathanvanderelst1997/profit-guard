@@ -90,14 +90,16 @@ User approved posting Draft 1 to the Shopify Community supplier CSV thread.
 Action completed:
 
 - Created/used the Shopify Community account `Jonathan_Vander_Elst`.
-- Posted the approved value-first reply in the supplier CSV thread:
+- Submitted the approved value-first reply in the supplier CSV thread:
   - `https://community.shopify.com/t/how-to-only-update-cost-and-prices-according-to-supplier-list/295931/7`
 - The post includes:
   - A practical supplier CSV workflow.
   - A link to the Margin Sentinel resource page.
   - A clear disclosure that Margin Sentinel is our read-only Shopify app.
   - A link to the Shopify App Store listing.
+- Shopify Community then sent an automated message that the post was hidden by staff and is awaiting approval. Likely trigger: new account plus external links.
 
 Next check:
 
-- Monitor the thread for replies or moderation changes before posting in any other community channel.
+- Wait for staff approval before taking further action on this thread.
+- Do not repost the same message. If it is rejected, prepare a lower-link version that is mostly advice and has at most one relevant link.
