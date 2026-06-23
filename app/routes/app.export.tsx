@@ -55,8 +55,12 @@ export default function ExportFindings() {
     setDownloadError(null);
     try {
       const token = await shopify.idToken();
-      const response = await fetch("/app/export?download=1", { headers: { Authorization: `Bearer ${token}` } });
+      const downloadUrl = new URL(window.location.href);
+      downloadUrl.searchParams.set("download", "1");
+      const response = await fetch(`${downloadUrl.pathname}${downloadUrl.search}`, { headers: { Authorization: `Bearer ${token}` } });
+      const contentType = response.headers.get("content-type") ?? "";
       if (!response.ok) throw new Error(await response.text());
+      if (!contentType.includes("text/csv")) throw new Error("CSV export was not returned. Reload the page and try again.");
       const blob = await response.blob();
       const objectUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
