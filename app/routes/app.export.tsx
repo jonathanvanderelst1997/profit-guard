@@ -24,9 +24,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   if (!latestAudit) return { hasAudit: false as const };
   const issueCount = latestAudit.lossCount + latestAudit.lowMarginCount + latestAudit.missingCostCount;
   const currencyCode = latestAudit.findings[0]?.currencyCode;
+  const csv = findingsToCsv(latestAudit.findings, { minimumMarginBps: latestAudit.minimumMarginBps });
   return {
     hasAudit: true as const,
     fileName,
+    csv,
     createdAt: latestAudit.createdAt,
     totalVariants: latestAudit.totalVariants,
     issueCount,
@@ -54,14 +56,7 @@ export default function ExportFindings() {
     setIsDownloading(true);
     setDownloadError(null);
     try {
-      const token = await shopify.idToken();
-      const downloadUrl = new URL(window.location.href);
-      downloadUrl.searchParams.set("download", "1");
-      const response = await fetch(`${downloadUrl.pathname}${downloadUrl.search}`, { headers: { Authorization: `Bearer ${token}` } });
-      const contentType = response.headers.get("content-type") ?? "";
-      if (!response.ok) throw new Error(await response.text());
-      if (!contentType.includes("text/csv")) throw new Error("CSV export was not returned. Reload the page and try again.");
-      const blob = await response.blob();
+      const blob = new Blob([data.csv], { type: "text/csv;charset=utf-8" });
       const objectUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = objectUrl;
