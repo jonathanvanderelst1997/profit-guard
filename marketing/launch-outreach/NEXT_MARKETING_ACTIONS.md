@@ -18,11 +18,12 @@ Agencies can introduce Margin Sentinel to multiple Shopify merchants at once. Th
 - 2026-07-03: research and send a third batch of 5-8 agencies only if bounce/reply quality is acceptable.
 - 2026-07-03 or later: use `batch_4_drafts.md` only if earlier outreach has no bounce/reputation issues.
 - Stop following up after one follow-up unless they engage.
+- Active option for 2026-06-23: use `SEND_READY_BATCH_2026-06-23.md` for a tiny 4-email batch if Jonathan gives final explicit send approval.
 
 ## Next free growth channels
 
 - Monitor the LinkedIn launch post for comments, DMs, or profile visits.
-- Publish one practical margin leak post on Reddit or Shopify Community without spam language.
+- Publish one practical margin leak post from `PUBLIC_VALUE_POST_2026-06-23.md` without spam language.
 - Prepare one short public case-study using demo data: "How one catalog scan found 4 margin leaks."
 - Add a homepage section linking directly to the Shopify App Store listing.
 - Ask first real users for feedback, not reviews. Ask for App Store reviews only after genuine successful use.
