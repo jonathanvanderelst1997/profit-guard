@@ -26,6 +26,8 @@ Agencies can introduce Margin Sentinel to multiple Shopify merchants at once. Th
 - Prepare one short public case-study using demo data: "How one catalog scan found 4 margin leaks."
 - Add a homepage section linking directly to the Shopify App Store listing.
 - Ask first real users for feedback, not reviews. Ask for App Store reviews only after genuine successful use.
+- Check Shopify Partner Dashboard once per day for installs, uninstalls, billing events, and any review messages.
+- Keep a lightweight objection log from replies so product copy can improve from real feedback.
 
 ## Product work that can make money
 
@@ -38,3 +40,5 @@ Agencies can introduce Margin Sentinel to multiple Shopify merchants at once. Th
 ## Important guardrail
 
 Do not send large cold email batches. Keep outbound under 10-15 highly relevant emails per day until replies prove the message works.
+
+Do not send the next agency batch before 2026-07-03 unless the first batch has no bounce/reputation problems and at least one signal suggests the message is relevant.
