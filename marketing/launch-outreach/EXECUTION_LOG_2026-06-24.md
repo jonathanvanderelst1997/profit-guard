@@ -57,6 +57,15 @@ Actions completed:
   - `REDDIT_CHANNEL_DRAFTS_2026-06-24.md`
 - No public post was submitted yet because public posting requires final approval of exact text and target.
 
+Post-push deployment check:
+
+- Commit `569c3dd` was pushed to GitHub `main`.
+- Production health endpoint remained green:
+  - `https://profit-guard-xzku.onrender.com/healthz`
+- The new resource route still returned `404` shortly after push, so it was not live yet at verification time.
+- Render CLI and dashboard search only showed `matchpulse-hind-live` in the current Render workspace.
+- Searches for `profit` and `margin` in the visible Render workspace returned no matching service, so Margin Sentinel's Render service is not accessible through the currently logged-in Render workspace.
+
 ## Recommendation
 
 Deploy the new resource page, then post one Shopify Community reply after final approval.
