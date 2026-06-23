@@ -1,5 +1,9 @@
 # Next marketing actions
 
+Central plan:
+
+- `FULL_MARKETING_PLAN_2026-06-24.md`
+
 ## Done on 2026-06-22
 
 - Shopify App Store listing made fully visible.

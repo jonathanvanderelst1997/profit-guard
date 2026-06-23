@@ -1,3 +1,12 @@
+# Margin Sentinel marketing index
+
+Start here:
+
+- `FULL_MARKETING_PLAN_2026-06-24.md`
+- `NEXT_MARKETING_ACTIONS.md`
+- `outreach_tracker.md`
+- `METRICS_AND_TRACKING.md`
+
 # Margin Sentinel launch outreach plan
 
 ## Goal
