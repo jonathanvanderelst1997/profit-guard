@@ -66,6 +66,13 @@ Post-push deployment check:
 - Render CLI and dashboard search only showed `matchpulse-hind-live` in the current Render workspace.
 - Searches for `profit` and `margin` in the visible Render workspace returned no matching service, so Margin Sentinel's Render service is not accessible through the currently logged-in Render workspace.
 
+Later verification:
+
+- The new resource route returned `200 OK` after Render finished deploying:
+  - `https://profit-guard-xzku.onrender.com/resources/supplier-cost-csv-margin-scan?utm_source=shopify_community&utm_medium=organic&utm_campaign=supplier_csv`
+- Verified page content includes:
+  - `How to check Shopify supplier CSV changes for margin risk`
+
 ## Recommendation
 
 Deploy the new resource page, then post one Shopify Community reply after final approval.
