@@ -27,6 +27,13 @@ Central plan:
   - LinkedIn launch post has 47 impressions and no reply action needed.
 - Prepared a value-first LinkedIn post:
   - `LINKEDIN_VALUE_POST_TO_APPROVE_2026-06-24.md`
+- User asked to avoid LinkedIn as the next channel.
+- Prepared non-LinkedIn organic channels:
+  - `ALTERNATIVE_CHANNELS_2026-06-24.md`
+  - `SHOPIFY_COMMUNITY_REPLY_DRAFTS_2026-06-24.md`
+  - `REDDIT_CHANNEL_DRAFTS_2026-06-24.md`
+- Added a public SEO/resource page for supplier CSV margin scans:
+  - `/resources/supplier-cost-csv-margin-scan`
 
 ## Why this channel first
 
@@ -43,8 +50,12 @@ Agencies can introduce Margin Sentinel to multiple Shopify merchants at once. Th
 
 ## Next free growth channels
 
-- Monitor the LinkedIn launch post for comments, DMs, or profile visits.
-- Publish one practical margin leak post from `LINKEDIN_VALUE_POST_TO_APPROVE_2026-06-24.md` after final approval.
+- Prioritize Shopify Community over LinkedIn.
+- Deploy the supplier CSV resource page so community replies have a useful non-sales link.
+- Post one helpful Shopify Community reply to the active supplier CSV thread after final approval:
+  - `https://community.shopify.com/t/how-to-only-update-cost-and-prices-according-to-supplier-list/295931`
+- If the first reply is accepted and not flagged, post one second helpful reply to a margin/profit visibility thread after at least one day.
+- Use Reddit carefully as a discussion channel, not as a direct app pitch.
 - Prepare one short public case-study using demo data: "How one catalog scan found 4 margin leaks."
 - Add a homepage section linking directly to the Shopify App Store listing.
 - Ask first real users for feedback, not reviews. Ask for App Store reviews only after genuine successful use.
@@ -64,3 +75,5 @@ Agencies can introduce Margin Sentinel to multiple Shopify merchants at once. Th
 Do not send large cold email batches. Keep outbound under 10-15 highly relevant emails per day until replies prove the message works.
 
 Do not send the next agency batch before 2026-07-03 unless the first batch has no bounce/reputation problems and at least one signal suggests the message is relevant.
+
+Do not post public community replies without final approval of the exact text and target thread.

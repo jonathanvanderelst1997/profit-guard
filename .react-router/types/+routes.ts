@@ -14,6 +14,9 @@ type Pages = {
   "/": {
     params: {};
   };
+  "/resources/supplier-cost-csv-margin-scan": {
+    params: {};
+  };
   "/webhooks/app_subscriptions/update": {
     params: {};
   };
@@ -96,7 +99,11 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/webhooks/compliance" | "/auth/login" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/import/template" | "/app/csv";
+    page: "/" | "/resources/supplier-cost-csv-margin-scan" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/webhooks/compliance" | "/auth/login" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/import/template" | "/app/csv";
+  };
+  "routes/resources.supplier-cost-csv-margin-scan.tsx": {
+    id: "routes/resources.supplier-cost-csv-margin-scan";
+    page: "/resources/supplier-cost-csv-margin-scan";
   };
   "routes/webhooks.app_subscriptions.update.tsx": {
     id: "routes/webhooks.app_subscriptions.update";
@@ -210,6 +217,7 @@ type RouteFiles = {
 
 type RouteModules = {
   "root": typeof import("./app/root.tsx");
+  "routes/resources.supplier-cost-csv-margin-scan": typeof import("./app/routes/resources.supplier-cost-csv-margin-scan.tsx");
   "routes/webhooks.app_subscriptions.update": typeof import("./app/routes/webhooks.app_subscriptions.update.tsx");
   "routes/webhooks.customers.data_request": typeof import("./app/routes/webhooks.customers.data_request.tsx");
   "routes/webhooks.app.scopes_update": typeof import("./app/routes/webhooks.app.scopes_update.tsx");
