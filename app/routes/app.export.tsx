@@ -1,5 +1,7 @@
 import type { HeadersFunction, LoaderFunctionArgs } from "react-router";
+import { useState } from "react";
 import { useLoaderData } from "react-router";
+import { useAppBridge } from "@shopify/app-bridge-react";
 import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate } from "../shopify.server";
 import { getLatestAuditRunForExport } from "../lib/audit-store.server";
@@ -43,6 +45,36 @@ function formatDateTime(value: string | Date): string {
 
 export default function ExportFindings() {
   const data = useLoaderData<typeof loader>();
+  const shopify = useAppBridge();
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+
+  async function downloadCsv() {
+    if (!data.hasAudit) return;
+    setIsDownloading(true);
+    setDownloadError(null);
+    try {
+      const token = await shopify.idToken();
+      const response = await fetch("/app/export?download=1", { headers: { Authorization: `Bearer ${token}` } });
+      if (!response.ok) throw new Error(await response.text());
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = data.fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(objectUrl);
+      shopify.toast.show("CSV export downloaded");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Could not download CSV export.";
+      setDownloadError(message);
+      shopify.toast.show("Could not download CSV export");
+    } finally {
+      setIsDownloading(false);
+    }
+  }
 
   return (
     <s-page heading="Export findings">
@@ -61,7 +93,8 @@ export default function ExportFindings() {
               <s-stack direction="block" gap="small">
                 <s-heading>{data.fileName}</s-heading>
                 <s-paragraph>Latest scan: {formatDateTime(data.createdAt)}. The file is read-only and does not change prices or product data in Shopify.</s-paragraph>
-                <s-link href="/app/export?download=1">Download findings CSV</s-link>
+                <s-button type="button" onClick={downloadCsv} loading={isDownloading} disabled={isDownloading}>Download findings CSV</s-button>
+                {downloadError ? <s-banner tone="critical">{downloadError}</s-banner> : null}
               </s-stack>
             </s-box>
             <s-grid gridTemplateColumns="repeat(auto-fit, minmax(170px, 1fr))" gap="base">
