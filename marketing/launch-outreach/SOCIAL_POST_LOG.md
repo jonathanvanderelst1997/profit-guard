@@ -33,3 +33,18 @@ Visible signals:
 Next action:
 - Publish a value-first educational post after final approval.
 - Draft: `LINKEDIN_VALUE_POST_TO_APPROVE_2026-06-24.md`
+
+### Shopify Community supplier CSV reply
+
+Status: published
+
+URL: https://community.shopify.com/t/how-to-only-update-cost-and-prices-according-to-supplier-list/295931/7
+
+Goal:
+- Help a merchant dealing with supplier CSV cost and price updates.
+- Point them to a practical margin-risk workflow before bulk price changes.
+- Disclose that Margin Sentinel is our read-only Shopify app and link to the App Store listing.
+
+Next action:
+- Watch for replies or moderation changes.
+- Do not post another community reply until there is a genuinely relevant thread.
