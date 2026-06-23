@@ -20,6 +20,13 @@ Central plan:
   - Avex
   - Ecomx
 - Send log: `OUTREACH_SEND_LOG_2026-06-24.md`
+- Daily execution check completed:
+  - Render health green.
+  - App Store listing green.
+  - No clear Outlook replies or bounces.
+  - LinkedIn launch post has 47 impressions and no reply action needed.
+- Prepared a value-first LinkedIn post:
+  - `LINKEDIN_VALUE_POST_TO_APPROVE_2026-06-24.md`
 
 ## Why this channel first
 
@@ -37,7 +44,7 @@ Agencies can introduce Margin Sentinel to multiple Shopify merchants at once. Th
 ## Next free growth channels
 
 - Monitor the LinkedIn launch post for comments, DMs, or profile visits.
-- Publish one practical margin leak post from `PUBLIC_VALUE_POST_2026-06-23.md` without spam language.
+- Publish one practical margin leak post from `LINKEDIN_VALUE_POST_TO_APPROVE_2026-06-24.md` after final approval.
 - Prepare one short public case-study using demo data: "How one catalog scan found 4 margin leaks."
 - Add a homepage section linking directly to the Shopify App Store listing.
 - Ask first real users for feedback, not reviews. Ask for App Store reviews only after genuine successful use.

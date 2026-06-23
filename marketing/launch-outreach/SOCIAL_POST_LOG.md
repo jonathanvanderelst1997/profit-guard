@@ -17,3 +17,19 @@ Next check:
 - Review comments, DMs, and profile visits on 2026-06-23.
 - If there is engagement, reply personally and offer to help run a first scan.
 - Do not ask for reviews until someone has genuinely used the app and found value.
+
+## 2026-06-24
+
+### LinkedIn launch post check
+
+Status: checked
+
+Visible signals:
+- 47 post impressions.
+- 4 profile visitors.
+- No visible Margin Sentinel comments requiring reply.
+- No relevant Margin Sentinel DM visible in LinkedIn messages.
+
+Next action:
+- Publish a value-first educational post after final approval.
+- Draft: `LINKEDIN_VALUE_POST_TO_APPROVE_2026-06-24.md`
