@@ -8,6 +8,15 @@
 - App listing verified live: https://apps.shopify.com/margin-sentinel
 - Render health verified after launch: https://profit-guard-xzku.onrender.com/healthz
 
+## Done on 2026-06-24
+
+- 4 additional targeted agency outreach emails sent from Outlook:
+  - Grebban
+  - blubolt
+  - Avex
+  - Ecomx
+- Send log: `OUTREACH_SEND_LOG_2026-06-24.md`
+
 ## Why this channel first
 
 Agencies can introduce Margin Sentinel to multiple Shopify merchants at once. The best early fit is not every store; it is merchants with larger catalogs, supplier cost data, margin leakage, or messy post-migration operations.
@@ -15,10 +24,11 @@ Agencies can introduce Margin Sentinel to multiple Shopify merchants at once. Th
 ## Follow-up schedule
 
 - 2026-06-29: follow up with all non-repliers from the first agency batch.
+- 2026-07-01: follow up with non-repliers from the 2026-06-24 small batch only if there are no bounce/reputation issues.
 - 2026-07-03: research and send a third batch of 5-8 agencies only if bounce/reply quality is acceptable.
 - 2026-07-03 or later: use `batch_4_drafts.md` only if earlier outreach has no bounce/reputation issues.
 - Stop following up after one follow-up unless they engage.
-- Active option for 2026-06-23: use `SEND_READY_BATCH_2026-06-23.md` for a tiny 4-email batch if Jonathan gives final explicit send approval.
+- The active 4-email batch from `SEND_READY_BATCH_2026-06-23.md` has been sent.
 
 ## Next free growth channels
 

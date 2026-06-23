@@ -22,8 +22,8 @@ Use this to track manual sends and replies.
 | 2026-06-22 | Charle | hello@charle.co.uk | Outlook draft | Draft ready | CRO/catalog audit angle | Send after reply quality check |
 | 2026-06-22 | Shero Commerce | hello@sherocommerce.com | Outlook draft | Draft ready | Shopify Plus migration/integration/audit angle | Send after reply quality check |
 | 2026-06-22 | 4TFM | info@4tfm.de | Outlook draft | Draft ready | B2B/migration/custom app/support angle | Send after reply quality check |
-| 2026-06-23 | Grebban | hello@grebban.com | Outlook email | Send-ready | Replatforming/catalog optimisation angle | Send only after final confirmation |
-| 2026-06-23 | blubolt | hello@blubolt.com | Outlook email | Send-ready | Shopify Plus growth/conversion + margin risk angle | Send only after final confirmation |
-| 2026-06-23 | Avex | newbusiness@avexdesigns.com | Outlook email | Send-ready | Enterprise catalog/replatforming angle | Send only after final confirmation |
-| 2026-06-23 | Ecomx | hello@ecomxagency.com | Outlook email | Send-ready | Smaller agency test angle | Send only after final confirmation |
+| 2026-06-24 | Grebban | hello@grebban.com | Outlook email | Sent | Replatforming/catalog optimisation angle | 2026-07-01 |
+| 2026-06-24 | blubolt | hello@blubolt.com | Outlook email | Sent | Shopify Plus growth/conversion + margin risk angle | 2026-07-01 |
+| 2026-06-24 | Avex | newbusiness@avexdesigns.com | Outlook email | Sent | Enterprise catalog/replatforming angle | 2026-07-01 |
+| 2026-06-24 | Ecomx | hello@ecomxagency.com | Outlook email | Sent | Smaller agency test angle | 2026-07-01 |
 | 2026-06-23 | Guidance | Contact form | Website form | Message prepared | Shopify Plus audit/catalog cleanup angle | Submit manually after route confirmed |
