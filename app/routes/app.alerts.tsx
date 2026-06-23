@@ -65,7 +65,8 @@ export default function Alerts() {
   const shopify = useAppBridge();
   const isSubmitting = fetcher.state !== "idle";
   const alertPreviewAudit = latestAudit as AuditRunWithFindings | null;
-  const canSendTest = Boolean(hasAudit && settings.alertEmail && settings.weeklyAlertsEnabled && canUseAlerts);
+  const alertsEnabled = Boolean(settings.weeklyAlertsEnabled && canUseAlerts);
+  const canSendTest = Boolean(hasAudit && settings.alertEmail && alertsEnabled);
 
   useEffect(() => {
     if (fetcher.data?.ok) shopify.toast.show(fetcher.data.message);
@@ -85,7 +86,7 @@ export default function Alerts() {
           <input type="hidden" name="intent" value="save" />
           <s-stack direction="block" gap="base">
             <s-email-field label="Alert email" name="alertEmail" defaultValue={settings.alertEmail ?? ""} placeholder="owner@example.com" />
-            <label><input type="checkbox" name="weeklyAlertsEnabled" defaultChecked={settings.weeklyAlertsEnabled} /> Enable weekly alerts</label>
+            <label><input type="checkbox" name="weeklyAlertsEnabled" defaultChecked={alertsEnabled} disabled={!canUseAlerts} /> Enable weekly alerts</label>
             <s-button type="submit" disabled={isSubmitting || !canUseAlerts} loading={isSubmitting}>Save alert settings</s-button>
           </s-stack>
         </fetcher.Form>

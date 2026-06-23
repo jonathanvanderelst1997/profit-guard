@@ -7,7 +7,7 @@ import { getLatestAuditRun } from "../lib/audit-store.server";
 import { getRecentImportRuns } from "../lib/import-history.server";
 import { getShopSettings } from "../lib/settings.server";
 import { basisPointsToPercent } from "../lib/margin";
-import { getShopPlan, PLAN_LIMITS } from "../lib/plan.server";
+import { getShopPlan, isPaidPlan, PLAN_LIMITS } from "../lib/plan.server";
 import { formatMoney } from "../lib/security";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -18,7 +18,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     getRecentImportRuns(session.shop, 5),
     getShopPlan(session.shop),
   ]);
-  return { settings, latestAudit, importRuns, plan: PLAN_LIMITS[planKey] };
+  return { settings, latestAudit, importRuns, plan: PLAN_LIMITS[planKey], canUseAlerts: isPaidPlan(planKey) };
 };
 
 type StepState = "complete" | "current" | "waiting";
@@ -91,13 +91,13 @@ function ChecklistStep({
 }
 
 export default function Onboarding() {
-  const { settings, latestAudit, importRuns, plan } = useLoaderData<typeof loader>();
+  const { settings, latestAudit, importRuns, plan, canUseAlerts } = useLoaderData<typeof loader>();
   const hasScan = Boolean(latestAudit);
   const issueCount = getIssueCount(latestAudit);
   const savedImportCount = importRuns.filter((run) => run.saved && run.savedCostCount > 0).length;
   const costsReady = Boolean(savedImportCount > 0 || (latestAudit && !latestAudit.demoMode && latestAudit.missingCostCount === 0));
   const costsNeedAttention = Boolean(!costsReady || latestAudit?.demoMode || (latestAudit?.missingCostCount ?? 0) > 0);
-  const hasAlerts = Boolean(settings.weeklyAlertsEnabled);
+  const hasAlerts = Boolean(settings.weeklyAlertsEnabled && canUseAlerts);
   const readinessScore = Math.round(([costsReady, hasScan, hasAlerts].filter(Boolean).length / 3) * 100);
   const nextAction = !hasScan
     ? { heading: "Run the first profit scan", body: "Start here. The scan creates the first fix list and shows whether cost data is missing.", href: "/app", label: "Run profit scan" }

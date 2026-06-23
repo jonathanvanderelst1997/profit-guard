@@ -2,7 +2,13 @@ import prisma from "../app/db.server";
 import { sendWeeklyAlertEmail } from "../app/lib/email.server";
 
 async function main() {
-  const settings = await prisma.shopSettings.findMany({ where: { weeklyAlertsEnabled: true, alertEmail: { not: null } } });
+  const settings = await prisma.shopSettings.findMany({
+    where: {
+      weeklyAlertsEnabled: true,
+      alertEmail: { not: null },
+      planKey: { in: ["starter", "growth"] },
+    },
+  });
   for (const s of settings) {
     try {
       const latestAudit = await prisma.auditRun.findFirst({

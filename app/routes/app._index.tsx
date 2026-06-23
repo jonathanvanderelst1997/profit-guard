@@ -10,7 +10,7 @@ import { getLatestAuditRun, saveAuditRun } from "../lib/audit-store.server";
 import { getShopSettings, updateMinimumMargin } from "../lib/settings.server";
 import { getImportedCosts, applyImportedCostsBySku } from "../lib/imported-costs.server";
 import { applyDemoCostsWhenAllMissing } from "../lib/demo-costs";
-import { getShopPlan, getVariantLimitForPlan, PLAN_LIMITS } from "../lib/plan.server";
+import { getShopPlan, getVariantLimitForPlan, isPaidPlan, PLAN_LIMITS } from "../lib/plan.server";
 import { formatMoney } from "../lib/security";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -18,7 +18,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const settings = await getShopSettings(session.shop);
   const latestAudit = await getLatestAuditRun(session.shop);
   const planKey = await getShopPlan(session.shop);
-  return { settings, latestAudit, planKey, plan: PLAN_LIMITS[planKey] };
+  return { settings, latestAudit, planKey, plan: PLAN_LIMITS[planKey], canUseAlerts: isPaidPlan(planKey) };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -296,7 +296,7 @@ function ActionCenter({ audit, minimumMarginBps }: { audit: DashboardAudit; mini
 }
 
 export default function Dashboard() {
-  const { settings, latestAudit, plan } = useLoaderData<typeof loader>();
+  const { settings, latestAudit, plan, canUseAlerts } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const shopify = useAppBridge();
   const [issueFilter, setIssueFilter] = useState<FindingFilter>("ALL");
@@ -356,7 +356,7 @@ export default function Dashboard() {
         </fetcher.Form>
       </s-section>
 
-      <FirstScanGuide audit={currentAudit as DashboardAudit | null | undefined} weeklyAlertsEnabled={Boolean(settings.weeklyAlertsEnabled)} />
+      <FirstScanGuide audit={currentAudit as DashboardAudit | null | undefined} weeklyAlertsEnabled={Boolean(settings.weeklyAlertsEnabled && canUseAlerts)} />
 
       <s-section heading="Latest scan">
         {!currentAudit ? (
