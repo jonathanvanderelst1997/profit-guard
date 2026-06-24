@@ -21,6 +21,7 @@
     "shopify": "shopify",
     "prisma": "prisma",
     "test": "npm run test:margin && npm run test:margin-helpers && npm run test:csv && npm run test:csv-parser && npm run test:webhook-compliance && npm run test:prod-schema && npm run test:shopify-products && tsx scripts/test-billing.ts && tsx scripts/test-email.ts && node scripts/test-demo-costs.mjs && node scripts/test-export.mjs && node scripts/test-security.mjs",
+    "marketing:brief": "node scripts/daily-launch-brief.mjs",
     "db:push": "prisma db push",
     "predev": "npx prisma generate"
   },
