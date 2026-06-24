@@ -13,6 +13,15 @@ Assessment:
 
 ## Actions completed
 
+### Direct merchant outreach
+
+After explicit approval, sent or submitted two direct-merchant messages:
+
+- BulbAmerica via Outlook to `support@bulbamerica.com`.
+- Chassis Unlimited via its official contact form; confirmation shown by the site after submission.
+
+Logged details in `marketing/lead-research/MERCHANT_OUTREACH_SEND_LOG_2026-06-25.md` and added both rows to `marketing/launch-outreach/outreach_tracker.md`.
+
 ### High-intent SEO pages
 
 Added public resource pages targeting concrete Shopify merchant pain:
