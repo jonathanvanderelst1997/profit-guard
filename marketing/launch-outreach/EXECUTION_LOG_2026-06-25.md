@@ -59,3 +59,12 @@ Next best action:
 - Use no-link or one-link drafts only after explicit approval.
 - Follow up agency batch on 2026-06-29 if there are still no replies.
 
+## Deployment verification
+
+After pushing commit `89edefe`, Render served the new pages successfully:
+
+- `https://profit-guard-xzku.onrender.com/resources` returned `200`.
+- `https://profit-guard-xzku.onrender.com/resources/shopify-unit-cost-missing` returned `200`.
+- `https://profit-guard-xzku.onrender.com/resources/find-low-margin-products-shopify` returned `200`.
+- `https://profit-guard-xzku.onrender.com/resources/bulk-price-update-margin-check` returned `200`.
+- `https://profit-guard-xzku.onrender.com/resources/stocky-cost-margin-workflow` returned `200`.
