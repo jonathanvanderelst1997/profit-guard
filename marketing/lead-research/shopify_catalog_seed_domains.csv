@@ -1,0 +1,13 @@
+domain,sector,source,angle,notes
+fashionnova.com,apparel,vervaunt large-catalog Shopify Plus examples,Large variant catalog with pricing and supplier-cost exposure,Public products endpoint showed >=250 products during spot check
+decathlon.com,sporting goods,vervaunt large-catalog Shopify Plus examples,Large catalog and inventory-heavy product operations,Public products endpoint showed >=250 products during spot check
+bulbamerica.com,lighting,vervaunt large-catalog Shopify Plus examples,Commodity catalog with supplier price and margin pressure,Public products endpoint showed >=250 products during spot check
+chassisunlimited.com,auto parts,fyresite automotive Shopify examples,Auto parts catalog with make/model fitment and supplier cost risk,Public products endpoint showed >=250 products during spot check
+kith.com,apparel,public Shopify examples,High-variant apparel catalog,Public products endpoint showed >=250 products during spot check
+colourpop.com,beauty,public Shopify examples,Beauty catalog with frequent launches and cost/margin review need,Public products endpoint showed >=250 products during spot check
+gymshark.com,apparel,public Shopify examples,Large apparel variant catalog,Public products endpoint showed >=250 products during spot check
+allbirds.com,apparel,public Shopify examples,Footwear variant catalog with inventory exposure,Public products endpoint showed >=250 products during spot check
+polyandbark.com,furniture,public Shopify examples,Furniture catalog with supplier-cost and inventory risk,Public products endpoint showed >=250 products during spot check
+deathwishcoffee.com,food and beverage,public Shopify examples,Smaller but multi-SKU consumable catalog,Public products endpoint showed product data during spot check
+beardbrand.com,beauty,public Shopify examples,Smaller grooming catalog for lower-priority comparison,Public products endpoint showed product data during spot check
+bravenewlook.com,apparel,vervaunt large-catalog Shopify Plus examples,Large catalog example but endpoint restricted,Products endpoint returned restricted response during spot check
