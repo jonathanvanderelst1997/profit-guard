@@ -84,6 +84,7 @@ export function PublicInfoPage({ title, eyebrow = "Margin Sentinel", children }:
         </a>
         <nav style={styles.nav}>
           <a href="/beta">Launch offer</a>
+          <a href="/resources">Resources</a>
           <a href="/resources/supplier-cost-csv-margin-scan">CSV workflow</a>
           <a href="/privacy">Privacy</a>
           <a href="/terms">Terms</a>

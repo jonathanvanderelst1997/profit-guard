@@ -14,9 +14,6 @@ type Pages = {
   "/": {
     params: {};
   };
-  "/resources/supplier-cost-csv-margin-scan": {
-    params: {};
-  };
   "/webhooks/app_subscriptions/update": {
     params: {};
   };
@@ -39,6 +36,24 @@ type Pages = {
     params: {};
   };
   "/auth/login": {
+    params: {};
+  };
+  "/resources": {
+    params: {};
+  };
+  "/resources/find-low-margin-products-shopify": {
+    params: {};
+  };
+  "/resources/bulk-price-update-margin-check": {
+    params: {};
+  };
+  "/resources/supplier-cost-csv-margin-scan": {
+    params: {};
+  };
+  "/resources/stocky-cost-margin-workflow": {
+    params: {};
+  };
+  "/resources/shopify-unit-cost-missing": {
     params: {};
   };
   "/healthz": {
@@ -99,11 +114,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/resources/supplier-cost-csv-margin-scan" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/webhooks/compliance" | "/auth/login" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/import/template" | "/app/csv";
-  };
-  "routes/resources.supplier-cost-csv-margin-scan.tsx": {
-    id: "routes/resources.supplier-cost-csv-margin-scan";
-    page: "/resources/supplier-cost-csv-margin-scan";
+    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/webhooks/compliance" | "/auth/login" | "/resources" | "/resources/find-low-margin-products-shopify" | "/resources/bulk-price-update-margin-check" | "/resources/supplier-cost-csv-margin-scan" | "/resources/stocky-cost-margin-workflow" | "/resources/shopify-unit-cost-missing" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/import/template" | "/app/csv";
   };
   "routes/webhooks.app_subscriptions.update.tsx": {
     id: "routes/webhooks.app_subscriptions.update";
@@ -136,6 +147,30 @@ type RouteFiles = {
   "routes/auth.login/route.tsx": {
     id: "routes/auth.login";
     page: "/auth/login";
+  };
+  "routes/resources.tsx": {
+    id: "routes/resources";
+    page: "/resources" | "/resources/find-low-margin-products-shopify" | "/resources/bulk-price-update-margin-check" | "/resources/supplier-cost-csv-margin-scan" | "/resources/stocky-cost-margin-workflow" | "/resources/shopify-unit-cost-missing";
+  };
+  "routes/resources.find-low-margin-products-shopify.tsx": {
+    id: "routes/resources.find-low-margin-products-shopify";
+    page: "/resources/find-low-margin-products-shopify";
+  };
+  "routes/resources.bulk-price-update-margin-check.tsx": {
+    id: "routes/resources.bulk-price-update-margin-check";
+    page: "/resources/bulk-price-update-margin-check";
+  };
+  "routes/resources.supplier-cost-csv-margin-scan.tsx": {
+    id: "routes/resources.supplier-cost-csv-margin-scan";
+    page: "/resources/supplier-cost-csv-margin-scan";
+  };
+  "routes/resources.stocky-cost-margin-workflow.tsx": {
+    id: "routes/resources.stocky-cost-margin-workflow";
+    page: "/resources/stocky-cost-margin-workflow";
+  };
+  "routes/resources.shopify-unit-cost-missing.tsx": {
+    id: "routes/resources.shopify-unit-cost-missing";
+    page: "/resources/shopify-unit-cost-missing";
   };
   "routes/healthz.tsx": {
     id: "routes/healthz";
@@ -217,7 +252,6 @@ type RouteFiles = {
 
 type RouteModules = {
   "root": typeof import("./app/root.tsx");
-  "routes/resources.supplier-cost-csv-margin-scan": typeof import("./app/routes/resources.supplier-cost-csv-margin-scan.tsx");
   "routes/webhooks.app_subscriptions.update": typeof import("./app/routes/webhooks.app_subscriptions.update.tsx");
   "routes/webhooks.customers.data_request": typeof import("./app/routes/webhooks.customers.data_request.tsx");
   "routes/webhooks.app.scopes_update": typeof import("./app/routes/webhooks.app.scopes_update.tsx");
@@ -226,6 +260,12 @@ type RouteModules = {
   "routes/webhooks.shop.redact": typeof import("./app/routes/webhooks.shop.redact.tsx");
   "routes/webhooks.compliance": typeof import("./app/routes/webhooks.compliance.tsx");
   "routes/auth.login": typeof import("./app/routes/auth.login/route.tsx");
+  "routes/resources": typeof import("./app/routes/resources.tsx");
+  "routes/resources.find-low-margin-products-shopify": typeof import("./app/routes/resources.find-low-margin-products-shopify.tsx");
+  "routes/resources.bulk-price-update-margin-check": typeof import("./app/routes/resources.bulk-price-update-margin-check.tsx");
+  "routes/resources.supplier-cost-csv-margin-scan": typeof import("./app/routes/resources.supplier-cost-csv-margin-scan.tsx");
+  "routes/resources.stocky-cost-margin-workflow": typeof import("./app/routes/resources.stocky-cost-margin-workflow.tsx");
+  "routes/resources.shopify-unit-cost-missing": typeof import("./app/routes/resources.shopify-unit-cost-missing.tsx");
   "routes/healthz": typeof import("./app/routes/healthz.tsx");
   "routes/privacy": typeof import("./app/routes/privacy.tsx");
   "routes/support": typeof import("./app/routes/support.tsx");
