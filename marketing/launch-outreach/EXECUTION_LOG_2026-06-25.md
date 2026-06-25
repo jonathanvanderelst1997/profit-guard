@@ -70,11 +70,29 @@ Relevant public Shopify Community demand signals:
 - Cost, price, and margin visibility during receiving.
 - Stocky transition concerns around cost continuity and margin accuracy.
 
+Mailbox review completed later on 2026-06-25:
+
+- Gmail had one new Shopify App Store contact message from `pentorex` about Margin Sentinel. It was not a real merchant lead; it offered paid positive reviews from managed Shopify stores at $50/store.
+- Decision: do not buy, solicit, or encourage paid/fake reviews. Ignore the message or decline without further engagement.
+- Reason: Shopify developer guidance prohibits fake or incentivized App Store reviews and can penalize/remove apps for review manipulation.
+- Gmail also showed the Shopify Community supplier CSV post as hidden by staff / awaiting approval. Do not repost it.
+- No relevant Margin Sentinel reply or bounce was found in Outlook; recent Outlook unread items were mostly newsletters, administrative mail, or self-generated alerts.
+- Gmail had no drafts waiting for Margin Sentinel.
+- Production health check remained green: `https://profit-guard-xzku.onrender.com/healthz`.
+
+Account/security items noticed but not changed by Codex:
+
+- GitHub requires 2FA enrollment for `jonathanvanderelst1997` by 2026-07-29 00:00 UTC.
+- OpenAI sent a failed payment notice dated 2026-06-23. Jonathan should update billing directly in the official OpenAI/ChatGPT account page if continued Codex/ChatGPT access is needed.
+- Binance sent a Belgium service restriction notice for 2026-07-01. This is outside Margin Sentinel, but Jonathan should review assets/orders directly in Binance if still relevant.
+
 ## Decision
 
 Do not send new cold outreach today.
 
 Do not repost the hidden Shopify Community post.
+
+Do not engage with paid review offers.
 
 Next best action:
 

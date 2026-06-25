@@ -2,6 +2,12 @@
 
 These are the account-dependent steps Codex cannot safely complete without the final accounts, production URL, support contact, and approved plugin/account connections. The fuller checklist is `docs/FINAL_OWNER_STEPS.md`.
 
+## 0. Account security and billing
+
+- Enable GitHub 2FA for `jonathanvanderelst1997` before 2026-07-29 00:00 UTC.
+- Check the OpenAI/ChatGPT billing page because a failed payment notice arrived on 2026-06-23.
+- If you still hold assets or open orders on Binance, review the Belgium service restriction notice before 2026-07-01.
+
 ## 1. Choose production basics
 
 - Choose the final production domain.

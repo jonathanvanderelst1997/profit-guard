@@ -49,3 +49,23 @@ Next action:
 - Wait for Shopify Community moderation.
 - Do not repost this message while it is pending.
 - If rejected, rewrite as a shorter advice-first reply with fewer links.
+
+## 2026-06-25
+
+### Shopify App Store contact message: paid review offer
+
+Status: ignored / do not engage
+
+Source:
+- Gmail message from Shopify titled `pentorex has a question about Margin Sentinel`.
+
+Summary:
+- Sender offered to install Margin Sentinel on multiple managed Shopify stores and provide positive reviews for $50 per store.
+
+Decision:
+- Do not buy or solicit reviews.
+- Do not treat this as a real merchant lead.
+- If a reply is ever needed, keep it to a short decline.
+
+Reason:
+- Shopify prohibits fake or incentivized reviews. Early growth should ask real users for feedback first, and only ask for an honest review after genuine successful use.
