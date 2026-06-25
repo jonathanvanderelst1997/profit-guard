@@ -1,6 +1,6 @@
 # Merchant outreach send log - 2026-06-25
 
-Two direct-merchant messages were sent after explicit approval from Jonathan.
+Three direct-merchant messages were sent after explicit approval from Jonathan.
 
 ## 1. BulbAmerica
 
@@ -25,6 +25,20 @@ Two direct-merchant messages were sent after explicit approval from Jonathan.
 
 ## Notes
 
-- No extra merchants were contacted in this batch.
+- No merchants beyond the three approved sends/submissions were contacted in this batch.
 - Chassis did not expose a public email address in the checked pages, so the official contact form was used.
-- Do not re-contact either merchant before the follow-up date unless they reply first.
+- Do not re-contact these merchants before the follow-up date unless they reply first.
+
+## 3. Poly & Bark
+
+- Channel: Outlook email
+- To: `hello@polyandbark.com`
+- Subject: `Read-only Shopify margin scan for furniture catalogs`
+- Status: Sent
+- Basis: public contact page/header support route lists `hello@polyandbark.com`; public catalog probe found 900 products and 2,550 variants.
+- Angle: furniture catalog, supplier-cost changes, variant depth, and inventory risk.
+- Next follow-up: 2026-07-02, only if no reply and if still appropriate.
+
+## Follow-up guardrail
+
+- Do not re-contact BulbAmerica, Chassis Unlimited, or Poly & Bark before 2026-07-02 unless they reply first.

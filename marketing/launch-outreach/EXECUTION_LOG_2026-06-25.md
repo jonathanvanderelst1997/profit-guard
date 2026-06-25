@@ -15,12 +15,27 @@ Assessment:
 
 ### Direct merchant outreach
 
-After explicit approval, sent or submitted two direct-merchant messages:
+After explicit approval, sent or submitted three direct-merchant messages:
 
 - BulbAmerica via Outlook to `support@bulbamerica.com`.
 - Chassis Unlimited via its official contact form; confirmation shown by the site after submission.
+- Poly & Bark via Outlook to `hello@polyandbark.com` after later explicit approval.
 
-Logged details in `marketing/lead-research/MERCHANT_OUTREACH_SEND_LOG_2026-06-25.md` and added both rows to `marketing/launch-outreach/outreach_tracker.md`.
+Logged details in `marketing/lead-research/MERCHANT_OUTREACH_SEND_LOG_2026-06-25.md` and added all rows to `marketing/launch-outreach/outreach_tracker.md`.
+
+### 30-lead merchant pipeline
+
+Built and probed a 30-domain direct-merchant pipeline:
+
+- Seed file: `marketing/lead-research/shopify_catalog_seed_domains_30_pipeline.csv`
+- Probe output: `marketing/lead-research/catalog_probe_results_30_pipeline_2026-06-25.csv`
+- Summary: `marketing/lead-research/MERCHANT_30_PIPELINE_2026-06-25.md`
+- Next auto-parts drafts: `marketing/lead-research/NEXT_AUTO_PARTS_DRAFTS_2026-06-25.md`
+
+Best next prepared approval candidates:
+
+- First Truck Parts
+- Automotive Service Equipment
 
 ### High-intent SEO pages
 

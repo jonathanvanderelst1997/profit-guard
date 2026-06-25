@@ -1,0 +1,31 @@
+domain,sector,source,angle,notes
+polyandbark.com,furniture,prepared merchant pipeline,Furniture inventory and supplier-cost exposure,Already sent after approval on 2026-06-25
+colourpop.com,beauty,prepared merchant pipeline,Frequent launches and SKU-level margin cleanup,Draft prepared but not sent
+decathlon.com,sporting goods,prepared merchant pipeline,Large catalog and inventory-heavy operations,Existing public probe found product depth
+allbirds.com,apparel,prepared merchant pipeline,Footwear variant catalog with inventory exposure,Existing public probe found variant depth
+fashionnova.com,apparel,prepared merchant pipeline,Massive apparel variant catalog,Existing public probe capped at max pages
+kith.com,apparel,prepared merchant pipeline,High-variant apparel catalog,Existing public probe capped at max pages
+gymshark.com,apparel,prepared merchant pipeline,Large apparel variant catalog,Existing public probe capped at max pages
+deathwishcoffee.com,food and beverage,prepared merchant pipeline,Consumable SKU and bundle margin checks,Existing public probe found product data
+beardbrand.com,beauty,prepared merchant pipeline,Grooming catalog margin cleanup,Existing public probe found product data
+mocaautoparts.myshopify.com,auto parts,public search result,Auto parts supplier-cost and fitment catalog,Public result describes distributor and retailer of spare parts
+toyolex-parts-connection.myshopify.com,auto parts,public search result,Toyota and Lexus replacement parts supplier-cost risk,Public result describes OEM and OE replacement parts
+first-truck-parts.myshopify.com,auto parts,public search result,Heavy truck parts supplier-cost and inventory-risk catalog,Public result exposes customer service email
+partsource.myshopify.com,auto parts,public search result,Large aftermarket auto parts assortment,Public result describes 300000+ part assortment
+partsworldusa-stg.myshopify.com,auto parts,public search result,Starter motor and alternator parts ecosystem,Public result describes broad parts line
+by39tk-uv.myshopify.com,automotive equipment,public search result,Garage equipment and lift catalog supplier-cost risk,Public result describes automotive equipment resource
+57bb73-4.myshopify.com,automotive accessories,public search result,Vehicle accessories and parts inventory risk,Public result describes air horns and accessories
+skims.com,apparel,public Shopify Plus examples,High-volume apparel and variant catalog,Use only if public contact route is appropriate
+bombas.com,apparel,public Shopify Plus examples,Sock and apparel variant catalog,Use only if public contact route is appropriate
+brooklinen.com,home goods,public Shopify examples,Home goods catalog and inventory exposure,Use only if public contact route is appropriate
+kyliecosmetics.com,beauty,public Shopify Plus beauty examples,Beauty catalog launch and SKU cleanup,Use only if public contact route is appropriate
+goodamerican.com,apparel,public Shopify Plus examples,High-variant apparel catalog,Use only if public contact route is appropriate
+mnml.la,apparel,public Shopify examples,Apparel variant margin checks,Use only if public contact route is appropriate
+chubbiesshorts.com,apparel,public Shopify examples,Apparel variant catalog and inventory exposure,Use only if public contact route is appropriate
+tentree.com,apparel,public Shopify examples,Apparel catalog and inventory exposure,Use only if public contact route is appropriate
+vuoriclothing.com,apparel,public Shopify examples,Apparel catalog margin checks,Use only if public contact route is appropriate
+aloyoga.com,apparel,public Shopify examples,Apparel variant catalog and inventory exposure,Use only if public contact route is appropriate
+glossier.com,beauty,public Shopify examples,Beauty product cost and launch cleanup,Use only if public contact route is appropriate
+jeffreestarcosmetics.com,beauty,public Shopify examples,Beauty catalog launch margin cleanup,Use only if public contact route is appropriate
+drsquatch.com,personal care,public Shopify examples,Personal care SKU and bundle margin checks,Use only if public contact route is appropriate
+peakdesign.com,accessories,public Shopify examples,Accessory SKU margin and inventory exposure,Use only if public contact route is appropriate
