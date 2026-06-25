@@ -8,5 +8,6 @@ build
 .cache
 .shopify
 .DS_Store
+/green.csv
 marketing/app-store-assets/_render/
 marketing/app-store-walkthrough/_render/
