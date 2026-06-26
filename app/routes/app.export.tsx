@@ -8,6 +8,7 @@ import { getLatestAuditRunForExport } from "../lib/audit-store.server";
 import { findingsToCsv } from "../lib/export";
 import { basisPointsToPercent } from "../lib/margin";
 import { formatMoney } from "../lib/security";
+import { trackAnalyticsEvent } from "../lib/analytics.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
@@ -18,17 +19,29 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   if (url.searchParams.get("download") === "1") {
     if (!latestAudit) return new Response("No audit run found. Run a scan first.\n", { status: 404, headers: { "Content-Type": "text/plain; charset=utf-8" } });
     const csv = findingsToCsv(latestAudit.findings, { minimumMarginBps: latestAudit.minimumMarginBps });
+    await trackAnalyticsEvent({
+      eventName: "findings_export_downloaded",
+      source: "app",
+      request,
+      shop: session.shop,
+      subjectId: latestAudit.id,
+      metadata: {
+        totalVariants: latestAudit.totalVariants,
+        findingCount: latestAudit.findings.length,
+        lossCount: latestAudit.lossCount,
+        lowMarginCount: latestAudit.lowMarginCount,
+        missingCostCount: latestAudit.missingCostCount,
+      },
+    });
     return new Response(csv, { headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": `attachment; filename="${fileName}"` } });
   }
 
   if (!latestAudit) return { hasAudit: false as const };
   const issueCount = latestAudit.lossCount + latestAudit.lowMarginCount + latestAudit.missingCostCount;
   const currencyCode = latestAudit.findings[0]?.currencyCode;
-  const csv = findingsToCsv(latestAudit.findings, { minimumMarginBps: latestAudit.minimumMarginBps });
   return {
     hasAudit: true as const,
     fileName,
-    csv,
     createdAt: latestAudit.createdAt,
     totalVariants: latestAudit.totalVariants,
     issueCount,
@@ -56,7 +69,9 @@ export default function ExportFindings() {
     setIsDownloading(true);
     setDownloadError(null);
     try {
-      const blob = new Blob([data.csv], { type: "text/csv;charset=utf-8" });
+      const response = await fetch("/app/export?download=1");
+      if (!response.ok) throw new Error(await response.text());
+      const blob = await response.blob();
       const objectUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = objectUrl;

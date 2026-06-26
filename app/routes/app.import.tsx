@@ -13,6 +13,7 @@ import { createImportRun, getRecentImportRuns } from "../lib/import-history.serv
 import { getShopPlan, getVariantLimitForPlan, isPaidPlan, PLAN_LIMITS } from "../lib/plan.server";
 import { formatMoney } from "../lib/security";
 import { getVariantCostKeys } from "../lib/cost-matching";
+import { trackAnalyticsEvent } from "../lib/analytics.server";
 
 type PreviewFinding = MarginFinding & { id?: string | null };
 
@@ -47,13 +48,20 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const shouldSave = String(formData.get("saveCosts") ?? "false") === "true";
   const planKey = await getShopPlan(session.shop);
   if (!isPaidPlan(planKey)) {
+    await trackAnalyticsEvent({ eventName: "supplier_import_blocked", source: "app", request, shop: session.shop, metadata: { planKey } });
     return { ok: false, errors: ["Upgrade to Starter to preview and save supplier cost imports."], preview: null, importRuns: await getRecentImportRuns(session.shop) };
   }
 
-  if (!(file instanceof File)) return { ok: false, errors: ["Please upload a CSV file."], preview: null };
+  if (!(file instanceof File)) {
+    await trackAnalyticsEvent({ eventName: "supplier_import_failed", source: "app", request, shop: session.shop, metadata: { reason: "missing_file", planKey } });
+    return { ok: false, errors: ["Please upload a CSV file."], preview: null };
+  }
 
   const parsed = parseSupplierCostCsv(await file.text());
-  if (parsed.errors.length > 0 && parsed.rows.length === 0) return { ok: false, errors: parsed.errors, preview: null };
+  if (parsed.errors.length > 0 && parsed.rows.length === 0) {
+    await trackAnalyticsEvent({ eventName: "supplier_import_failed", source: "app", request, shop: session.shop, metadata: { reason: "parse_errors", errorCount: parsed.errors.length, fileName: file.name, planKey } });
+    return { ok: false, errors: parsed.errors, preview: null };
+  }
 
   const settings = await getShopSettings(session.shop);
   const variantLimit = getVariantLimitForPlan(planKey);
@@ -70,7 +78,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const summary = auditVariants(updatedVariants, settings.minimumMarginBps);
   const imported = shouldSave ? await upsertImportedCosts(session.shop, supplierMap) : 0;
   const importMetrics = buildImportRunMetrics({ rows: parsed.rows, errors: parsed.errors, matchedKeys, savedCostCount: imported });
-  await createImportRun(session.shop, { ...importMetrics, fileName: file.name, saved: shouldSave });
+  const importRun = await createImportRun(session.shop, { ...importMetrics, fileName: file.name, saved: shouldSave });
+  await trackAnalyticsEvent({
+    eventName: shouldSave ? "supplier_import_saved" : "supplier_import_previewed",
+    source: "app",
+    request,
+    shop: session.shop,
+    subjectId: importRun.id,
+    metadata: { ...importMetrics, fileName: file.name, planKey, scanLimitReached: variants.limitReached },
+  });
   const importRuns = await getRecentImportRuns(session.shop);
 
   return {

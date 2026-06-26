@@ -2,6 +2,7 @@ import type { ActionFunctionArgs } from "react-router";
 import { authenticate } from "../shopify.server";
 import { planFromSubscriptionName } from "../lib/billing.server";
 import { setShopPlan } from "../lib/plan.server";
+import { trackAnalyticsEvent } from "../lib/analytics.server";
 
 type AppSubscriptionPayload = {
   app_subscription?: {
@@ -26,11 +27,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   if (["CANCELLED", "DECLINED", "EXPIRED", "FROZEN"].includes(status)) {
     await setShopPlan(shop, "free", null);
+    await trackAnalyticsEvent({ eventName: "subscription_inactive", source: "webhook", request, shop, subjectId: subscriptionId, metadata: { status, name } });
     return new Response();
   }
 
   if (["ACTIVE", "ACCEPTED"].includes(status)) {
-    await setShopPlan(shop, planFromSubscriptionName(name), subscriptionId);
+    const planKey = planFromSubscriptionName(name);
+    await setShopPlan(shop, planKey, subscriptionId);
+    await trackAnalyticsEvent({ eventName: "subscription_active", source: "webhook", request, shop, subjectId: subscriptionId, metadata: { status, name, planKey } });
   }
 
   return new Response();

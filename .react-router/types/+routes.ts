@@ -35,6 +35,9 @@ type Pages = {
   "/webhooks/compliance": {
     params: {};
   };
+  "/internal/metrics": {
+    params: {};
+  };
   "/auth/login": {
     params: {};
   };
@@ -114,7 +117,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/webhooks/compliance" | "/auth/login" | "/resources" | "/resources/find-low-margin-products-shopify" | "/resources/bulk-price-update-margin-check" | "/resources/supplier-cost-csv-margin-scan" | "/resources/stocky-cost-margin-workflow" | "/resources/shopify-unit-cost-missing" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/import/template" | "/app/csv";
+    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/webhooks/compliance" | "/internal/metrics" | "/auth/login" | "/resources" | "/resources/find-low-margin-products-shopify" | "/resources/bulk-price-update-margin-check" | "/resources/supplier-cost-csv-margin-scan" | "/resources/stocky-cost-margin-workflow" | "/resources/shopify-unit-cost-missing" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/import/template" | "/app/csv";
   };
   "routes/webhooks.app_subscriptions.update.tsx": {
     id: "routes/webhooks.app_subscriptions.update";
@@ -143,6 +146,10 @@ type RouteFiles = {
   "routes/webhooks.compliance.tsx": {
     id: "routes/webhooks.compliance";
     page: "/webhooks/compliance";
+  };
+  "routes/internal.metrics.tsx": {
+    id: "routes/internal.metrics";
+    page: "/internal/metrics";
   };
   "routes/auth.login/route.tsx": {
     id: "routes/auth.login";
@@ -259,6 +266,7 @@ type RouteModules = {
   "routes/webhooks.app.uninstalled": typeof import("./app/routes/webhooks.app.uninstalled.tsx");
   "routes/webhooks.shop.redact": typeof import("./app/routes/webhooks.shop.redact.tsx");
   "routes/webhooks.compliance": typeof import("./app/routes/webhooks.compliance.tsx");
+  "routes/internal.metrics": typeof import("./app/routes/internal.metrics.tsx");
   "routes/auth.login": typeof import("./app/routes/auth.login/route.tsx");
   "routes/resources": typeof import("./app/routes/resources.tsx");
   "routes/resources.find-low-margin-products-shopify": typeof import("./app/routes/resources.find-low-margin-products-shopify.tsx");

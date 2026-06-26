@@ -1,6 +1,7 @@
 import type { ActionFunctionArgs } from "react-router";
 import { authenticate } from "../shopify.server";
 import db from "../db.server";
+import { trackAnalyticsEvent } from "../lib/analytics.server";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
     const { payload, session, topic, shop } = await authenticate.webhook(request);
@@ -17,5 +18,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
             },
         });
     }
+    await trackAnalyticsEvent({ eventName: "scopes_updated", source: "webhook", request, shop, metadata: { current } });
     return new Response();
 };

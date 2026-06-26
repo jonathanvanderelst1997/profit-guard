@@ -1,13 +1,16 @@
 import type { LoaderFunctionArgs } from "react-router";
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "react-router";
+import { trackPublicPageView } from "./lib/analytics.server";
 
-export const loader = ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const isShopifyContext =
     url.pathname.startsWith("/app") ||
     url.searchParams.has("embedded") ||
     url.searchParams.has("host") ||
     url.searchParams.has("shop");
+
+  await trackPublicPageView(request);
 
   return {
     loadAppBridge: isShopifyContext,

@@ -10,6 +10,7 @@ import { sendWeeklyAlertEmail, type AuditRunWithFindings } from "../lib/email.se
 import { getShopPlan, isPaidPlan, PLAN_LIMITS } from "../lib/plan.server";
 import { basisPointsToPercent, getCostSourceLabel, getSeverityLabel, type Severity } from "../lib/margin";
 import { formatMoney } from "../lib/security";
+import { trackAnalyticsEvent } from "../lib/analytics.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
@@ -36,16 +37,27 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const intent = String(formData.get("intent") ?? "save");
   const settings = await getShopSettings(session.shop);
   const planKey = await getShopPlan(session.shop);
-  if (!isPaidPlan(planKey)) return { ok: false, message: "Upgrade to Starter to enable weekly alerts." };
+  if (!isPaidPlan(planKey)) {
+    await trackAnalyticsEvent({ eventName: "alerts_blocked", source: "app", request, shop: session.shop, metadata: { planKey, intent } });
+    return { ok: false, message: "Upgrade to Starter to enable weekly alerts." };
+  }
   if (intent === "send-test") {
     const latestAudit = await getLatestAuditRun(session.shop);
-    if (!latestAudit) return { ok: false, message: "Run a scan before sending a test alert." };
+    if (!latestAudit) {
+      await trackAnalyticsEvent({ eventName: "test_alert_failed", source: "app", request, shop: session.shop, metadata: { reason: "no_scan", planKey } });
+      return { ok: false, message: "Run a scan before sending a test alert." };
+    }
     const result = await sendWeeklyAlertEmail(settings, latestAudit as AuditRunWithFindings);
     const skippedReason = skippedAlertReason(result);
-    if (skippedReason) return { ok: false, message: skippedReason, result };
+    if (skippedReason) {
+      await trackAnalyticsEvent({ eventName: "test_alert_failed", source: "app", request, shop: session.shop, metadata: { reason: skippedReason, planKey } });
+      return { ok: false, message: skippedReason, result };
+    }
+    await trackAnalyticsEvent({ eventName: "test_alert_sent", source: "app", request, shop: session.shop, metadata: { planKey } });
     return { ok: true, message: "Test alert sent.", result };
   }
   const updated = await updateAlertSettings(session.shop, { alertEmail: String(formData.get("alertEmail") ?? ""), weeklyAlertsEnabled: formData.get("weeklyAlertsEnabled") === "on" });
+  await trackAnalyticsEvent({ eventName: "alert_settings_saved", source: "app", request, shop: session.shop, metadata: { planKey, weeklyAlertsEnabled: updated.weeklyAlertsEnabled, hasAlertEmail: Boolean(updated.alertEmail) } });
   return { ok: true, message: "Alert settings saved.", settings: updated };
 };
 

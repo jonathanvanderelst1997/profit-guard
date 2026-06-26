@@ -10,6 +10,7 @@ import {
   syncPlanFromShopifyBilling,
 } from "../lib/billing.server";
 import { getShopPlan, PLAN_LIMITS, setShopPlan, type PlanKey } from "../lib/plan.server";
+import { trackAnalyticsEvent } from "../lib/analytics.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { admin, session } = await authenticate.admin(request);
@@ -17,6 +18,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const selectedPlan = url.searchParams.get("selected_plan") as PlanKey | null;
   if (isBillablePlanKey(selectedPlan)) {
     await setShopPlan(session.shop, selectedPlan, url.searchParams.get("charge_id"));
+    await trackAnalyticsEvent({ eventName: "billing_returned", source: "billing", request, shop: session.shop, metadata: { selectedPlan, hasChargeId: Boolean(url.searchParams.get("charge_id")) } });
   }
   let currentPlan = await getShopPlan(session.shop);
   try { currentPlan = await syncPlanFromShopifyBilling(admin, session.shop); } catch { /* Billing sync can fail in local/dev mode. Keep stored plan. */ }
@@ -30,12 +32,17 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   if (planKey === "free") {
     await setShopPlan(session.shop, "free", null);
+    await trackAnalyticsEvent({ eventName: "plan_downgraded", source: "billing", request, shop: session.shop, metadata: { planKey } });
     return { ok: true, downgraded: true };
   }
 
-  if (!isBillablePlanKey(planKey)) return { ok: false, error: "Unknown plan." };
+  if (!isBillablePlanKey(planKey)) {
+    await trackAnalyticsEvent({ eventName: "billing_request_failed", source: "billing", request, shop: session.shop, metadata: { reason: "unknown_plan", planKey } });
+    return { ok: false, error: "Unknown plan." };
+  }
 
   try {
+    await trackAnalyticsEvent({ eventName: "billing_approval_requested", source: "billing", request, shop: session.shop, metadata: { planKey, isTest: shouldUseTestBilling() } });
     return await billing.request({
       plan: billingPlanNameForKey(planKey),
       isTest: shouldUseTestBilling(),
@@ -45,6 +52,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   } catch (error) {
     if (error instanceof Response) throw error;
     console.error("Failed to request Shopify billing approval", error);
+    await trackAnalyticsEvent({ eventName: "billing_request_failed", source: "billing", request, shop: session.shop, metadata: { reason: error instanceof Error ? error.message : String(error), planKey } });
     return { ok: false, error: "Could not open Shopify billing approval." };
   }
 };

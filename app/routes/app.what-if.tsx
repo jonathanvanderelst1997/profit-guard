@@ -10,6 +10,7 @@ import { getShopSettings } from "../lib/settings.server";
 import { fetchVariantsForAudit } from "../lib/shopify-products.server";
 import { buildCostIncreaseScenario, normalizeCostIncreasePercent } from "../lib/what-if";
 import { formatMoney } from "../lib/security";
+import { trackAnalyticsEvent } from "../lib/analytics.server";
 
 type ScenarioFinding = MarginFinding & { id?: string | null };
 
@@ -26,7 +27,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const costIncreasePercent = normalizeCostIncreasePercent(formData.get("costIncreasePercent"));
   const settings = await getShopSettings(session.shop);
   const planKey = await getShopPlan(session.shop);
-  if (!isPaidPlan(planKey)) return { ok: false, error: "Upgrade to Starter to run cost-change what-if scenarios." };
+  if (!isPaidPlan(planKey)) {
+    await trackAnalyticsEvent({ eventName: "what_if_blocked", source: "app", request, shop: session.shop, metadata: { planKey, costIncreasePercent } });
+    return { ok: false, error: "Upgrade to Starter to run cost-change what-if scenarios." };
+  }
   const variantLimit = getVariantLimitForPlan(planKey);
   const scan = await fetchVariantsForAudit(admin, { maxVariants: variantLimit });
   const importedCosts = await getImportedCosts(session.shop);
@@ -34,6 +38,23 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const demoResult = applyDemoCostsWhenAllMissing(withImportedCosts);
   const scenario = buildCostIncreaseScenario(demoResult.variants, settings.minimumMarginBps, costIncreasePercent);
   const currencyCode = demoResult.variants.find((variant) => variant.currencyCode)?.currencyCode ?? null;
+  await trackAnalyticsEvent({
+    eventName: "what_if_completed",
+    source: "app",
+    request,
+    shop: session.shop,
+    metadata: {
+      planKey,
+      costIncreasePercent: scenario.costIncreasePercent,
+      affectedVariantCount: scenario.affectedVariantCount,
+      baselineIssueCount: scenario.baseline.lossCount + scenario.baseline.lowMarginCount + scenario.baseline.missingCostCount,
+      scenarioIssueCount: scenario.scenario.lossCount + scenario.scenario.lowMarginCount + scenario.scenario.missingCostCount,
+      newlyAtRiskCount: scenario.newlyAtRiskCount,
+      addedInventoryRiskAmount: scenario.addedInventoryRiskAmount,
+      demoMode: demoResult.demoMode,
+      scanLimitReached: scan.limitReached,
+    },
+  });
 
   return {
     ok: true,

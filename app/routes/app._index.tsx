@@ -12,6 +12,7 @@ import { getImportedCosts, applyImportedCostsBySku } from "../lib/imported-costs
 import { applyDemoCostsWhenAllMissing } from "../lib/demo-costs";
 import { getShopPlan, getVariantLimitForPlan, isPaidPlan, PLAN_LIMITS } from "../lib/plan.server";
 import { formatMoney } from "../lib/security";
+import { trackAnalyticsEvent } from "../lib/analytics.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { session } = await authenticate.admin(request);
@@ -29,6 +30,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (intent === "settings") {
     const minimumMarginPercent = Number(formData.get("minimumMarginPercent") ?? 30);
     const settings = await updateMinimumMargin(session.shop, minimumMarginPercent);
+    await trackAnalyticsEvent({ eventName: "settings_updated", source: "app", request, shop: session.shop, metadata: { minimumMarginBps: settings.minimumMarginBps } });
     return { ok: true, type: "settings", settings };
   }
 
@@ -40,6 +42,24 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const demoResult = applyDemoCostsWhenAllMissing(withImportedCosts);
   const summary = auditVariants(demoResult.variants, settings.minimumMarginBps);
   const auditRun = await saveAuditRun(session.shop, settings.minimumMarginBps, summary, { demoMode: demoResult.demoMode, scanLimitReached: scan.limitReached });
+  await trackAnalyticsEvent({
+    eventName: "scan_completed",
+    source: "app",
+    request,
+    shop: session.shop,
+    subjectId: auditRun.id,
+    metadata: {
+      planKey,
+      totalVariants: auditRun.totalVariants,
+      lossCount: auditRun.lossCount,
+      lowMarginCount: auditRun.lowMarginCount,
+      missingCostCount: auditRun.missingCostCount,
+      okCount: auditRun.okCount,
+      inventoryRiskAmount: auditRun.inventoryRiskAmount,
+      demoMode: auditRun.demoMode,
+      scanLimitReached: auditRun.scanLimitReached,
+    },
+  });
   return { ok: true, type: "scan", auditRun };
 };
 

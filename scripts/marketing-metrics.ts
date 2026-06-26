@@ -1,0 +1,47 @@
+import "dotenv/config";
+import { getLaunchMetrics } from "../app/lib/analytics.server";
+import prisma from "../app/db.server";
+
+function formatGroup(rows: Array<Record<string, unknown>>, key: string): string {
+  if (rows.length === 0) return "  none";
+  return rows
+    .map((row) => `  ${String(row[key] ?? "(none)")}: ${String((row._count as { _all?: number })?._all ?? 0)}`)
+    .join("\n");
+}
+
+async function main() {
+  const days = Number(process.argv[2] ?? 30);
+  const metrics = await getLaunchMetrics(days);
+
+  console.log(`# Margin Sentinel metrics`);
+  console.log(`Generated: ${metrics.generatedAt}`);
+  console.log(`Window: ${metrics.windowDays} days`);
+  console.log("");
+  console.log("Counts:");
+  for (const [key, value] of Object.entries(metrics.counts)) {
+    console.log(`  ${key}: ${value}`);
+  }
+  console.log("");
+  console.log("Events by name:");
+  console.log(formatGroup(metrics.eventsByName, "eventName"));
+  console.log("");
+  console.log("Events by source:");
+  console.log(formatGroup(metrics.eventsBySource, "source"));
+  console.log("");
+  console.log("Events by UTM source:");
+  console.log(formatGroup(metrics.eventsByUtmSource, "utmSource"));
+  console.log("");
+  console.log("Recent events:");
+  for (const event of metrics.recentEvents.slice(0, 10)) {
+    console.log(`  ${event.createdAt.toISOString()} | ${event.eventName} | ${event.shop ?? "public"} | ${event.path ?? ""}`);
+  }
+}
+
+main()
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

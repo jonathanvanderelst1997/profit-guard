@@ -124,3 +124,26 @@ model AlertLog {
 
   @@index([shop, createdAt])
 }
+
+model AnalyticsEvent {
+  id          String   @id @default(cuid())
+  shop        String?
+  eventName   String
+  source      String
+  path        String?
+  method      String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmContent  String?
+  referrer    String?
+  userAgent   String?
+  subjectId   String?
+  metadata    String?
+  createdAt   DateTime @default(now())
+
+  @@index([shop, createdAt])
+  @@index([eventName, createdAt])
+  @@index([source, createdAt])
+  @@index([utmSource, createdAt])
+}

@@ -60,7 +60,8 @@ What Codex can verify from this workspace right now:
 
 - Outreach sends and follow-up dates from `marketing/launch-outreach/outreach_tracker.md`.
 - Production health from `https://profit-guard-xzku.onrender.com/healthz`.
-- Local dev database only. The local `dev.sqlite` file exists but is empty, so it does not show real installs, scans, or imports.
+- App-owned metrics after deployment: public page views, UTM source, app opens, scans, imports, template downloads, exports, what-if runs, alert actions, billing actions, and lifecycle webhooks.
+- Local dev database only unless a production `DATABASE_URL` or `METRICS_TOKEN` is available.
 
 What Codex cannot see directly right now:
 
@@ -68,14 +69,29 @@ What Codex cannot see directly right now:
 - App Store install-button clicks.
 - Shopify Partner Dashboard app analytics.
 - GA4 or Meta Pixel events for listing views and installs.
-- Render production database counts, unless the production `DATABASE_URL` is available in the local environment or through a connected Render/DB tool.
+- Render production database counts, unless the production `DATABASE_URL` is available in the local environment, through a connected Render/DB tool, or through the secured `/internal/metrics` route.
 
 Required tracking setup:
 
 1. In Shopify Partner Dashboard, add GA4 or Meta Pixel tracking to the app listing.
 2. In GA4, configure the Measurement Protocol API secret so Shopify can send server-side install events.
-3. Check Partner Dashboard app analytics daily for installs, uninstalls, revenue, and reviews.
-4. If production database access is available, count `Session`, `ShopSettings`, `AuditRun`, `ImportRun`, and `AlertLog` daily to measure install-to-activation.
+3. Set `METRICS_TOKEN` in production so `/internal/metrics?days=30` can be read securely.
+4. Check Partner Dashboard app analytics daily for installs, uninstalls, revenue, and reviews.
+5. Use `npm run metrics:launch -- 30` locally when connected to the target database, or call `/internal/metrics` with the bearer token, to measure install-to-activation.
+
+## Reading app-owned metrics
+
+Production HTTP:
+
+```bash
+curl -H "Authorization: Bearer $METRICS_TOKEN" "https://profit-guard-xzku.onrender.com/internal/metrics?days=30"
+```
+
+Local/DB script:
+
+```bash
+npm run metrics:launch -- 30
+```
 
 Current interpretation:
 

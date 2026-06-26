@@ -3,6 +3,7 @@ import { authenticate } from "../shopify.server";
 import { fetchVariantsForAudit } from "../lib/shopify-products.server";
 import { getShopPlan, getVariantLimitForPlan } from "../lib/plan.server";
 import { variantsToCostTemplateCsv } from "../lib/cost-template";
+import { trackAnalyticsEvent } from "../lib/analytics.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { admin, session } = await authenticate.admin(request);
@@ -10,6 +11,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const scan = await fetchVariantsForAudit(admin, { maxVariants: getVariantLimitForPlan(planKey) });
   const csv = variantsToCostTemplateCsv(scan.variants);
   const fileName = `margin-sentinel-cost-template-${new Date().toISOString().slice(0, 10)}.csv`;
+  await trackAnalyticsEvent({ eventName: "cost_template_downloaded", source: "app", request, shop: session.shop, metadata: { planKey, variants: scan.variants.length, scanLimitReached: scan.limitReached } });
   return new Response(csv, { headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": `attachment; filename="${fileName}"` } });
 };
-
