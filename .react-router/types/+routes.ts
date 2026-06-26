@@ -91,6 +91,9 @@ type Pages = {
   "/app/settings": {
     params: {};
   };
+  "/app/metrics": {
+    params: {};
+  };
   "/app/pricing": {
     params: {};
   };
@@ -117,7 +120,7 @@ type Pages = {
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/webhooks/compliance" | "/internal/metrics" | "/auth/login" | "/resources" | "/resources/find-low-margin-products-shopify" | "/resources/bulk-price-update-margin-check" | "/resources/supplier-cost-csv-margin-scan" | "/resources/stocky-cost-margin-workflow" | "/resources/shopify-unit-cost-missing" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/import/template" | "/app/csv";
+    page: "/" | "/webhooks/app_subscriptions/update" | "/webhooks/customers/data_request" | "/webhooks/app/scopes_update" | "/webhooks/customers/redact" | "/webhooks/app/uninstalled" | "/webhooks/shop/redact" | "/webhooks/compliance" | "/internal/metrics" | "/auth/login" | "/resources" | "/resources/find-low-margin-products-shopify" | "/resources/bulk-price-update-margin-check" | "/resources/supplier-cost-csv-margin-scan" | "/resources/stocky-cost-margin-workflow" | "/resources/shopify-unit-cost-missing" | "/healthz" | "/privacy" | "/support" | "/auth/*" | "/refund" | "/terms" | "/beta" | "/app" | "/app/onboarding" | "/app/settings" | "/app/metrics" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/import/template" | "/app/csv";
   };
   "routes/webhooks.app_subscriptions.update.tsx": {
     id: "routes/webhooks.app_subscriptions.update";
@@ -213,7 +216,7 @@ type RouteFiles = {
   };
   "routes/app.tsx": {
     id: "routes/app";
-    page: "/app" | "/app/onboarding" | "/app/settings" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/import/template" | "/app/csv";
+    page: "/app" | "/app/onboarding" | "/app/settings" | "/app/metrics" | "/app/pricing" | "/app/what-if" | "/app/alerts" | "/app/export" | "/app/import" | "/app/import/template" | "/app/csv";
   };
   "routes/app.onboarding.tsx": {
     id: "routes/app.onboarding";
@@ -222,6 +225,10 @@ type RouteFiles = {
   "routes/app.settings.tsx": {
     id: "routes/app.settings";
     page: "/app/settings";
+  };
+  "routes/app.metrics.tsx": {
+    id: "routes/app.metrics";
+    page: "/app/metrics";
   };
   "routes/app.pricing.tsx": {
     id: "routes/app.pricing";
@@ -285,6 +292,7 @@ type RouteModules = {
   "routes/app": typeof import("./app/routes/app.tsx");
   "routes/app.onboarding": typeof import("./app/routes/app.onboarding.tsx");
   "routes/app.settings": typeof import("./app/routes/app.settings.tsx");
+  "routes/app.metrics": typeof import("./app/routes/app.metrics.tsx");
   "routes/app.pricing": typeof import("./app/routes/app.pricing.tsx");
   "routes/app.what-if": typeof import("./app/routes/app.what-if.tsx");
   "routes/app._index": typeof import("./app/routes/app._index.tsx");

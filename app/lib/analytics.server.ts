@@ -1,4 +1,5 @@
 import prisma from "../db.server";
+import type { Prisma } from "@prisma/client";
 
 type AnalyticsMetadata = Record<string, unknown>;
 
@@ -9,6 +10,12 @@ type TrackAnalyticsInput = {
   shop?: string | null;
   subjectId?: string | null;
   metadata?: AnalyticsMetadata;
+};
+
+type LaunchMetricsInput = number | {
+  days?: number;
+  shop?: string | null;
+  includePublic?: boolean;
 };
 
 const PUBLIC_PAGE_PREFIXES = ["/", "/beta", "/resources", "/privacy", "/terms", "/refund", "/support"];
@@ -98,9 +105,34 @@ function clampDays(days: number): number {
   return Math.min(Math.max(Math.round(days), 1), 180);
 }
 
-export async function getLaunchMetrics(inputDays = 30) {
-  const days = clampDays(inputDays);
+function resolveMetricsInput(input: LaunchMetricsInput = 30) {
+  if (typeof input === "number") {
+    return { days: clampDays(input), shop: null, includePublic: false };
+  }
+  return {
+    days: clampDays(input.days ?? 30),
+    shop: input.shop ?? null,
+    includePublic: Boolean(input.includePublic),
+  };
+}
+
+function analyticsWhere(since: Date, shop: string | null, includePublic: boolean): Prisma.AnalyticsEventWhereInput {
+  if (!shop) return { createdAt: { gte: since } };
+  return {
+    createdAt: { gte: since },
+    OR: [
+      { shop },
+      ...(includePublic ? [{ shop: null, source: "public" }] : []),
+    ],
+  };
+}
+
+export async function getLaunchMetrics(input: LaunchMetricsInput = 30) {
+  const { days, shop, includePublic } = resolveMetricsInput(input);
   const since = daysAgo(days);
+  const shopWhere = shop ? { shop } : {};
+  const datedShopWhere = shop ? { shop, createdAt: { gte: since } } : { createdAt: { gte: since } };
+  const eventWhere = analyticsWhere(since, shop, includePublic);
   const [
     sessionCount,
     sessionShops,
@@ -117,21 +149,23 @@ export async function getLaunchMetrics(inputDays = 30) {
     latestImportRuns,
     recentEvents,
   ] = await Promise.all([
-    prisma.session.count(),
-    prisma.session.findMany({ select: { shop: true }, distinct: ["shop"], orderBy: { shop: "asc" } }),
+    prisma.session.count({ where: shopWhere }),
+    prisma.session.findMany({ where: shopWhere, select: { shop: true }, distinct: ["shop"], orderBy: { shop: "asc" } }),
     prisma.shopSettings.findMany({
+      where: shopWhere,
       select: { shop: true, planKey: true, weeklyAlertsEnabled: true, createdAt: true, updatedAt: true },
       orderBy: { updatedAt: "desc" },
     }),
-    prisma.auditRun.count({ where: { createdAt: { gte: since } } }),
-    prisma.importRun.count({ where: { createdAt: { gte: since } } }),
-    prisma.alertLog.count({ where: { createdAt: { gte: since } } }),
-    prisma.analyticsEvent.count({ where: { createdAt: { gte: since } } }),
-    prisma.analyticsEvent.groupBy({ by: ["eventName"], where: { createdAt: { gte: since } }, _count: { _all: true } }),
-    prisma.analyticsEvent.groupBy({ by: ["source"], where: { createdAt: { gte: since } }, _count: { _all: true } }),
-    prisma.analyticsEvent.groupBy({ by: ["utmSource"], where: { createdAt: { gte: since }, utmSource: { not: null } }, _count: { _all: true } }),
-    prisma.analyticsEvent.groupBy({ by: ["path"], where: { createdAt: { gte: since }, path: { not: null } }, _count: { _all: true } }),
+    prisma.auditRun.count({ where: datedShopWhere }),
+    prisma.importRun.count({ where: datedShopWhere }),
+    prisma.alertLog.count({ where: datedShopWhere }),
+    prisma.analyticsEvent.count({ where: eventWhere }),
+    prisma.analyticsEvent.groupBy({ by: ["eventName"], where: eventWhere, _count: { _all: true } }),
+    prisma.analyticsEvent.groupBy({ by: ["source"], where: eventWhere, _count: { _all: true } }),
+    prisma.analyticsEvent.groupBy({ by: ["utmSource"], where: { ...eventWhere, utmSource: { not: null } }, _count: { _all: true } }),
+    prisma.analyticsEvent.groupBy({ by: ["path"], where: { ...eventWhere, path: { not: null } }, _count: { _all: true } }),
     prisma.auditRun.findMany({
+      where: shopWhere,
       select: {
         shop: true,
         totalVariants: true,
@@ -147,6 +181,7 @@ export async function getLaunchMetrics(inputDays = 30) {
       take: 20,
     }),
     prisma.importRun.findMany({
+      where: shopWhere,
       select: {
         shop: true,
         fileName: true,
@@ -174,7 +209,7 @@ export async function getLaunchMetrics(inputDays = 30) {
         metadata: true,
         createdAt: true,
       },
-      where: { createdAt: { gte: since } },
+      where: eventWhere,
       orderBy: { createdAt: "desc" },
       take: 50,
     }),
@@ -185,6 +220,10 @@ export async function getLaunchMetrics(inputDays = 30) {
     generatedAt: new Date().toISOString(),
     windowDays: days,
     since: since.toISOString(),
+    scope: {
+      shop,
+      includePublic,
+    },
     counts: {
       sessions: sessionCount,
       installedSessionShops: sessionShops.length,
