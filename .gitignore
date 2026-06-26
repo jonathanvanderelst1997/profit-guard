@@ -4,6 +4,8 @@ node_modules
 !.env.production.example
 prisma/dev.sqlite
 prisma/dev.sqlite-journal
+/dev.sqlite
+/dev.sqlite-journal
 build
 .cache
 .shopify

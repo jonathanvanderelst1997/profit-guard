@@ -30,3 +30,5 @@ Use this to track manual sends and replies.
 | 2026-06-25 | BulbAmerica | support@bulbamerica.com | Outlook email | Sent | Large lighting SKU catalog, supplier-cost/margin angle | 2026-07-02 |
 | 2026-06-25 | Chassis Unlimited | Official contact form | Website form | Submitted | Auto parts/fitment-heavy catalog, supplier-cost and inventory-risk angle | 2026-07-02 |
 | 2026-06-25 | Poly & Bark | hello@polyandbark.com | Outlook email | Sent | Furniture catalog, supplier-cost and inventory-risk angle | 2026-07-02 |
+| 2026-06-26 | First Truck Parts | help@firsttruckparts.com | Outlook email | Sent | Truck parts catalog, supplier-cost and SKU-depth angle | 2026-07-03 |
+| 2026-06-26 | Automotive Service Equipment | contact@asedeals.com | Outlook email | Sent | Equipment catalog, supplier-cost and inventory-risk angle | 2026-07-03 |
