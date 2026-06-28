@@ -22,6 +22,16 @@ async function main() {
     console.log(`  ${key}: ${value}`);
   }
   console.log("");
+  console.log("Funnel:");
+  for (const [key, value] of Object.entries(metrics.funnel)) {
+    console.log(`  ${key}: ${value}`);
+  }
+  console.log("");
+  console.log("Downloads:");
+  for (const [key, value] of Object.entries(metrics.downloads)) {
+    console.log(`  ${key}: ${value}`);
+  }
+  console.log("");
   console.log("Events by name:");
   console.log(formatGroup(metrics.eventsByName, "eventName"));
   console.log("");
@@ -30,6 +40,14 @@ async function main() {
   console.log("");
   console.log("Events by UTM source:");
   console.log(formatGroup(metrics.eventsByUtmSource, "utmSource"));
+  console.log("");
+  console.log("Events by UTM content:");
+  console.log(formatGroup(metrics.eventsByUtmContent, "utmContent"));
+  console.log("");
+  console.log("Recent download events:");
+  for (const event of metrics.recentDownloadEvents.slice(0, 10)) {
+    console.log(`  ${event.createdAt.toISOString()} | ${event.eventName} | ${event.shop ?? "public"} | ${event.path ?? ""}`);
+  }
   console.log("");
   console.log("Recent events:");
   for (const event of metrics.recentEvents.slice(0, 10)) {

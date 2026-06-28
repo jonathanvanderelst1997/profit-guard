@@ -94,6 +94,10 @@ function parseMetadata(value: string | null): unknown {
   }
 }
 
+function groupedCount(rows: Array<{ eventName: string; _count: { _all: number } }>, eventName: string): number {
+  return rows.find((row) => row.eventName === eventName)?._count._all ?? 0;
+}
+
 function daysAgo(days: number): Date {
   const since = new Date();
   since.setDate(since.getDate() - days);
@@ -144,10 +148,12 @@ export async function getLaunchMetrics(input: LaunchMetricsInput = 30) {
     eventsByName,
     eventsBySource,
     eventsByUtmSource,
+    eventsByUtmContent,
     eventsByPath,
     latestAuditRuns,
     latestImportRuns,
     recentEvents,
+    recentDownloadEvents,
   ] = await Promise.all([
     prisma.session.count({ where: shopWhere }),
     prisma.session.findMany({ where: shopWhere, select: { shop: true }, distinct: ["shop"], orderBy: { shop: "asc" } }),
@@ -163,6 +169,7 @@ export async function getLaunchMetrics(input: LaunchMetricsInput = 30) {
     prisma.analyticsEvent.groupBy({ by: ["eventName"], where: eventWhere, _count: { _all: true } }),
     prisma.analyticsEvent.groupBy({ by: ["source"], where: eventWhere, _count: { _all: true } }),
     prisma.analyticsEvent.groupBy({ by: ["utmSource"], where: { ...eventWhere, utmSource: { not: null } }, _count: { _all: true } }),
+    prisma.analyticsEvent.groupBy({ by: ["utmContent"], where: { ...eventWhere, utmContent: { not: null } }, _count: { _all: true } }),
     prisma.analyticsEvent.groupBy({ by: ["path"], where: { ...eventWhere, path: { not: null } }, _count: { _all: true } }),
     prisma.auditRun.findMany({
       where: shopWhere,
@@ -213,7 +220,37 @@ export async function getLaunchMetrics(input: LaunchMetricsInput = 30) {
       orderBy: { createdAt: "desc" },
       take: 50,
     }),
+    prisma.analyticsEvent.findMany({
+      select: {
+        shop: true,
+        eventName: true,
+        source: true,
+        path: true,
+        utmSource: true,
+        utmMedium: true,
+        utmCampaign: true,
+        utmContent: true,
+        subjectId: true,
+        metadata: true,
+        createdAt: true,
+      },
+      where: { ...eventWhere, eventName: { in: ["cost_template_downloaded", "findings_export_downloaded"] } },
+      orderBy: { createdAt: "desc" },
+      take: 20,
+    }),
   ]);
+
+  const publicPageViews = groupedCount(eventsByName, "public_page_view");
+  const appOpens = groupedCount(eventsByName, "app_open");
+  const scanStarted = groupedCount(eventsByName, "scan_started");
+  const scanCompleted = groupedCount(eventsByName, "scan_completed");
+  const scanFailed = groupedCount(eventsByName, "scan_failed");
+  const supplierImports = groupedCount(eventsByName, "supplier_import_saved") + groupedCount(eventsByName, "supplier_import_previewed");
+  const templateDownloads = groupedCount(eventsByName, "cost_template_downloaded");
+  const findingsExports = groupedCount(eventsByName, "findings_export_downloaded");
+  const billingApprovalRequests = groupedCount(eventsByName, "billing_approval_requested");
+  const subscriptionActive = groupedCount(eventsByName, "subscription_active");
+  const appUninstalls = groupedCount(eventsByName, "app_uninstalled");
 
   return {
     ok: true,
@@ -233,6 +270,21 @@ export async function getLaunchMetrics(input: LaunchMetricsInput = 30) {
       alertLogs: alertCount,
       analyticsEvents: eventCount,
     },
+    funnel: {
+      publicPageViews,
+      appOpens,
+      scanStarted,
+      scanCompleted,
+      scanFailed,
+      supplierImports,
+      billingApprovalRequests,
+      subscriptionActive,
+      appUninstalls,
+    },
+    downloads: {
+      costTemplates: templateDownloads,
+      findingsExports,
+    },
     shops: shopSettings.map((shop) => ({
       shop: shop.shop,
       planKey: shop.planKey,
@@ -243,10 +295,12 @@ export async function getLaunchMetrics(input: LaunchMetricsInput = 30) {
     eventsByName: eventsByName.sort((a, b) => b._count._all - a._count._all),
     eventsBySource: eventsBySource.sort((a, b) => b._count._all - a._count._all),
     eventsByUtmSource: eventsByUtmSource.sort((a, b) => b._count._all - a._count._all),
+    eventsByUtmContent: eventsByUtmContent.sort((a, b) => b._count._all - a._count._all),
     topPaths: eventsByPath.sort((a, b) => b._count._all - a._count._all).slice(0, 25),
     latestAuditRuns,
     latestImportRuns,
     recentEvents: recentEvents.map((event) => ({ ...event, metadata: parseMetadata(event.metadata) })),
+    recentDownloadEvents: recentDownloadEvents.map((event) => ({ ...event, metadata: parseMetadata(event.metadata) })),
     dataGaps: [
       "Shopify App Store listing views and install-button clicks require Shopify Partner Dashboard tracking with GA4 or Meta Pixel.",
       "Server-side Shopify install attribution requires GA4 Measurement Protocol API secret or Meta Pixel access token in the app listing tracking settings.",

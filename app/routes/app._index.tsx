@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import type { ActionFunctionArgs, HeadersFunction, LoaderFunctionArgs } from "react-router";
 import { useFetcher, useLoaderData } from "react-router";
 import { useAppBridge } from "@shopify/app-bridge-react";
@@ -36,31 +36,50 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const settings = await getShopSettings(session.shop);
   const planKey = await getShopPlan(session.shop);
-  const scan = await fetchVariantsForAudit(admin, { maxVariants: getVariantLimitForPlan(planKey) });
-  const importedCosts = await getImportedCosts(session.shop);
-  const withImportedCosts = applyImportedCostsBySku(scan.variants, importedCosts);
-  const demoResult = applyDemoCostsWhenAllMissing(withImportedCosts);
-  const summary = auditVariants(demoResult.variants, settings.minimumMarginBps);
-  const auditRun = await saveAuditRun(session.shop, settings.minimumMarginBps, summary, { demoMode: demoResult.demoMode, scanLimitReached: scan.limitReached });
-  await trackAnalyticsEvent({
-    eventName: "scan_completed",
-    source: "app",
-    request,
-    shop: session.shop,
-    subjectId: auditRun.id,
-    metadata: {
-      planKey,
-      totalVariants: auditRun.totalVariants,
-      lossCount: auditRun.lossCount,
-      lowMarginCount: auditRun.lowMarginCount,
-      missingCostCount: auditRun.missingCostCount,
-      okCount: auditRun.okCount,
-      inventoryRiskAmount: auditRun.inventoryRiskAmount,
-      demoMode: auditRun.demoMode,
-      scanLimitReached: auditRun.scanLimitReached,
-    },
-  });
-  return { ok: true, type: "scan", auditRun };
+  const trigger = String(formData.get("trigger") ?? "manual");
+  await trackAnalyticsEvent({ eventName: "scan_started", source: "app", request, shop: session.shop, metadata: { planKey, trigger } });
+
+  try {
+    const scan = await fetchVariantsForAudit(admin, { maxVariants: getVariantLimitForPlan(planKey) });
+    const importedCosts = await getImportedCosts(session.shop);
+    const withImportedCosts = applyImportedCostsBySku(scan.variants, importedCosts);
+    const demoResult = applyDemoCostsWhenAllMissing(withImportedCosts);
+    const summary = auditVariants(demoResult.variants, settings.minimumMarginBps);
+    const auditRun = await saveAuditRun(session.shop, settings.minimumMarginBps, summary, { demoMode: demoResult.demoMode, scanLimitReached: scan.limitReached });
+    await trackAnalyticsEvent({
+      eventName: "scan_completed",
+      source: "app",
+      request,
+      shop: session.shop,
+      subjectId: auditRun.id,
+      metadata: {
+        planKey,
+        trigger,
+        totalVariants: auditRun.totalVariants,
+        lossCount: auditRun.lossCount,
+        lowMarginCount: auditRun.lowMarginCount,
+        missingCostCount: auditRun.missingCostCount,
+        okCount: auditRun.okCount,
+        inventoryRiskAmount: auditRun.inventoryRiskAmount,
+        demoMode: auditRun.demoMode,
+        scanLimitReached: auditRun.scanLimitReached,
+      },
+    });
+    return { ok: true, type: "scan", auditRun, trigger };
+  } catch (error) {
+    await trackAnalyticsEvent({
+      eventName: "scan_failed",
+      source: "app",
+      request,
+      shop: session.shop,
+      metadata: {
+        planKey,
+        trigger,
+        reason: error instanceof Error ? error.message : String(error),
+      },
+    });
+    throw error;
+  }
 };
 
 type StatTone = "critical" | "warning" | "neutral";
@@ -323,6 +342,7 @@ export default function Dashboard() {
   const [sort, setSort] = useState<FindingSort>("priority");
   const [query, setQuery] = useState("");
   const [isCopyingSummary, setIsCopyingSummary] = useState(false);
+  const autoScanStarted = useRef(false);
   const currentAudit = fetcher.data?.type === "scan" ? fetcher.data.auditRun : latestAudit;
   const isScanning = fetcher.state !== "idle" && fetcher.formData?.get("intent") === "scan";
   const isSavingSettings = fetcher.state !== "idle" && fetcher.formData?.get("intent") === "settings";
@@ -339,6 +359,15 @@ export default function Dashboard() {
     if (fetcher.data?.ok && fetcher.data.type === "scan") shopify.toast.show("Profit scan completed");
     if (fetcher.data?.ok && fetcher.data.type === "settings") shopify.toast.show("Settings saved");
   }, [fetcher.data, shopify]);
+
+  useEffect(() => {
+    if (currentAudit || autoScanStarted.current || fetcher.state !== "idle") return;
+    autoScanStarted.current = true;
+    const formData = new FormData();
+    formData.set("intent", "scan");
+    formData.set("trigger", "auto_first_open");
+    fetcher.submit(formData, { method: "post" });
+  }, [currentAudit, fetcher]);
 
   async function copySuggestedFixSummary() {
     if (!currentAudit) return;
@@ -358,6 +387,7 @@ export default function Dashboard() {
     <s-page heading="Margin Sentinel">
       <fetcher.Form method="post">
         <input type="hidden" name="intent" value="scan" />
+        <input type="hidden" name="trigger" value="manual" />
         <s-button type="submit" variant="primary" disabled={isScanning} loading={isScanning}>Run profit scan</s-button>
       </fetcher.Form>
 
