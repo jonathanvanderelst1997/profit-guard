@@ -57,6 +57,13 @@ async function main() {
 
 main()
   .catch((error) => {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.includes("DATABASE_URL") || message.includes("PrismaClientInitializationError")) {
+      console.error("Could not read local launch metrics because DATABASE_URL is not connected to a compatible local/production database.");
+      console.error("For production metrics, set METRICS_TOKEN locally and run: npm run metrics:internal -- 30");
+      process.exitCode = 1;
+      return;
+    }
     console.error(error);
     process.exitCode = 1;
   })
