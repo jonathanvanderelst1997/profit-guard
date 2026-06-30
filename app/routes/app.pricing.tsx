@@ -19,6 +19,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   if (isBillablePlanKey(selectedPlan)) {
     await setShopPlan(session.shop, selectedPlan, url.searchParams.get("charge_id"));
     await trackAnalyticsEvent({ eventName: "billing_returned", source: "billing", request, shop: session.shop, metadata: { selectedPlan, hasChargeId: Boolean(url.searchParams.get("charge_id")) } });
+    await trackAnalyticsEvent({ eventName: "trial_started", source: "billing", request, shop: session.shop, metadata: { selectedPlan, trialDays: 14, hasChargeId: Boolean(url.searchParams.get("charge_id")) } });
   }
   let currentPlan = await getShopPlan(session.shop);
   try { currentPlan = await syncPlanFromShopifyBilling(admin, session.shop); } catch { /* Billing sync can fail in local/dev mode. Keep stored plan. */ }
@@ -65,7 +66,7 @@ export default function Pricing() {
   return (
     <s-page heading="Pricing">
       <s-section heading="Simple catalog-based pricing">
-        <s-paragraph>Current plan: {plans[currentPlan].label}. Margin Sentinel is priced for catalog margin protection, not full accounting. Upgrade when you need larger catalog scans, supplier cost imports, cost-change what-if checks, weekly alerts, or priority support.</s-paragraph>
+        <s-paragraph>Current plan: {plans[currentPlan].label}. Margin Sentinel is priced for SKU-level margin leak scanning, not full accounting. Upgrade when you need larger catalog scans, supplier cost imports, cost-change what-if checks, weekly alerts, or priority support.</s-paragraph>
         {approvedPlan ? <s-banner tone="success">Subscription approved. Current plan: {approvedPlan}.</s-banner> : null}
         {fetcher.data?.ok ? <s-banner tone="success">Plan updated.</s-banner> : null}
         {fetcher.data?.ok === false ? <s-banner tone="critical">{fetcher.data.error}</s-banner> : null}

@@ -3,20 +3,20 @@ import { PublicInfoPage } from "../components/PublicInfoPage";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Shopify unit cost missing: cleanup workflow | Margin Sentinel" },
+    { title: "Shopify missing COGS cleanup workflow | Margin Sentinel" },
     {
       name: "description",
       content:
-        "A practical workflow for Shopify merchants who need to find missing unit costs, supplier cost gaps, and products that cannot be trusted for margin reporting.",
+        "A practical workflow for Shopify merchants who need to find missing COGS, supplier cost gaps, low-margin SKUs, and products that cannot be trusted for margin reporting.",
     },
   ];
 };
 
 export default function ShopifyUnitCostMissing() {
   return (
-    <PublicInfoPage title="What to do when Shopify unit cost is missing" eyebrow="Shopify cost cleanup">
+    <PublicInfoPage title="What to do when Shopify COGS is missing" eyebrow="Shopify margin leak cleanup">
       <p>
-        Missing unit cost data makes every margin report weaker. A product can look healthy in revenue reports while the team has no reliable answer for whether it is profitable.
+        Missing unit cost or COGS data makes every margin report weaker. A product can look healthy in revenue reports while the team has no reliable answer for whether the SKU is actually profitable.
       </p>
 
       <h2>Why missing cost data happens</h2>
@@ -43,7 +43,7 @@ export default function ShopifyUnitCostMissing() {
 
       <h2>How Margin Sentinel helps</h2>
       <p>
-        Margin Sentinel scans Shopify variants for missing Shopify unit costs and unmatched supplier costs. It shows which SKUs need attention first and exports a fix list so the team can clean up data without changing prices automatically.
+        Margin Sentinel is a SKU-level margin leak scanner. It scans Shopify variants for missing Shopify unit costs, unmatched supplier costs, low-margin SKUs, and inventory risk. It shows which SKUs need attention first and exports a fix list so the team can clean up data without changing prices automatically.
       </p>
 
       <p>

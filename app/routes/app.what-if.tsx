@@ -55,6 +55,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       scanLimitReached: scan.limitReached,
     },
   });
+  await trackAnalyticsEvent({
+    eventName: "scenario_run",
+    source: "app",
+    request,
+    shop: session.shop,
+    metadata: {
+      planKey,
+      scenarioType: "supplier_cost_increase",
+      costIncreasePercent: scenario.costIncreasePercent,
+      newlyAtRiskCount: scenario.newlyAtRiskCount,
+      addedInventoryRiskAmount: scenario.addedInventoryRiskAmount,
+      demoMode: demoResult.demoMode,
+      scanLimitReached: scan.limitReached,
+    },
+  });
 
   return {
     ok: true,

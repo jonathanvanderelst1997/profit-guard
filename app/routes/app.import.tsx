@@ -85,7 +85,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     request,
     shop: session.shop,
     subjectId: importRun.id,
-    metadata: { ...importMetrics, fileName: file.name, planKey, scanLimitReached: variants.limitReached },
+      metadata: { ...importMetrics, fileName: file.name, planKey, scanLimitReached: variants.limitReached },
+  });
+  await trackAnalyticsEvent({
+    eventName: "csv_import_completed",
+    source: "app",
+    request,
+    shop: session.shop,
+    subjectId: importRun.id,
+    metadata: { ...importMetrics, fileName: file.name, saved: shouldSave, planKey, scanLimitReached: variants.limitReached },
   });
   const importRuns = await getRecentImportRuns(session.shop);
 
@@ -116,6 +124,7 @@ export default function SupplierImport() {
     <s-page heading="Import supplier costs">
       <s-section heading="Bulk cost import">
         <s-paragraph>Upload a CSV with variant_id, inventory_item_id, or SKU plus COST. Margin Sentinel matches rows to Shopify variants, previews the margin impact, and only saves costs when you tick the save box.</s-paragraph>
+        <s-paragraph>Saved imports are used for future scans. Previous saved scans keep their own findings, so a new supplier cost file does not silently rewrite an earlier exception list.</s-paragraph>
         {!canImport ? (
           <s-banner tone="warning" heading="Starter feature">
             Your current plan is {plan.label}. Upgrade to Starter to preview and save supplier cost imports.

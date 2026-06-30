@@ -18,6 +18,17 @@ type LaunchMetricsInput = number | {
   includePublic?: boolean;
 };
 
+export const GA4_KEY_EVENTS = {
+  appOpen: "app_open",
+  sampleScanViewed: "sample_scan_viewed",
+  scanCompleted: "scan_completed",
+  firstScanCompleted: "first_scan_completed",
+  missingCostsFound: "missing_costs_found",
+  csvImportCompleted: "csv_import_completed",
+  scenarioRun: "scenario_run",
+  trialStarted: "trial_started",
+} as const;
+
 const PUBLIC_PAGE_PREFIXES = ["/", "/beta", "/resources", "/privacy", "/terms", "/refund", "/support"];
 const IGNORED_PUBLIC_PREFIXES = ["/app", "/auth", "/webhooks", "/healthz", "/internal", "/assets", "/__manifest"];
 
@@ -242,13 +253,19 @@ export async function getLaunchMetrics(input: LaunchMetricsInput = 30) {
 
   const publicPageViews = groupedCount(eventsByName, "public_page_view");
   const appOpens = groupedCount(eventsByName, "app_open");
+  const sampleScanViewed = groupedCount(eventsByName, "sample_scan_viewed");
   const scanStarted = groupedCount(eventsByName, "scan_started");
   const scanCompleted = groupedCount(eventsByName, "scan_completed");
+  const firstScanCompleted = groupedCount(eventsByName, "first_scan_completed");
+  const missingCostsFound = groupedCount(eventsByName, "missing_costs_found");
   const scanFailed = groupedCount(eventsByName, "scan_failed");
   const supplierImports = groupedCount(eventsByName, "supplier_import_saved") + groupedCount(eventsByName, "supplier_import_previewed");
+  const csvImportCompleted = groupedCount(eventsByName, "csv_import_completed");
+  const scenarioRun = groupedCount(eventsByName, "scenario_run");
   const templateDownloads = groupedCount(eventsByName, "cost_template_downloaded");
   const findingsExports = groupedCount(eventsByName, "findings_export_downloaded");
   const billingApprovalRequests = groupedCount(eventsByName, "billing_approval_requested");
+  const trialStarted = groupedCount(eventsByName, "trial_started");
   const subscriptionActive = groupedCount(eventsByName, "subscription_active");
   const appUninstalls = groupedCount(eventsByName, "app_uninstalled");
 
@@ -285,6 +302,16 @@ export async function getLaunchMetrics(input: LaunchMetricsInput = 30) {
       costTemplates: templateDownloads,
       findingsExports,
     },
+    ga4KeyEvents: {
+      appOpen: appOpens,
+      sampleScanViewed,
+      scanCompleted,
+      firstScanCompleted,
+      missingCostsFound,
+      csvImportCompleted,
+      scenarioRun,
+      trialStarted,
+    },
     shops: shopSettings.map((shop) => ({
       shop: shop.shop,
       planKey: shop.planKey,
@@ -303,6 +330,7 @@ export async function getLaunchMetrics(input: LaunchMetricsInput = 30) {
     recentDownloadEvents: recentDownloadEvents.map((event) => ({ ...event, metadata: parseMetadata(event.metadata) })),
     dataGaps: [
       "Shopify App Store listing views and install-button clicks require Shopify Partner Dashboard tracking with GA4 or Meta Pixel.",
+      "Recommended GA4 key events to mark: app_open, sample_scan_viewed, scan_completed, first_scan_completed, missing_costs_found, csv_import_completed, scenario_run, and trial_started.",
       "Server-side Shopify install attribution requires GA4 Measurement Protocol API secret or Meta Pixel access token in the app listing tracking settings.",
       "This endpoint reports app-owned data only: public site events, authenticated app events, webhooks, scans, imports, exports, alerts, and pricing actions.",
     ],

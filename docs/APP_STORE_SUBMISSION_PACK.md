@@ -15,7 +15,7 @@
 - Reviewer/demo script: `docs/REVIEWER_DEMO_SCRIPT.md`.
 
 ## Review-safe positioning
-Margin Sentinel scans product-level gross margin. It is read-only and does not automatically change prices.
+Margin Sentinel is a SKU-level margin leak scanner. It finds missing cost variants, low-margin SKUs, inventory risk, and what-if margin scenarios. It is read-only and does not automatically change prices.
 
 ## Avoid these claims
 - Guaranteed profit increase.
@@ -23,7 +23,13 @@ Margin Sentinel scans product-level gross margin. It is read-only and does not a
 - Full net-profit accounting unless ad spend, fees, refunds, and orders are implemented.
 
 ## Suggested tagline
-Find products with risky margins before they become expensive mistakes.
+Find missing costs, low-margin SKUs, and margin leaks before they eat profit.
+
+## ASO keywords
+Shopify profit tracker, COGS tracker, margin calculator, SKU profit, product margin, missing costs, discount margin, supplier cost, inventory risk.
+
+## App Store copy direction
+Do not position Margin Sentinel as another profit dashboard. Position it as an exception list for SKU-level margin leaks: missing costs, low-margin SKUs, inventory risk, and what-if margin scenarios.
 
 ## Reviewer instructions draft
 Use `docs/REVIEWER_DEMO_SCRIPT.md` as the canonical reviewer walkthrough.
@@ -42,10 +48,10 @@ Short version:
 10. Open Pricing and confirm plan gates are visible.
 
 ## Screenshot plan
-1. Dashboard Action Center.
-2. Findings table with inventory risk and suggested minimum price.
-3. Cost-change what-if.
-4. Supplier CSV import preview.
-5. Alerts page.
+1. Missing cost variants.
+2. Low-margin SKUs.
+3. Inventory risk.
+4. What-if margin scenarios.
+5. Top 5 margin leaks weekly email.
 
 No-cost marketing mockups are available in `marketing/screenshots/`. Replace or supplement them with real embedded Shopify Admin screenshots before final App Store submission.

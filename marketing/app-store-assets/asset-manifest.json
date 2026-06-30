@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-06-14T12:33:57.883Z",
+  "generatedAt": "2026-06-30T12:55:36.547Z",
   "imageSize": "1600x900",
   "featureMedia": "feature-media-1600x900.png",
   "screenshots": [
     "screenshot-1-dashboard.png",
-    "screenshot-2-supplier-import-dashboard.png",
+    "screenshot-2-pricing.png",
     "screenshot-3-import-what-if.png"
   ],
   "screencast": "margin-sentinel-reviewer-screencast.mp4",

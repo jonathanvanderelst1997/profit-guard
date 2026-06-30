@@ -165,15 +165,15 @@ const dashboardShot = shell`
     </div>
     <div class="page">
       <div class="page-title">
-        <div><h1>Automatic profit scan</h1><p>Reads Shopify prices, Shopify unit costs, and imported supplier costs. It never changes prices automatically.</p></div>
-        <div class="button">Run profit scan</div>
+        <div><h1>SKU-level margin leak scanner</h1><p>Find missing costs, low-margin SKUs, inventory risk, and what-if margin scenarios without changing prices automatically.</p></div>
+        <div class="button">Run margin scan</div>
       </div>
       <div class="grid-2">
         <div class="section">
           <h2>Action center</h2>
           <div class="grid-3">
             <div class="stat tone-success"><span>Catalog healthy</span><strong>86%</strong></div>
-            <div class="stat tone-warning"><span>Issues to review</span><strong>4</strong></div>
+            <div class="stat tone-warning"><span>Low-margin SKUs</span><strong>4</strong></div>
             <div class="stat tone-warning"><span>Inventory risk</span><strong>$5,904</strong></div>
           </div>
           <div class="action">
@@ -185,12 +185,12 @@ const dashboardShot = shell`
           </div>
         </div>
         <div class="section">
-          <h2>Latest scan</h2>
+          <h2>First 5-minute aha</h2>
           <div class="grid-4">
             <div class="stat"><span>Variants checked</span><strong>29</strong></div>
             <div class="stat tone-critical"><span>Losing money</span><strong>1</strong></div>
-            <div class="stat tone-warning"><span>Low margin</span><strong>3</strong></div>
-            <div class="stat tone-success"><span>Missing cost</span><strong>0</strong></div>
+            <div class="stat tone-warning"><span>Low-margin SKUs</span><strong>3</strong></div>
+            <div class="stat tone-success"><span>Missing cost variants</span><strong>0</strong></div>
           </div>
           <div class="grid-4">
             <div class="stat tone-critical"><span>Direct loss</span><strong>$20</strong></div>
@@ -201,11 +201,11 @@ const dashboardShot = shell`
         </div>
       </div>
       <div class="section">
-        <div class="page-title"><h2>Review findings</h2><p>Showing 4 of 4 saved findings, sorted by highest priority.</p></div>
+        <div class="page-title"><h2>Exception list</h2><p>Showing missing cost variants, low-margin SKUs, inventory risk, and suggested next action.</p></div>
         ${dashboardTable}
       </div>
     </div>
-    <div class="caption">Screenshot 1: Dashboard with issues, inventory risk, and suggested prices</div>
+    <div class="caption">Screenshot 1: Missing cost variants, low-margin SKUs, inventory risk, and suggested prices</div>
   </div>
 `;
 
@@ -225,7 +225,7 @@ const pricingShot = shell`
           <div class="price">$0</div>
           <ul class="features">
             <li>Scan up to 100 variants</li>
-            <li>Margin leak dashboard</li>
+            <li>SKU-level margin leak scanner</li>
             <li>CSV findings export</li>
           </ul>
           <div class="button" style="background:#eef2f7;color:#111827;">Current plan</div>
@@ -273,7 +273,7 @@ const importWhatIfShot = shell`
     </div>
     <div class="page">
       <div class="page-title">
-        <div><h1>Supplier import and cost-change what-if</h1><p>Preview cost rows, save matched costs, and model supplier increases before changing prices elsewhere.</p></div>
+        <div><h1>Supplier import and what-if margin scenarios</h1><p>Preview cost rows, save matched costs, and model supplier increases before changing prices elsewhere.</p></div>
       </div>
       <div class="import-box">
         <div class="section">
@@ -315,7 +315,7 @@ gid://shopify/ProductVariant/123,,GREEN-SNOWBOARD,85.00
         </div>
       </div>
     </div>
-    <div class="caption">Screenshot 3: Supplier import and what-if workflow</div>
+    <div class="caption">Screenshot 3: Supplier import and what-if margin scenarios</div>
   </div>
 `;
 
@@ -324,8 +324,8 @@ const featureShot = shell`
     <div class="hero">
       <div>
         <div class="eyebrow">Margin Sentinel</div>
-        <h1>Catch margin leaks before products sell.</h1>
-        <p>Scan Shopify variants, compare selling price to unit cost or supplier cost, and give merchants a clear fix list with suggested minimum prices.</p>
+        <h1>Find missing costs, low-margin SKUs, and margin leaks before they eat profit.</h1>
+        <p>Scan Shopify variants, compare selling price to unit cost or supplier cost, and give merchants a clear exception list with suggested minimum prices.</p>
         <div class="pillbar" style="margin-top: 28px;">
           <span class="pill">Read-only scanning</span>
           <span class="pill">Supplier cost import</span>
@@ -338,7 +338,7 @@ const featureShot = shell`
         <div class="monitor-body">
           <div class="grid-3">
             <div class="stat tone-success"><span>Healthy variants</span><strong>OK</strong></div>
-            <div class="stat tone-warning"><span>Issues found</span><strong>Review</strong></div>
+            <div class="stat tone-warning"><span>Low-margin SKUs</span><strong>Review</strong></div>
             <div class="stat tone-warning"><span>Inventory risk</span><strong>Flagged</strong></div>
           </div>
           <div class="action">
@@ -375,7 +375,7 @@ const installSlide = shell`
       <div class="monitor hero-panel">
         <div class="monitor-head"><span>App home</span><span>Ready</span></div>
         <div class="monitor-body">
-          <div class="section subtle"><h2>Automatic profit scan</h2><p>Run one scan to create a prioritized fix list from product prices, Shopify unit costs, and imported supplier costs.</p></div>
+          <div class="section subtle"><h2>SKU-level margin leak scanner</h2><p>Run one scan to create a prioritized exception list from product prices, Shopify unit costs, and imported supplier costs.</p></div>
           <div class="grid-3"><div class="stat"><span>Scopes</span><strong>2</strong></div><div class="stat"><span>Data writes</span><strong>0</strong></div><div class="stat"><span>Setup</span><strong>UI</strong></div></div>
           <div class="button">Run profit scan</div>
         </div>
@@ -429,10 +429,10 @@ const shots = [
 
 const videoSlides = [
   { slug: "video-01-open", html: videoSlide(installSlide, 1, "Install and open", "Open the embedded app from Shopify Admin. OAuth happens before app setup.") },
-  { slug: "video-02-dashboard", html: videoSlide(dashboardShot, 2, "Dashboard scan", "Run a profit scan and review the action center, inventory risk, and suggested minimum prices.") },
+  { slug: "video-02-dashboard", html: videoSlide(dashboardShot, 2, "Margin leak scan", "Run a SKU-level scan and review missing costs, low-margin SKUs, inventory risk, and suggested minimum prices.") },
   { slug: "video-03-pricing", html: videoSlide(pricingShot, 3, "Pricing and billing", "Free, Starter, and Growth plans are managed inside the app through Shopify billing.") },
   { slug: "video-04-import", html: videoSlide(importWhatIfShot, 4, "Supplier cost import", "Use variant ID, inventory item ID, or SKU so merchants can import costs even when SKUs are missing.") },
-  { slug: "video-05-what-if", html: videoSlide(importWhatIfShot, 5, "Cost-change what-if", "Model a supplier cost increase and see newly at-risk products before changing prices.") },
+  { slug: "video-05-what-if", html: videoSlide(importWhatIfShot, 5, "What-if margin scenarios", "Model a supplier cost increase and see newly at-risk products before changing prices.") },
   { slug: "video-06-export", html: videoSlide(exportSlide, 6, "Suggested prices and export", "Download a CSV fix list with price, cost, margin, inventory risk, and next action.") },
   { slug: "video-07-alerts", html: videoSlide(exportSlide, 7, "Weekly alerts", "Paid merchants can enable a weekly margin report for new loss, low-margin, or missing-cost findings.") },
   { slug: "video-08-ready", html: videoSlide(doneSlide, 8, "Reviewer summary", "This walkthrough covers setup and each core feature needed for review testing.") },
@@ -514,7 +514,7 @@ Margin Sentinel is a Shopify embedded app for catalog margin protection.
 
 This reviewer walkthrough shows:
 1. App install/open flow
-2. Dashboard profit scan
+2. SKU-level margin leak scan
 3. Pricing and Shopify billing plans
 4. Supplier cost import
 5. Cost-change what-if
@@ -540,7 +540,7 @@ writeFileSync(join(outDir, "asset-manifest.json"), JSON.stringify({
   imageSize: "1600x900",
   featureMedia: "feature-media-1600x900.png",
   screenshots: [
-    "screenshot-1-dashboard.png",
+  "screenshot-1-dashboard.png",
     "screenshot-2-pricing.png",
     "screenshot-3-import-what-if.png",
   ],

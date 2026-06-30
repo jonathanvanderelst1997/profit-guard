@@ -19,7 +19,7 @@ Margin Sentinel is a Shopify embedded app for catalog margin protection.
 
 This reviewer walkthrough shows:
 1. App install/open flow
-2. Dashboard profit scan
+2. SKU-level margin leak scan
 3. Pricing and Shopify billing plans
 4. Supplier cost import
 5. Cost-change what-if

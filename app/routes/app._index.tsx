@@ -19,6 +19,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const settings = await getShopSettings(session.shop);
   const latestAudit = await getLatestAuditRun(session.shop);
   const planKey = await getShopPlan(session.shop);
+  if (!latestAudit) {
+    await trackAnalyticsEvent({ eventName: "sample_scan_viewed", source: "app", request, shop: session.shop, metadata: { placement: "dashboard_empty_state" } });
+  }
   return { settings, latestAudit, planKey, plan: PLAN_LIMITS[planKey], canUseAlerts: isPaidPlan(planKey) };
 };
 
@@ -36,6 +39,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const settings = await getShopSettings(session.shop);
   const planKey = await getShopPlan(session.shop);
+  const previousAudit = await getLatestAuditRun(session.shop);
   const trigger = String(formData.get("trigger") ?? "manual");
   await trackAnalyticsEvent({ eventName: "scan_started", source: "app", request, shop: session.shop, metadata: { planKey, trigger } });
 
@@ -65,6 +69,33 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         scanLimitReached: auditRun.scanLimitReached,
       },
     });
+    if (!previousAudit) {
+      await trackAnalyticsEvent({
+        eventName: "first_scan_completed",
+        source: "app",
+        request,
+        shop: session.shop,
+        subjectId: auditRun.id,
+        metadata: {
+          planKey,
+          trigger,
+          totalVariants: auditRun.totalVariants,
+          missingCostCount: auditRun.missingCostCount,
+          issueCount: auditRun.lossCount + auditRun.lowMarginCount + auditRun.missingCostCount,
+          demoMode: auditRun.demoMode,
+        },
+      });
+    }
+    if (auditRun.missingCostCount > 0) {
+      await trackAnalyticsEvent({
+        eventName: "missing_costs_found",
+        source: "app",
+        request,
+        shop: session.shop,
+        subjectId: auditRun.id,
+        metadata: { planKey, missingCostCount: auditRun.missingCostCount, totalVariants: auditRun.totalVariants, demoMode: auditRun.demoMode },
+      });
+    }
     return { ok: true, type: "scan", auditRun, trigger };
   } catch (error) {
     await trackAnalyticsEvent({
@@ -180,6 +211,56 @@ function FirstScanGuide({ audit, weeklyAlertsEnabled }: { audit?: (DashboardAudi
         </s-grid>
         <s-link href="/app/onboarding">Open full first scan guide</s-link>
       </s-stack>
+    </s-section>
+  );
+}
+
+function FiveMinuteAha({ audit }: { audit?: (DashboardAudit & { demoMode?: boolean | null; scanLimitReached?: boolean | null }) | null }) {
+  const currencyCode = audit?.findings?.[0]?.currencyCode;
+  const issueCount = audit ? audit.lossCount + audit.lowMarginCount + audit.missingCostCount : 0;
+  const headline = !audit
+    ? "Sample scan preview: We found 12 variants with missing costs."
+    : audit.missingCostCount > 0
+      ? `${audit.demoMode ? "Sample scan result" : "First scan result"}: We found ${audit.missingCostCount.toLocaleString()} variants with missing costs.`
+      : issueCount > 0
+        ? `${audit.demoMode ? "Sample scan result" : "First scan result"}: We found ${issueCount.toLocaleString()} margin leaks to review.`
+        : `${audit.demoMode ? "Sample scan result" : "First scan result"}: no margin leaks found in ${audit.totalVariants.toLocaleString()} scanned variants.`;
+  const body = !audit
+    ? "Before merchants commit to setup, show the exact kind of exception list they get: missing costs, low-margin SKUs, inventory risk, and what-if scenarios."
+    : audit.demoMode
+      ? "This uses safe demo costs because the store has no real unit costs or imported supplier costs yet. Add real costs to turn the sample into a trusted fix list."
+      : "This is the first useful moment: a short exception list, not another dashboard. Use it to decide whether to import costs, export fixes, or run a scenario.";
+
+  return (
+    <s-section heading="First 5-minute aha">
+      <s-stack direction="block" gap="base">
+        <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
+          <s-stack direction="block" gap="small">
+            <s-heading>{headline}</s-heading>
+            <s-paragraph>{body}</s-paragraph>
+            <s-stack direction="inline" gap="base">
+              <s-link href="/app/import">Confirm supplier costs</s-link>
+              <s-link href="/app/export">Export fix list</s-link>
+              <s-link href="/app/what-if">Run what-if margin scenario</s-link>
+            </s-stack>
+          </s-stack>
+        </s-box>
+        <s-grid gridTemplateColumns="repeat(auto-fit, minmax(180px, 1fr))" gap="base">
+          <StatCard label="Missing cost variants" value={audit ? audit.missingCostCount : 12} tone={(!audit || (audit?.missingCostCount ?? 0) > 0) ? "warning" : "neutral"} />
+          <StatCard label="Low-margin SKUs" value={audit ? audit.lowMarginCount : 7} tone={(!audit || (audit?.lowMarginCount ?? 0) > 0) ? "warning" : "neutral"} />
+          <StatCard label="Inventory risk" value={audit ? formatMoney(Number(audit.inventoryRiskAmount ?? 0), currencyCode) : "$4,820"} tone={(!audit || Number(audit?.inventoryRiskAmount ?? 0) > 0) ? "warning" : "neutral"} />
+          <StatCard label="What-if scenarios" value={audit?.scanLimitReached ? "Plan cap" : "Ready"} />
+        </s-grid>
+      </s-stack>
+    </s-section>
+  );
+}
+
+function CostTrustNote() {
+  return (
+    <s-section heading="Cost history and trust">
+      <s-paragraph>Margin Sentinel is a catalog margin leak scanner. It uses current Shopify unit costs plus saved supplier imports for new scans, and each saved scan keeps its own findings so later supplier cost changes do not rewrite what a merchant saw earlier.</s-paragraph>
+      <s-paragraph>It does not claim order-level net profit, ad spend attribution, refunds, or accounting P&L because this app intentionally does not request order data.</s-paragraph>
     </s-section>
   );
 }
@@ -392,9 +473,11 @@ export default function Dashboard() {
       </fetcher.Form>
 
       <s-section heading="Automatic profit scan">
-        <s-paragraph>Margin Sentinel reads Shopify selling prices, Shopify unit costs, and imported supplier costs. It finds products that lose money, sit below your margin target, or still miss cost data. It never changes prices automatically.</s-paragraph>
+        <s-paragraph>Margin Sentinel is a SKU-level margin leak scanner. It reads Shopify selling prices, Shopify unit costs, and imported supplier costs, then returns an exception list for missing costs, low-margin SKUs, inventory risk, and what-if margin scenarios. It never changes prices automatically.</s-paragraph>
         <s-paragraph>Current plan: {plan.label}. Scan limit: {plan.variantLimit.toLocaleString()} variants.</s-paragraph>
       </s-section>
+
+      <FiveMinuteAha audit={currentAudit as DashboardAudit | null | undefined} />
 
       <s-section heading="Margin target">
         <fetcher.Form method="post">
@@ -412,8 +495,8 @@ export default function Dashboard() {
         {!currentAudit ? (
           <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
             <s-stack direction="block" gap="base">
-              <s-heading>Start with one scan</s-heading>
-              <s-paragraph>Margin Sentinel will show missing costs, negative gross margin, low-margin variants, and the exact products to fix first. No product prices are changed.</s-paragraph>
+            <s-heading>Start with one scan</s-heading>
+              <s-paragraph>Margin Sentinel will show missing costs, negative gross margin, low-margin SKUs, inventory risk, and the exact products to fix first. No product prices are changed.</s-paragraph>
               <s-stack direction="inline" gap="base">
                 <s-link href="/app/import">Import supplier costs first</s-link>
                 <s-link href="/app/onboarding">Open setup checklist</s-link>
@@ -525,6 +608,8 @@ export default function Dashboard() {
           <s-list-item>Demo mode makes empty dev stores look useful immediately.</s-list-item>
         </s-unordered-list>
       </s-section>
+
+      <CostTrustNote />
     </s-page>
   );
 }

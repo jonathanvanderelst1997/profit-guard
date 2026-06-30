@@ -100,7 +100,7 @@ export default function Onboarding() {
   const hasAlerts = Boolean(settings.weeklyAlertsEnabled && canUseAlerts);
   const readinessScore = Math.round(([costsReady, hasScan, hasAlerts].filter(Boolean).length / 3) * 100);
   const nextAction = !hasScan
-    ? { heading: "Run the first profit scan", body: "Start here. The scan creates the first fix list and shows whether cost data is missing.", href: "/app", label: "Run profit scan" }
+    ? { heading: "Run the first SKU margin leak scan", body: "Start here. The scan creates the first exception list and shows whether cost data is missing.", href: "/app", label: "Run margin leak scan" }
     : costsNeedAttention
       ? { heading: "Confirm supplier costs", body: "The latest scan still needs stronger cost data. Import supplier costs or add Shopify unit costs, then scan again.", href: "/app/import", label: "Import supplier costs" }
       : issueCount > 0
@@ -126,6 +126,26 @@ export default function Onboarding() {
               <s-text>Setup readiness</s-text>
               <s-heading>{readinessScore}%</s-heading>
               <s-paragraph>Current plan: {plan.label}. Target margin: {basisPointsToPercent(settings.minimumMarginBps)}.</s-paragraph>
+            </s-stack>
+          </s-box>
+        </s-grid>
+      </s-section>
+
+      <s-section heading="Sample scan before setup">
+        <s-grid gridTemplateColumns="minmax(0, 2fr) minmax(220px, 1fr)" gap="base">
+          <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
+            <s-stack direction="block" gap="small">
+              <s-text tone="warning">First 5-minute aha</s-text>
+              <s-heading>We found 12 variants with missing costs.</s-heading>
+              <s-paragraph>This is the promise before merchants finish cleanup: a short exception list for missing cost variants, low-margin SKUs, inventory risk, and what-if margin scenarios.</s-paragraph>
+              <s-link href="/app">Open dashboard sample</s-link>
+            </s-stack>
+          </s-box>
+          <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
+            <s-stack direction="block" gap="small">
+              <s-text>Scope note</s-text>
+              <s-heading>Catalog margin only</s-heading>
+              <s-paragraph>No order data is requested, so Margin Sentinel avoids order-level net-profit claims and focuses on SKU margin leaks.</s-paragraph>
             </s-stack>
           </s-box>
         </s-grid>
@@ -211,6 +231,7 @@ export default function Onboarding() {
           <s-list-item>It does not change product prices automatically.</s-list-item>
           <s-list-item>It does not order stock or contact suppliers.</s-list-item>
           <s-list-item>It only reads product, variant, price, SKU, and cost information needed for margin analysis.</s-list-item>
+          <s-list-item>It keeps saved scan findings separate, so a later supplier cost import does not rewrite the exception list a merchant already reviewed.</s-list-item>
         </s-unordered-list>
       </s-section>
     </s-page>
