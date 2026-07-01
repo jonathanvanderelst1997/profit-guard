@@ -5,11 +5,11 @@ import styles from "./styles.module.css";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Margin Sentinel | Shopify margin leak scanner" },
+    { title: "Free Shopify margin leak audit | Margin Sentinel" },
     {
       name: "description",
       content:
-        "Find loss-making Shopify variants, missing costs, low-margin products, supplier cost risk, and inventory dollars at risk before the next reorder or promotion.",
+        "Request a free 20-SKU Shopify margin leak audit. Margin Sentinel finds missing costs, low-margin SKUs, supplier cost risk, and inventory dollars at risk.",
     },
   ];
 };
@@ -33,6 +33,7 @@ export default function App() {
           <span>Margin Sentinel</span>
         </a>
         <nav className={styles.nav}>
+          <a href="mailto:jonathan.vanderelst@outlook.com?subject=Free%2020-SKU%20margin%20leak%20audit">Free audit</a>
           <a href="https://apps.shopify.com/margin-sentinel">Install</a>
           <a href="/beta">Launch offer</a>
           <a href="/resources">Resources</a>
@@ -45,28 +46,38 @@ export default function App() {
       </header>
       <div className={styles.hero}>
         <div className={styles.content}>
-          <p className={styles.eyebrow}>Shopify catalog margin scanner</p>
-          <h1 className={styles.heading}>Find the SKUs that stop your store making money.</h1>
-          <p className={styles.text}>Margin Sentinel is a read-only Shopify app for merchants with supplier costs, bulk price edits, and messy SKU catalogs. It finds loss-making variants, missing cost data, low-margin products, and inventory dollars at risk before the next reorder or promotion.</p>
+          <p className={styles.eyebrow}>Free founder-led Shopify audit</p>
+          <h1 className={styles.heading}>Want me to check 20 SKUs for hidden margin leaks?</h1>
+          <p className={styles.text}>Margin Sentinel is a read-only Shopify app for catalog-heavy merchants. Send a store URL and I will review a 20-SKU sample for missing costs, low-margin variants, supplier cost issues, and inventory dollars at risk.</p>
           <div className={styles.actions}>
-            <a className={styles.primaryAction} href="https://apps.shopify.com/margin-sentinel">Start 14-day trial</a>
-            <a className={styles.secondaryAction} href="/beta">Request launch audit</a>
+            <a className={styles.primaryAction} href="mailto:jonathan.vanderelst@outlook.com?subject=Free%2020-SKU%20margin%20leak%20audit&body=Hi%20Jonathan%2C%0A%0AI%20would%20like%20a%20free%2020-SKU%20margin%20leak%20audit.%0A%0AStore%20URL%3A%20%0ACatalog%20type%3A%20%0AWhat%20I%20want%20checked%3A%20missing%20costs%20%2F%20low-margin%20SKUs%20%2F%20supplier%20cost%20changes%20%2F%20inventory%20risk%0A">Request free audit</a>
+            <a className={styles.secondaryAction} href="https://apps.shopify.com/margin-sentinel">Install from Shopify</a>
           </div>
+          <p className={styles.microcopy}>Best fit: parts, equipment, furniture, beauty, home goods, and messy SKU catalogs. No order data needed. No prices changed automatically.</p>
           <div className={styles.proofStrip} aria-label="Margin Sentinel launch details">
             <span>Live on Shopify App Store</span>
-            <span>$15/month Starter</span>
+            <span>Free 20-SKU audit offer</span>
             <span>Read-only by design</span>
           </div>
         </div>
-        <aside className={styles.preview} aria-label="Margin Sentinel product preview">
+        <aside className={styles.preview} aria-label="Free margin audit preview">
           <div className={styles.previewHeader}>
-            <span>First scan</span>
-            <strong>4 fixes found</strong>
+            <span>Audit sample</span>
+            <strong>20 SKUs checked</strong>
+          </div>
+          <div className={styles.auditPanel}>
+            <strong>What you get back</strong>
+            <span>A short findings note with the SKUs to fix first, why they matter, and the next action for each one.</span>
           </div>
           <div className={styles.metricGrid}>
             <div><strong>$2,840</strong><span>Inventory risk</span></div>
             <div><strong>18</strong><span>Missing costs</span></div>
             <div><strong>3</strong><span>Below target</span></div>
+          </div>
+          <div className={styles.auditSteps}>
+            <span>1. Share store URL</span>
+            <span>2. I check 20 SKUs</span>
+            <span>3. You get findings</span>
           </div>
           <div className={styles.findingList}>
             <div>

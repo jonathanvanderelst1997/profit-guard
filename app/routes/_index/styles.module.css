@@ -97,6 +97,7 @@
 .actions {
   align-items: end;
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   justify-content: flex-start;
 }
@@ -122,6 +123,14 @@
   background: #fff;
   border: 1px solid #c4c8cc;
   color: #151515;
+}
+
+.microcopy {
+  color: #496157;
+  font-size: 15px;
+  line-height: 1.55;
+  margin: -8px 0 0;
+  max-width: 680px;
 }
 
 .proofStrip {
@@ -163,6 +172,21 @@
   color: #5f6368;
 }
 
+.auditPanel {
+  background: #10291d;
+  border-radius: 8px;
+  color: #fff;
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+}
+
+.auditPanel span {
+  color: #d7efe2;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
 .metricGrid {
   display: grid;
   gap: 10px;
@@ -186,6 +210,21 @@
 .metricGrid span {
   font-size: 12px;
   line-height: 1.3;
+}
+
+.auditSteps {
+  display: grid;
+  gap: 8px;
+}
+
+.auditSteps span {
+  background: #eaf7ef;
+  border: 1px solid #b9d8c8;
+  border-radius: 8px;
+  color: #155f3b;
+  font-size: 13px;
+  font-weight: 800;
+  padding: 8px 10px;
 }
 
 .findingList {
