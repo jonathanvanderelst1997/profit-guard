@@ -6,7 +6,7 @@ import { boundary } from "@shopify/shopify-app-react-router/server";
 import { authenticate } from "../shopify.server";
 import { auditVariants, basisPointsToPercent, calculateMinimumPriceForTargetMargin, getCostSourceLabel, getFindingAction, getSeverityLabel, SEVERITY_ORDER, type MarginFinding, type Severity } from "../lib/margin";
 import { fetchVariantsForAudit } from "../lib/shopify-products.server";
-import { getLatestAuditRun, saveAuditRun } from "../lib/audit-store.server";
+import { getLatestAuditRun, normalizeFindingStatus, saveAuditRun, updateAuditFindingStatus, type FindingStatus } from "../lib/audit-store.server";
 import { getShopSettings, updateMinimumMargin } from "../lib/settings.server";
 import { getImportedCosts, applyImportedCostsBySku } from "../lib/imported-costs.server";
 import { applyDemoCostsWhenAllMissing } from "../lib/demo-costs";
@@ -35,6 +35,22 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     const settings = await updateMinimumMargin(session.shop, minimumMarginPercent);
     await trackAnalyticsEvent({ eventName: "settings_updated", source: "app", request, shop: session.shop, metadata: { minimumMarginBps: settings.minimumMarginBps } });
     return { ok: true, type: "settings", settings };
+  }
+
+  if (intent === "finding-status") {
+    const findingId = String(formData.get("findingId") ?? "");
+    const status = normalizeFindingStatus(formData.get("status"));
+    if (!findingId) return { ok: false, type: "finding-status", message: "Finding ID is missing." };
+    const updated = await updateAuditFindingStatus(session.shop, findingId, status);
+    await trackAnalyticsEvent({
+      eventName: status === "RESOLVED" ? "finding_marked_resolved" : status === "IGNORED" ? "finding_ignored" : "finding_reopened",
+      source: "app",
+      request,
+      shop: session.shop,
+      subjectId: findingId,
+      metadata: { status },
+    });
+    return { ok: true, type: "finding-status", message: "Finding status saved.", updated };
   }
 
   const settings = await getShopSettings(session.shop);
@@ -115,9 +131,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 type StatTone = "critical" | "warning" | "neutral";
 type FindingFilter = "ALL" | Severity;
+type FindingStatusFilter = "ACTIVE" | "RESOLVED" | "IGNORED" | "ALL";
 type FindingSort = "priority" | "risk" | "gap" | "margin" | "product";
 type ChecklistState = "complete" | "current" | "waiting";
-type AuditFinding = Omit<MarginFinding, "severity" | "costSource"> & { id?: string | null; severity: string; costSource?: string | null };
+type AuditFinding = Omit<MarginFinding, "severity" | "costSource"> & { id?: string | null; severity: string; costSource?: string | null; status?: string | null; statusUpdatedAt?: string | Date | null };
 type DashboardAudit = {
   totalVariants: number;
   lossCount: number;
@@ -134,6 +151,35 @@ type DashboardAudit = {
 function normalizeSeverity(value: string): Severity {
   if (value === "LOSS" || value === "LOW_MARGIN" || value === "MISSING_COST") return value;
   return "LOW_MARGIN";
+}
+
+function normalizeStatus(value: string | null | undefined): FindingStatus {
+  if (value === "RESOLVED" || value === "IGNORED") return value;
+  return "ACTIVE";
+}
+
+function statusStyle(status: FindingStatus): CSSProperties {
+  const palette: Record<FindingStatus, CSSProperties> = {
+    ACTIVE: { color: "#704900", background: "#fff5d6", borderColor: "#e9cc75" },
+    RESOLVED: { color: "#0b6b35", background: "#eaf8ef", borderColor: "#b7e4c7" },
+    IGNORED: { color: "#4a5568", background: "#f4f6f8", borderColor: "#d8dde3" },
+  };
+  return {
+    ...palette[status],
+    display: "inline-block",
+    border: "1px solid",
+    borderRadius: 6,
+    padding: "2px 8px",
+    fontSize: 12,
+    fontWeight: 600,
+    whiteSpace: "nowrap",
+  };
+}
+
+function statusLabel(status: FindingStatus): string {
+  if (status === "RESOLVED") return "Resolved";
+  if (status === "IGNORED") return "Ignored";
+  return "Active";
 }
 
 function StatCard({ label, value, tone }: { label: string; value: number | string; tone?: StatTone }) {
@@ -304,7 +350,8 @@ function buildFindingSummaryLine(finding: AuditFinding, minimumMarginBps: number
 }
 
 function buildSuggestedFixSummary(audit: DashboardAudit, findings: AuditFinding[]): string {
-  const topFindings = (findings.length > 0 ? findings : sortFindings(audit.findings, "priority")).slice(0, 5);
+  const activeFindings = audit.findings.filter((finding) => normalizeStatus(finding.status) === "ACTIVE");
+  const topFindings = (findings.length > 0 ? findings : sortFindings(activeFindings, "priority")).slice(0, 5);
   const currencyCode = topFindings[0]?.currencyCode ?? audit.findings[0]?.currencyCode;
   const issueCount = audit.lossCount + audit.lowMarginCount + audit.missingCostCount;
   const lines = [
@@ -370,19 +417,20 @@ function humanNumber(value: number): string {
 }
 
 function ActionCenter({ audit, minimumMarginBps }: { audit: DashboardAudit; minimumMarginBps: number }) {
-  const firstLoss = audit.findings.find((finding) => normalizeSeverity(finding.severity) === "LOSS");
-  const firstLowMargin = audit.findings.find((finding) => normalizeSeverity(finding.severity) === "LOW_MARGIN");
-  const firstMissingCost = audit.findings.find((finding) => normalizeSeverity(finding.severity) === "MISSING_COST");
+  const activeFindings = audit.findings.filter((finding) => normalizeStatus(finding.status) === "ACTIVE");
+  const firstLoss = activeFindings.find((finding) => normalizeSeverity(finding.severity) === "LOSS");
+  const firstLowMargin = activeFindings.find((finding) => normalizeSeverity(finding.severity) === "LOW_MARGIN");
+  const firstMissingCost = activeFindings.find((finding) => normalizeSeverity(finding.severity) === "MISSING_COST");
   const firstPriority = firstLoss ?? firstLowMargin ?? firstMissingCost;
   const coverage = audit.totalVariants > 0 ? Math.round((audit.okCount / audit.totalVariants) * 100) : 0;
-  const issueCount = audit.lossCount + audit.lowMarginCount + audit.missingCostCount;
+  const issueCount = activeFindings.length;
   const suggestedPrice = firstPriority ? calculateMinimumPriceForTargetMargin(firstPriority.costAmount, minimumMarginBps) : null;
 
   return (
     <s-section heading="Action center">
       {issueCount === 0 ? (
-        <s-banner tone="success" heading="No margin leaks found">
-          Every scanned variant is at or above your current target margin. Keep weekly alerts on so new pricing or supplier cost changes are caught early.
+        <s-banner tone="success" heading="No active findings">
+          Every finding in this scan is resolved or ignored, or no margin leaks were found. Keep weekly alerts on so new pricing or supplier cost changes are caught early.
         </s-banner>
       ) : (
         <s-stack direction="block" gap="base">
@@ -420,6 +468,7 @@ export default function Dashboard() {
   const fetcher = useFetcher<typeof action>();
   const shopify = useAppBridge();
   const [issueFilter, setIssueFilter] = useState<FindingFilter>("ALL");
+  const [statusFilter, setStatusFilter] = useState<FindingStatusFilter>("ACTIVE");
   const [sort, setSort] = useState<FindingSort>("priority");
   const [query, setQuery] = useState("");
   const [isCopyingSummary, setIsCopyingSummary] = useState(false);
@@ -431,14 +480,16 @@ export default function Dashboard() {
     if (!currentAudit) return [];
     const filtered = currentAudit.findings.filter((finding) => {
       const matchesIssue = issueFilter === "ALL" || normalizeSeverity(finding.severity) === issueFilter;
-      return matchesIssue && findingMatchesQuery(finding, query);
+      const matchesStatus = statusFilter === "ALL" || normalizeStatus(finding.status) === statusFilter;
+      return matchesIssue && matchesStatus && findingMatchesQuery(finding, query);
     });
     return sortFindings(filtered as AuditFinding[], sort);
-  }, [currentAudit, issueFilter, query, sort]);
+  }, [currentAudit, issueFilter, query, sort, statusFilter]);
 
   useEffect(() => {
     if (fetcher.data?.ok && fetcher.data.type === "scan") shopify.toast.show("Profit scan completed");
     if (fetcher.data?.ok && fetcher.data.type === "settings") shopify.toast.show("Settings saved");
+    if (fetcher.data?.ok && fetcher.data.type === "finding-status") shopify.toast.show("Finding status saved");
   }, [fetcher.data, shopify]);
 
   useEffect(() => {
@@ -528,7 +579,8 @@ export default function Dashboard() {
               <StatCard label="Inventory risk" value={formatMoney(Number(currentAudit.inventoryRiskAmount ?? 0), currentAudit.findings?.[0]?.currencyCode)} tone="warning" />
               <StatCard label="OK variants" value={currentAudit.okCount} />
             </s-grid>
-            <s-paragraph>Target margin: {basisPointsToPercent(currentAudit.minimumMarginBps)}. Inventory risk is gap to target margin multiplied by current Shopify inventory quantity. Showing the first 100 findings in-app. CSV export includes all saved findings.</s-paragraph>
+                <s-paragraph>Target margin: {basisPointsToPercent(currentAudit.minimumMarginBps)}. Inventory risk is gap to target margin multiplied by current Shopify inventory quantity. Showing the first 100 findings in-app. CSV export includes all saved findings.</s-paragraph>
+            <s-paragraph>Workflow: {humanNumber(currentAudit.findings.filter((finding) => normalizeStatus(finding.status) === "ACTIVE").length)} active, {humanNumber(currentAudit.findings.filter((finding) => normalizeStatus(finding.status) === "RESOLVED").length)} resolved, {humanNumber(currentAudit.findings.filter((finding) => normalizeStatus(finding.status) === "IGNORED").length)} ignored.</s-paragraph>
             <s-stack direction="inline" gap="base">
               <s-link href="/app/import">Import supplier costs</s-link>
               <s-link href="/app/what-if">Run cost what-if</s-link>
@@ -544,6 +596,15 @@ export default function Dashboard() {
                   <label style={{ display: "grid", gap: 4 }}>
                     <span>Search</span>
                     <input value={query} onChange={(event) => setQuery(event.currentTarget.value)} placeholder="Product, SKU, reason" style={{ minWidth: 220, padding: "8px 10px", border: "1px solid #c9cccf", borderRadius: 6 }} />
+                  </label>
+                  <label style={{ display: "grid", gap: 4 }}>
+                    <span>Status</span>
+                    <select value={statusFilter} onChange={(event) => setStatusFilter(event.currentTarget.value as FindingStatusFilter)} style={{ minWidth: 150, padding: "8px 10px", border: "1px solid #c9cccf", borderRadius: 6 }}>
+                      <option value="ACTIVE">Active</option>
+                      <option value="RESOLVED">Resolved</option>
+                      <option value="IGNORED">Ignored</option>
+                      <option value="ALL">All statuses</option>
+                    </select>
                   </label>
                   <label style={{ display: "grid", gap: 4 }}>
                     <span>Issue</span>
@@ -566,18 +627,20 @@ export default function Dashboard() {
                   </label>
                   <s-button type="button" onClick={copySuggestedFixSummary} disabled={isCopyingSummary || currentAudit.findings.length === 0} loading={isCopyingSummary}>Copy suggested fix summary</s-button>
                 </s-stack>
-                <s-paragraph>Showing {humanNumber(visibleFindings.length)} of {humanNumber(currentAudit.findings.length)} saved findings.</s-paragraph>
+                <s-paragraph>Showing {humanNumber(visibleFindings.length)} of {humanNumber(currentAudit.findings.length)} saved findings. Default view is active issues only, so the dashboard becomes a fix queue instead of a static report.</s-paragraph>
               </s-stack>
             </s-box>
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead><tr><th align="left">Issue</th><th align="left">Product</th><th align="left">SKU</th><th align="right">Price</th><th align="right">Cost</th><th align="left">Cost source</th><th align="right">Profit</th><th align="right">Margin</th><th align="right">Gap</th><th align="right">Inventory</th><th align="right">Inventory risk</th><th align="right">Suggested min price</th><th align="left">Next action</th></tr></thead>
+                <thead><tr><th align="left">Status</th><th align="left">Issue</th><th align="left">Product</th><th align="left">SKU</th><th align="right">Price</th><th align="right">Cost</th><th align="left">Cost source</th><th align="right">Profit</th><th align="right">Margin</th><th align="right">Gap</th><th align="right">Inventory</th><th align="right">Inventory risk</th><th align="right">Suggested min price</th><th align="left">Next action</th><th align="left">Workflow</th></tr></thead>
                 <tbody>
                   {visibleFindings.map((f) => {
                     const suggestedPrice = calculateMinimumPriceForTargetMargin(f.costAmount, currentAudit.minimumMarginBps);
                     const severity = normalizeSeverity(f.severity);
+                    const status = normalizeStatus(f.status);
                     return (
                     <tr key={f.id ?? f.variantId}>
+                      <td><span style={statusStyle(status)}>{statusLabel(status)}</span></td>
                       <td><span style={severityStyle(severity)}>{getSeverityLabel(severity)}</span></td>
                       <td>{f.productTitle}{f.variantTitle && f.variantTitle !== "Default Title" ? ` / ${f.variantTitle}` : ""}</td>
                       <td>{f.sku ?? "—"}</td>
@@ -591,6 +654,32 @@ export default function Dashboard() {
                       <td align="right">{f.inventoryRiskAmount == null ? "—" : formatMoney(Number(f.inventoryRiskAmount), f.currencyCode)}</td>
                       <td align="right">{suggestedPrice == null ? "—" : formatMoney(suggestedPrice, f.currencyCode)}</td>
                       <td>{getFindingAction(severity)}</td>
+                      <td>
+                        {f.id ? (
+                          <s-stack direction="inline" gap="small">
+                            <fetcher.Form method="post">
+                              <input type="hidden" name="intent" value="finding-status" />
+                              <input type="hidden" name="findingId" value={f.id} />
+                              <input type="hidden" name="status" value="RESOLVED" />
+                              <s-button type="submit" disabled={status === "RESOLVED"}>Resolved</s-button>
+                            </fetcher.Form>
+                            <fetcher.Form method="post">
+                              <input type="hidden" name="intent" value="finding-status" />
+                              <input type="hidden" name="findingId" value={f.id} />
+                              <input type="hidden" name="status" value="IGNORED" />
+                              <s-button type="submit" disabled={status === "IGNORED"}>Ignore</s-button>
+                            </fetcher.Form>
+                            {status !== "ACTIVE" ? (
+                              <fetcher.Form method="post">
+                                <input type="hidden" name="intent" value="finding-status" />
+                                <input type="hidden" name="findingId" value={f.id} />
+                                <input type="hidden" name="status" value="ACTIVE" />
+                                <s-button type="submit">Reopen</s-button>
+                              </fetcher.Form>
+                            ) : null}
+                          </s-stack>
+                        ) : "—"}
+                      </td>
                     </tr>
                     );
                   })}

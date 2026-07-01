@@ -32,6 +32,11 @@ async function main() {
     console.log(`  ${key}: ${value}`);
   }
   console.log("");
+  console.log("Finding workflow:");
+  for (const [key, value] of Object.entries(metrics.findingWorkflow)) {
+    console.log(`  ${key}: ${value}`);
+  }
+  console.log("");
   console.log("Events by name:");
   console.log(formatGroup(metrics.eventsByName, "eventName"));
   console.log("");

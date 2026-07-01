@@ -1,6 +1,15 @@
 import prisma from "../db.server";
 import type { AuditSummary } from "./margin";
 
+export const FINDING_STATUSES = ["ACTIVE", "RESOLVED", "IGNORED"] as const;
+export type FindingStatus = (typeof FINDING_STATUSES)[number];
+
+export function normalizeFindingStatus(value: FormDataEntryValue | string | null | undefined): FindingStatus {
+  const status = String(value ?? "ACTIVE").toUpperCase();
+  if (status === "RESOLVED" || status === "IGNORED") return status;
+  return "ACTIVE";
+}
+
 export async function saveAuditRun(shop: string, minimumMarginBps: number, summary: AuditSummary, options: { demoMode?: boolean; scanLimitReached?: boolean } = {}) {
   return prisma.auditRun.create({
     data: {
@@ -57,4 +66,13 @@ export async function getLatestAuditRunForExport(shop: string) {
     orderBy: { createdAt: "desc" },
     include: { findings: { orderBy: [{ severity: "asc" }, { marginBps: "asc" }] } },
   });
+}
+
+export async function updateAuditFindingStatus(shop: string, findingId: string, status: FindingStatus) {
+  const result = await prisma.auditFinding.updateMany({
+    where: { id: findingId, shop },
+    data: { status, statusUpdatedAt: new Date() },
+  });
+  if (result.count === 0) throw new Error("Finding not found.");
+  return { id: findingId, status };
 }

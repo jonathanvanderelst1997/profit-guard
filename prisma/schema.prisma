@@ -80,9 +80,12 @@ model AuditFinding {
   inventoryRiskAmount Float?
   severity            String
   reason              String
+  status              String   @default("ACTIVE")
+  statusUpdatedAt     DateTime?
   createdAt           DateTime @default(now())
 
   @@index([shop, severity])
+  @@index([shop, status])
   @@index([auditRunId])
 }
 

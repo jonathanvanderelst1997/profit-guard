@@ -46,6 +46,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     totalVariants: latestAudit.totalVariants,
     issueCount,
     findingCount: latestAudit.findings.length,
+    activeFindingCount: latestAudit.findings.filter((finding) => (finding.status ?? "ACTIVE") === "ACTIVE").length,
+    resolvedFindingCount: latestAudit.findings.filter((finding) => finding.status === "RESOLVED").length,
+    ignoredFindingCount: latestAudit.findings.filter((finding) => finding.status === "IGNORED").length,
     lossCount: latestAudit.lossCount,
     lowMarginCount: latestAudit.lowMarginCount,
     missingCostCount: latestAudit.missingCostCount,
@@ -106,7 +109,7 @@ export default function ExportFindings() {
             <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued">
               <s-stack direction="block" gap="small">
                 <s-heading>{data.fileName}</s-heading>
-                <s-paragraph>Latest scan: {formatDateTime(data.createdAt)}. The file is read-only and does not change prices or product data in Shopify.</s-paragraph>
+                <s-paragraph>Latest scan: {formatDateTime(data.createdAt)}. The file is read-only and does not change prices or product data in Shopify. It includes active, resolved, and ignored statuses so the export can act as proof of follow-up.</s-paragraph>
                 <s-button type="button" onClick={downloadCsv} loading={isDownloading} disabled={isDownloading}>Download findings CSV</s-button>
                 {downloadError ? <s-banner tone="critical">{downloadError}</s-banner> : null}
               </s-stack>
@@ -115,6 +118,7 @@ export default function ExportFindings() {
               <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{data.totalVariants.toLocaleString()}</s-heading><s-text>Variants checked</s-text></s-box>
               <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{data.issueCount.toLocaleString()}</s-heading><s-text>Issues to review</s-text></s-box>
               <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{data.findingCount.toLocaleString()}</s-heading><s-text>Rows in CSV</s-text></s-box>
+              <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{data.activeFindingCount.toLocaleString()}</s-heading><s-text>Active findings</s-text></s-box>
               <s-box padding="base" borderWidth="base" borderRadius="base" background="subdued"><s-heading>{data.inventoryRisk}</s-heading><s-text>Inventory risk</s-text></s-box>
             </s-grid>
             <s-section heading="What the CSV includes">
@@ -122,8 +126,9 @@ export default function ExportFindings() {
                 <s-list-item>Products losing money, products below the target margin, and products with missing cost data.</s-list-item>
                 <s-list-item>Price, cost source, profit, margin, margin gap, inventory risk, and suggested minimum price.</s-list-item>
                 <s-list-item>Recommended next action for each finding so a merchant can hand the file to their team.</s-list-item>
+                <s-list-item>Workflow status for proof: active, resolved, or ignored.</s-list-item>
               </s-unordered-list>
-              <s-paragraph>Target margin: {data.targetMargin}. Issue mix: {data.lossCount} losing money, {data.lowMarginCount} low margin, {data.missingCostCount} missing cost.</s-paragraph>
+              <s-paragraph>Target margin: {data.targetMargin}. Issue mix: {data.lossCount} losing money, {data.lowMarginCount} low margin, {data.missingCostCount} missing cost. Workflow: {data.activeFindingCount} active, {data.resolvedFindingCount} resolved, {data.ignoredFindingCount} ignored.</s-paragraph>
             </s-section>
           </s-stack>
         )}

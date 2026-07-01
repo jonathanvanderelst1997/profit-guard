@@ -2,7 +2,7 @@ import type { MarginFinding } from "./margin";
 import { calculateMinimumPriceForTargetMargin, getCostSourceLabel, getFindingAction } from "./margin";
 import { neutralizeSpreadsheetFormula } from "./security";
 
-export type CsvFinding = Omit<MarginFinding, "severity" | "costSource"> & { severity: string; costSource?: string | null; id?: string; createdAt?: Date | string };
+export type CsvFinding = Omit<MarginFinding, "severity" | "costSource"> & { severity: string; costSource?: string | null; id?: string; status?: string | null; statusUpdatedAt?: Date | string | null; createdAt?: Date | string };
 
 function csvEscape(value: unknown): string {
   if (value === null || value === undefined) return "";
@@ -14,6 +14,7 @@ function csvEscape(value: unknown): string {
 export function findingsToCsv(findings: CsvFinding[], options: { minimumMarginBps?: number } = {}): string {
   const headers = [
     "issue",
+    "status",
     "product_title",
     "variant_title",
     "sku",
@@ -34,6 +35,7 @@ export function findingsToCsv(findings: CsvFinding[], options: { minimumMarginBp
 
   const rows = findings.map((finding) => [
     finding.severity,
+    finding.status ?? "ACTIVE",
     finding.productTitle,
     finding.variantTitle ?? "",
     finding.sku ?? "",

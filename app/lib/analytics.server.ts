@@ -165,6 +165,7 @@ export async function getLaunchMetrics(input: LaunchMetricsInput = 30) {
     latestImportRuns,
     recentEvents,
     recentDownloadEvents,
+    findingStatusCounts,
   ] = await Promise.all([
     prisma.session.count({ where: shopWhere }),
     prisma.session.findMany({ where: shopWhere, select: { shop: true }, distinct: ["shop"], orderBy: { shop: "asc" } }),
@@ -249,6 +250,11 @@ export async function getLaunchMetrics(input: LaunchMetricsInput = 30) {
       orderBy: { createdAt: "desc" },
       take: 20,
     }),
+    prisma.auditFinding.groupBy({
+      by: ["status"],
+      where: shop ? { shop, createdAt: { gte: since } } : { createdAt: { gte: since } },
+      _count: { _all: true },
+    }),
   ]);
 
   const publicPageViews = groupedCount(eventsByName, "public_page_view");
@@ -268,6 +274,9 @@ export async function getLaunchMetrics(input: LaunchMetricsInput = 30) {
   const trialStarted = groupedCount(eventsByName, "trial_started");
   const subscriptionActive = groupedCount(eventsByName, "subscription_active");
   const appUninstalls = groupedCount(eventsByName, "app_uninstalled");
+  const activeFindings = findingStatusCounts.find((row) => row.status === "ACTIVE")?._count._all ?? 0;
+  const resolvedFindings = findingStatusCounts.find((row) => row.status === "RESOLVED")?._count._all ?? 0;
+  const ignoredFindings = findingStatusCounts.find((row) => row.status === "IGNORED")?._count._all ?? 0;
 
   return {
     ok: true,
@@ -301,6 +310,12 @@ export async function getLaunchMetrics(input: LaunchMetricsInput = 30) {
     downloads: {
       costTemplates: templateDownloads,
       findingsExports,
+    },
+    findingWorkflow: {
+      activeFindings,
+      resolvedFindings,
+      ignoredFindings,
+      completionRate: activeFindings + resolvedFindings > 0 ? Math.round((resolvedFindings / (activeFindings + resolvedFindings)) * 100) : 0,
     },
     ga4KeyEvents: {
       appOpen: appOpens,

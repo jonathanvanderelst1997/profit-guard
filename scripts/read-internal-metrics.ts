@@ -7,6 +7,7 @@ type MetricsPayload = {
   counts?: Record<string, unknown>;
   funnel?: Record<string, unknown>;
   downloads?: Record<string, unknown>;
+  findingWorkflow?: Record<string, unknown>;
   eventsByUtmSource?: Array<Record<string, unknown>>;
   eventsByUtmContent?: Array<Record<string, unknown>>;
   recentDownloadEvents?: Array<Record<string, unknown>>;
@@ -57,6 +58,8 @@ async function main() {
   printBlock("Funnel", payload.funnel);
   console.log("");
   printBlock("Downloads", payload.downloads);
+  console.log("");
+  printBlock("Finding workflow", payload.findingWorkflow);
   console.log("");
   console.log("Events by UTM source:");
   console.log(formatGroup(payload.eventsByUtmSource, "utmSource"));
