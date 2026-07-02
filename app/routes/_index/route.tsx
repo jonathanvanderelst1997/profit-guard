@@ -9,7 +9,12 @@ export const meta: MetaFunction = () => {
     {
       name: "description",
       content:
-        "Request a free 20-SKU Shopify margin leak audit. Margin Sentinel finds missing costs, low-margin SKUs, supplier cost risk, and inventory dollars at risk.",
+        "Request a free 20-SKU Shopify margin leak audit. Margin Sentinel finds products losing money, missing product costs, low-margin SKUs, COGS gaps, supplier cost risk, and inventory dollars at risk.",
+    },
+    {
+      name: "keywords",
+      content:
+        "Shopify margin audit, products losing money, missing product costs, Shopify COGS, low-margin SKUs, SKU margin, supplier cost import, inventory risk, margin gap, product cost tracking",
     },
   ];
 };
@@ -37,6 +42,7 @@ export default function App() {
           <a href="https://apps.shopify.com/margin-sentinel">Install</a>
           <a href="/beta">Launch offer</a>
           <a href="/resources">Resources</a>
+          <a href="/resources/sample-margin-scan">Sample scan</a>
           <a href="/resources/supplier-cost-csv-margin-scan">CSV workflow</a>
           <a href="/privacy">Privacy</a>
           <a href="/terms">Terms</a>
@@ -48,10 +54,11 @@ export default function App() {
         <div className={styles.content}>
           <p className={styles.eyebrow}>Free founder-led Shopify audit</p>
           <h1 className={styles.heading}>Want me to check 20 SKUs for hidden margin leaks?</h1>
-          <p className={styles.text}>Margin Sentinel is a read-only Shopify app for catalog-heavy merchants. Send a store URL and I will review a 20-SKU sample for missing costs, low-margin variants, supplier cost issues, and inventory dollars at risk.</p>
+          <p className={styles.text}>Margin Sentinel is a read-only Shopify app for catalog-heavy merchants. Send a store URL and I will review a 20-SKU sample for products losing money, missing product costs (COGS), low-margin variants, supplier cost issues, and inventory dollars at risk.</p>
           <div className={styles.actions}>
             <a className={styles.primaryAction} href="mailto:jonathan.vanderelst@outlook.com?subject=Free%2020-SKU%20margin%20leak%20audit&body=Hi%20Jonathan%2C%0A%0AI%20would%20like%20a%20free%2020-SKU%20margin%20leak%20audit.%0A%0AStore%20URL%3A%20%0ACatalog%20type%3A%20%0AWhat%20I%20want%20checked%3A%20missing%20costs%20%2F%20low-margin%20SKUs%20%2F%20supplier%20cost%20changes%20%2F%20inventory%20risk%0A">Request free audit</a>
             <a className={styles.secondaryAction} href="https://apps.shopify.com/margin-sentinel">Install from Shopify</a>
+            <a className={styles.secondaryAction} href="/resources/sample-margin-scan">See sample scan</a>
           </div>
           <p className={styles.microcopy}>Best fit: parts, equipment, furniture, beauty, home goods, and messy SKU catalogs. No order data needed. No prices changed automatically.</p>
           <div className={styles.proofStrip} aria-label="Margin Sentinel launch details">
@@ -67,7 +74,7 @@ export default function App() {
           </div>
           <div className={styles.auditPanel}>
             <strong>What you get back</strong>
-            <span>A short findings note with the SKUs to fix first, why they matter, and the next action for each one.</span>
+            <span>A short plain-English findings note with the SKUs to fix first, the margin gap, and the next action for each one.</span>
           </div>
           <div className={styles.metricGrid}>
             <div><strong>$2,840</strong><span>Inventory risk</span></div>
@@ -106,10 +113,10 @@ export default function App() {
         </div>
         <ul className={styles.list}>
           <li>
-            <strong>Margin leak scan.</strong> Catch loss-making, low-margin, and missing-cost variants from Shopify product data.
+            <strong>Margin leak scan.</strong> Catch products losing money, loss-making SKUs, low-margin variants, and missing-cost rows from Shopify product data.
           </li>
           <li>
-            <strong>Supplier cost import.</strong> Upload costs by variant ID, inventory item ID, or SKU and preview the impact before saving.
+            <strong>Supplier cost import.</strong> Upload product costs by variant ID, inventory item ID, or SKU and preview the impact before saving.
           </li>
           <li>
             <strong>Inventory risk.</strong> Prioritize fixes by the margin gap and quantity sitting in stock.

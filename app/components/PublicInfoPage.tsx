@@ -86,6 +86,7 @@ export function PublicInfoPage({ title, eyebrow = "Margin Sentinel", children }:
           <a href="https://apps.shopify.com/margin-sentinel">Install</a>
           <a href="/beta">Launch offer</a>
           <a href="/resources">Resources</a>
+          <a href="/resources/sample-margin-scan">Sample scan</a>
           <a href="/resources/supplier-cost-csv-margin-scan">CSV workflow</a>
           <a href="/privacy">Privacy</a>
           <a href="/terms">Terms</a>

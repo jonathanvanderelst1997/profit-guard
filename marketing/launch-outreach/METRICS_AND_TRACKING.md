@@ -106,3 +106,58 @@ Current interpretation:
 - If there are no Partner Dashboard installs and the app is still limited visibility, the pace problem is traffic, not necessarily product demand.
 - If there are installs but no `AuditRun` rows, the pace problem is activation/onboarding.
 - If there are scans but no replies or conversions, the pace problem is offer, trust, pricing, or follow-up.
+
+## Production read - 2026-07-02
+
+Source: `npm run metrics:internal -- 30` against `https://profit-guard-xzku.onrender.com/internal/metrics?days=30`.
+
+Production health:
+
+- Status: green.
+- Commit: `d949576894159e13ca175170561bfdcb9d6f2331`.
+
+App-owned 30-day metrics:
+
+| Metric | Count |
+| --- | ---: |
+| Public page views | 128 |
+| App opens | 3 |
+| Scan started | 1 |
+| Scan completed | 1 |
+| Scan failed | 0 |
+| Billing approval requests | 0 |
+| Active subscriptions | 0 |
+| App uninstalls | 0 |
+| Cost template downloads | 0 |
+| Findings exports | 0 |
+| Active findings | 36 |
+| Resolved findings | 0 |
+
+Installed-session shops:
+
+- `profit-guard-putjxynn.myshopify.com`: test/dev-style shop with scans.
+- `xbbf0y-vp.myshopify.com`: installed-session record, no scan in the latest audit list.
+
+Interpretation:
+
+- Do not count the 2 installed-session shops as proven buyer traction yet. There is no billing approval request, active subscription, review, export, or merchant reply tied to them.
+- The app is receiving public traffic, but the current leak is `public_page_view -> install/app_open -> billing/trial`.
+- The first product proof exists: one recent scan checked 29 variants and found 1 loss item, 3 low-margin items, and $5,904 inventory risk.
+- No UTM attribution is appearing in app-owned events yet. That means App Store listing click/install attribution still depends on Shopify Partner Dashboard + GA4/Meta, not the internal app endpoint.
+
+Meta Events Manager read - 2026-07-02:
+
+- Dataset: `Margin Sentinel`.
+- Website: `apps.shopify.com`.
+- Integrations: Meta Pixel + Conversions API.
+- Events visible:
+  - `ViewContent`: 3, Meta Pixel, last received about 1 hour ago.
+  - `PageView`: 3, Meta Pixel, last received about 1 hour ago.
+  - `AddToCart`: 2, Conversions API, event match quality 4.4/10, last received about 17 hours ago.
+
+Tracking gaps to close:
+
+1. Mark key GA4/Meta events around App Store listing view, Add App click, app open, first scan completed, and trial started.
+2. Improve Meta event match quality where allowed by Shopify listing tracking. Do not add personal data manually; rely on Shopify/Meta-supported matching.
+3. Keep outbound UTM links consistent, but do not expect UTM values inside app-owned events unless the App Store preserves them through install.
+4. Add a daily row to the metrics checklist before outreach: category page rank, Meta `AddToCart`, app opens, scan completed, billing approval requests, replies.

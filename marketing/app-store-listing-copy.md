@@ -10,11 +10,36 @@ Find missing costs, low-margin SKUs, and margin leaks before they eat profit.
 
 ## Short description
 
-Margin Sentinel scans your Shopify catalog for missing COGS, low-margin SKUs, supplier cost gaps, inventory risk, and what-if margin scenarios. It gives merchants a prioritized exception list without changing prices automatically.
+Margin Sentinel scans your Shopify catalog for products losing money, missing costs, low-margin SKUs, supplier cost gaps, inventory risk, and what-if margin scenarios. It gives merchants a prioritized fix list without changing prices automatically.
 
 ## Keyword targets
 
-Shopify profit tracker, COGS tracker, margin calculator, SKU profit, product margin, missing costs, discount margin, supplier cost, inventory risk, Shopify margin, low-margin products, product cost tracking.
+Shopify profit tracker, COGS tracker, Shopify cost per item, product cost tracking, margin calculator, SKU profit, SKU margin, product margin, missing costs, missing product costs, loss-making SKUs, products losing money, low-margin products, discount margin, supplier cost, supplier cost import, inventory risk, margin gap, Shopify margin.
+
+## Simple language + technical language
+
+Use both layers. Merchants search with plain language; operators, agencies, and accountants search with technical terms.
+
+| Plain language | Technical term |
+| --- | --- |
+| products losing money | loss-making SKUs, negative gross margin |
+| missing product costs | missing COGS, missing unit cost, missing Shopify cost per item |
+| products with low profit | low-margin SKUs |
+| supplier price increase | supplier cost change, supplier cost import |
+| products to fix first | prioritized fix list, exception list |
+| money tied up in risky stock | inventory risk |
+| price needed to stay profitable | suggested minimum price |
+| how far below target a product is | margin gap |
+
+Recommended copy pattern:
+
+1. Lead with the simple phrase.
+2. Add the technical phrase in the same sentence or next clause.
+3. Explain the next action without jargon.
+
+Example:
+
+> Find products losing money, missing COGS, and low-margin SKUs, then export the fix list before changing prices.
 
 ## Long description
 
@@ -24,6 +49,7 @@ Margin Sentinel helps Shopify merchants find product-level margin problems befor
 
 Run a SKU-level scan to spot:
 
+- Products losing money
 - Missing COGS or unit costs
 - Low-margin SKUs
 - Products selling below target margin
@@ -46,9 +72,24 @@ Use Margin Sentinel when:
 
 Best first aha:
 
-We found 12 variants with missing costs.
+We found 12 products with missing costs.
 
-That first result gives merchants a clear next step: add costs, import supplier data, review low-margin SKUs, export the fix list, or run a what-if margin scenario.
+In technical terms, that means missing COGS or missing Shopify unit cost. In normal words, the merchant cannot trust the margin number yet. The next step is simple: add costs, import supplier data, review low-margin SKUs, export the fix list, or run a what-if margin scenario.
+
+## Public proof page
+
+Use this page in outreach, community replies, and the website when a prospect needs a fast explanation before installing:
+
+https://profit-guard-xzku.onrender.com/resources/sample-margin-scan
+
+Sample proof language:
+
+- 29 variants checked
+- 1 product losing money
+- 3 low-margin products
+- $5,904 inventory dollars at risk
+
+Do not present the sample as a customer case study. It is a sample scan/proof page until a real merchant gives permission.
 
 ## Screenshot captions
 
